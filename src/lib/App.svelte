@@ -49,7 +49,11 @@
 			<Draggable>
 				<Group>
 					{#each group.items as item, i}
-						<div draggable={true} on:dragstart={(event) => dragstart(event, g, i)}>
+						<div
+							class="draggable"
+							draggable={true}
+							on:dragstart={(event) => dragstart(event, g, i)}
+						>
 							<StyledRect rectColor={item.color}>{item.name}</StyledRect>
 						</div>
 					{/each}
@@ -70,3 +74,9 @@
 		<StyledRect />
 	</Draggable>
 </Canvas>
+
+<style>
+	.draggable {
+		width: fit-content;
+	}
+</style>
