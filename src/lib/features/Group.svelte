@@ -1,11 +1,30 @@
-<div class="group">
-	<slot />
-</div>
+<script>
+	import { onMount } from 'svelte';
+	import { elasticOut } from 'svelte/easing';
+	import { scale } from 'svelte/transition';
+
+	let offsetHeight;
+	let offsetWidth;
+</script>
+
+{#key offsetHeight || offsetWidth}
+	<div
+		in:scale={{ duration: 400, delay: 0, opacity: 0.985, start: 1.05, easing: elasticOut }}
+		class="group"
+		bind:offsetHeight
+		bind:offsetWidth
+	>
+		<slot />
+	</div>
+{/key}
 
 <style>
 	.group {
 		border: 2px dashed grey;
-		width: 200px;
-		height: 200px;
+		/* width: fit-content;
+		height: fit-content; */
+		min-width: fit-content;
+		min-height: fit-content;
+		padding: 1em;
 	}
 </style>
