@@ -19,7 +19,6 @@
 
 <div
 	class="draggable"
-	draggable="true"
 	use:pannable
 	on:dragstart={handleDragStart}
 	on:panstart|stopPropagation={handlePanStart}
