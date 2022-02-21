@@ -16,7 +16,7 @@ export function draggable(node, params) {
 
 export const panstart = 'panstart';
 
-export function pannable(node) {
+export function pannable(node, { grp, itm }) {
 	let x;
 	let y;
 
@@ -60,7 +60,7 @@ export function pannable(node) {
 
 		node.dispatchEvent(
 			new CustomEvent('panend', {
-				detail: { x, y }
+				detail: { x, y, grp, itm }
 			})
 		);
 

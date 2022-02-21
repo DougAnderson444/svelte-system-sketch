@@ -33,6 +33,7 @@
 	}
 
 	export function drop(ev, new_g) {
+		console.log('Drop triggered');
 		ev.preventDefault();
 		var i = ev.dataTransfer.getData('item');
 		var old_g = ev.dataTransfer.getData('group');
@@ -40,22 +41,37 @@
 		groups[new_g].items.push(item);
 		groups = groups;
 	}
+
+	function panDrop(old_grp, item, new_g) {
+		console.log('Pan Drop');
+	}
 </script>
 
 <Canvas>
 	{#each groups as group, g}
-		<div class="group" on:drop={(event) => drop(event, g)} on:dragover={dragover}>
+		<div
+			class="group"
+			on:drop={(event) => drop(event, g)}
+			on:dragover={dragover}
+			on:mouseup={(ev) => {
+				panDrop(ev, g);
+			}}
+		>
 			<Draggable>
 				<Group>
 					<b>{group.name}</b>
 					{#each group.items as item, i}
-						<div
+						<!-- <div
 							class="draggable"
 							draggable={true}
 							on:dragstart={(event) => dragstart(event, g, i)}
-						>
+						> -->
+
+						<Draggable grp={g} itm={i} on:panend={(ev) => panDrop()}>
 							<StyledRect rectColor={item.color}>{item.name}</StyledRect>
-						</div>
+						</Draggable>
+
+						<!-- </div> -->
 					{/each}
 				</Group>
 			</Draggable>
