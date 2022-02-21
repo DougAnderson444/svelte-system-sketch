@@ -44,10 +44,10 @@
 
 <Canvas>
 	{#each groups as group, g}
-		<b>{group.name}</b>
-		<ul on:drop={(event) => drop(event, g)} on:dragover={dragover}>
+		<div class="group" on:drop={(event) => drop(event, g)} on:dragover={dragover}>
 			<Draggable>
 				<Group>
+					<b>{group.name}</b>
 					{#each group.items as item, i}
 						<div
 							class="draggable"
@@ -59,7 +59,7 @@
 					{/each}
 				</Group>
 			</Draggable>
-		</ul>
+		</div>
 	{/each}
 
 	<Draggable>
@@ -78,5 +78,9 @@
 <style>
 	.draggable {
 		width: fit-content;
+	}
+	.group {
+		/* width: fit-content;
+		height: fit-content; */
 	}
 </style>

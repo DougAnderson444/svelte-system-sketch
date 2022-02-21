@@ -9,7 +9,7 @@
 
 {#key offsetHeight || offsetWidth}
 	<div
-		in:scale={{ duration: 400, delay: 0, opacity: 0.985, start: 1.05, easing: elasticOut }}
+		in:scale={{ duration: 400, delay: 0, opacity: 0.5, start: 1.2, easing: elasticOut }}
 		class="group"
 		bind:offsetHeight
 		bind:offsetWidth
