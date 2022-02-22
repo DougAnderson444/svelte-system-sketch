@@ -1,9 +1,13 @@
 <script>
+	import { onMount } from 'svelte';
 	import Group from './features/Group.svelte';
 
 	import StyledRect from './atomic/StyledRect.svelte';
 	import Canvas from './features/Canvas.svelte';
 	import Draggable from './features/Draggable.svelte';
+
+	let Arena;
+	let PositioningWasDelayed = false; // workaround for problem with "drag" events
 
 	export let groups = [
 		{
@@ -23,8 +27,8 @@
 	];
 
 	export function dragstart(ev, group, item) {
-		ev.dataTransfer.setData('group', group);
-		ev.dataTransfer.setData('item', item);
+		ev.dataTransfer.setData('group', String(group));
+		ev.dataTransfer.setData('item', String(item));
 	}
 
 	export function dragover(ev) {
@@ -45,40 +49,35 @@
 	function panDrop(old_grp, item, new_g) {
 		console.log('Pan Drop');
 	}
+
+	onMount(async () => {
+		import('svelte-drag-drop-touch');
+	});
 </script>
 
 <Canvas>
 	{#each groups as group, g}
-		<div
-			class="group"
-			on:drop={(event) => drop(event, g)}
-			on:dragover={dragover}
-			on:mouseup={(ev) => {
-				panDrop(ev, g);
-			}}
-		>
+		<div class="group" on:drop={(event) => drop(event, g)} on:dragover={dragover}>
 			<Draggable>
 				<Group>
 					<b>{group.name}</b>
 					{#each group.items as item, i}
-						<!-- <div
+						<div
 							class="draggable"
 							draggable={true}
 							on:dragstart={(event) => dragstart(event, g, i)}
-						> -->
-
-						<Draggable grp={g} itm={i} on:panend={(ev) => panDrop()}>
+						>
+							<!-- <Draggable grp={g} itm={i} on:panend={(ev) => panDrop()}> -->
 							<StyledRect rectColor={item.color}>{item.name}</StyledRect>
-						</Draggable>
-
-						<!-- </div> -->
+							<!-- </Draggable> -->
+						</div>
 					{/each}
 				</Group>
 			</Draggable>
 		</div>
 	{/each}
 
-	<Draggable>
+	<!-- <Draggable>
 		<Group>
 			<Draggable>
 				<StyledRect />
@@ -88,7 +87,7 @@
 
 	<Draggable>
 		<StyledRect />
-	</Draggable>
+	</Draggable> -->
 </Canvas>
 
 <style>
