@@ -11,17 +11,14 @@
 		var i = ev.dataTransfer.getData('item');
 		var old_g = ev.dataTransfer.getData('group');
 		const offsets = JSON.parse(ev.dataTransfer.getData('offset'));
-		console.log('Drop offsets:', { offsets });
 
-		if (new_g == old_g) return;
+		if (new_g == old_g) return; // skip if string != integer of group change (or lack thereof)
 
 		const item = groups[old_g].items.splice(i, 1)[0];
 
-		console.log(ev.offsetX, offsets.offsetX);
-
 		item.X = ev.offsetX - offsets.offsetX;
 		item.Y = ev.offsetY - offsets.offsetY;
-		console.log(item.X);
+
 		groups[new_g].items.push(item);
 		groups = groups;
 	}

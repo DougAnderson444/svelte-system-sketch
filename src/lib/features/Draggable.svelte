@@ -32,7 +32,6 @@
 		ev.dataTransfer.setData('item', String(item));
 
 		const offsets = { offsetX: ev.offsetX, offsetY: ev.offsetY };
-		console.log('Drag offsets:', { offsets });
 
 		ev.dataTransfer.setData('offset', JSON.stringify(offsets));
 
