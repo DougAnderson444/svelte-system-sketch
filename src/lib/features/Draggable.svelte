@@ -10,14 +10,14 @@
 	let Conversion;
 
 	let DragImage;
-	$: X = item?.X || 20;
-	$: Y = item?.Y || 20;
+	$: X = item?.X || 0;
+	$: Y = item?.Y || 0;
 	let DeltaX, DeltaY;
-	const minX = 0,
-		maxX = 400 - 80;
+	const minX = 0;
+	const maxX = 400 - 80;
 
-	const minY = 0,
-		maxY = 400 - 30;
+	const minY = 0;
+	const maxY = 400 - 30;
 
 	let PositioningWasDelayed = false; // workaround for problem with "drag" events
 
@@ -34,6 +34,11 @@
 		const offsets = { offsetX: ev.offsetX, offsetY: ev.offsetY };
 
 		ev.dataTransfer.setData('offset', JSON.stringify(offsets));
+
+		const shiftX = ev.clientX - ev.target.getBoundingClientRect().left;
+		const shiftY = ev.clientY - ev.target.getBoundingClientRect().top;
+
+		ev.dataTransfer.setData('shifts', JSON.stringify({ shiftX, shiftY }));
 
 		let targetBox = ev.target.getBoundingClientRect();
 		DeltaX = ev.pageX - targetBox.left - window.scrollX;
@@ -60,6 +65,10 @@
 			);
 			X = Math.max(minX, Math.min(maxX, localPosition.left));
 			Y = Math.max(minY, Math.min(maxY, localPosition.top));
+
+			// X = localPosition.left;
+			// Y = localPosition.top;
+
 			item.X = X;
 			item.Y = Y;
 			item = item;

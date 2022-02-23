@@ -18,7 +18,9 @@
 		bind:offsetWidth
 		bind:this={arena}
 	>
-		<b>{group?.name}</b>
+		<b>{group?.name}</b><br />
+		{arena?.offsetWidth} x {arena?.offsetHeight} (incl padding + border)<br />
+		{arena?.clientWidth} x {arena?.clientHeight} (excludes padding + border)
 		<slot {arena} />
 	</div>
 {/key}
@@ -30,6 +32,6 @@
 		height: 250px;
 		min-width: fit-content;
 		min-height: fit-content;
-		padding: 1em;
+		padding: 10px;
 	}
 </style>

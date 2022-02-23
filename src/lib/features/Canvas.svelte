@@ -1,5 +1,16 @@
+<script>
+	export let canvas;
+	$: canvas = { ...canvas, offsetHeight, offsetWidth };
+	let offsetHeight;
+	let offsetWidth;
+</script>
+
 <div class="wrapper">
-	<div class="canvas"><slot /></div>
+	<div class="canvas" bind:this={canvas} bind:offsetHeight bind:offsetWidth>
+		Canvas {canvas?.offsetWidth} x {canvas?.offsetHeight}<br />
+		Bind:Canvas {offsetWidth} x {offsetHeight}
+		<slot />
+	</div>
 </div>
 
 <style>

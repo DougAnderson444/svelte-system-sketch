@@ -8,6 +8,8 @@
 	import Draggable from './features/Draggable.svelte';
 	import Droppable from './features/Droppable.svelte';
 
+	let canvas;
+
 	onMount(() => {
 		import('svelte-drag-drop-touch');
 	});
@@ -39,7 +41,7 @@
 	</ul>
 {/each}
 
-<Canvas>
+<Canvas bind:canvas>
 	{#each groups as group, g}
 		<Droppable bind:groups {g}>
 			<Group {group} let:arena>
