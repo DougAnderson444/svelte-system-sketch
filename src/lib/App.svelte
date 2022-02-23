@@ -1,9 +1,20 @@
 <script>
+	// https://svelte.dev/repl/e1c6ee3a5b10464585d86cec61cccab4?version=3.46.4
+	import { onMount } from 'svelte';
 	import Group from './features/Group.svelte';
 
 	import StyledRect from './atomic/StyledRect.svelte';
 	import Canvas from './features/Canvas.svelte';
+	import Pannable from './features/Pannable.svelte';
 	import Draggable from './features/Draggable.svelte';
+	import Droppable from './features/Droppable.svelte';
+
+	let Arena;
+	let PositioningWasDelayed = false; // workaround for problem with "drag" events
+
+	onMount(() => {
+		import('svelte-drag-drop-touch');
+	});
 
 	export let groups = [
 		{
@@ -21,61 +32,44 @@
 			]
 		}
 	];
-
-	export function dragstart(ev, group, item) {
-		ev.dataTransfer.setData('group', group);
-		ev.dataTransfer.setData('item', item);
-	}
-
-	export function dragover(ev) {
-		ev.preventDefault();
-		ev.dataTransfer.dropEffect = 'move';
-	}
-
-	export function drop(ev, new_g) {
-		ev.preventDefault();
-		var i = ev.dataTransfer.getData('item');
-		var old_g = ev.dataTransfer.getData('group');
-		const item = groups[old_g].items.splice(i, 1)[0];
-		groups[new_g].items.push(item);
-		groups = groups;
-	}
 </script>
 
 <Canvas>
 	{#each groups as group, g}
-		<div class="group" on:drop={(event) => drop(event, g)} on:dragover={dragover}>
-			<Draggable>
-				<Group>
-					<b>{group.name}</b>
-					{#each group.items as item, i}
-						<div
-							class="draggable"
-							draggable={true}
-							on:dragstart={(event) => dragstart(event, g, i)}
-						>
-							<StyledRect rectColor={item.color}>{item.name}</StyledRect>
-						</div>
-					{/each}
-				</Group>
-			</Draggable>
-		</div>
+		<Droppable bind:groups {g}>
+			<Group {group}>
+				{#each group.items as item, i}
+					<Draggable {groups} {g} {i}>
+						<StyledRect rectColor={item.color}>{item.name}</StyledRect>
+					</Draggable>
+				{/each}
+			</Group>
+		</Droppable>
 	{/each}
 
-	<Draggable>
+	<Pannable>
 		<Group>
-			<Draggable>
+			<Pannable>
 				<StyledRect />
-			</Draggable>
+			</Pannable>
 		</Group>
-	</Draggable>
+	</Pannable>
 
-	<Draggable>
+	<Pannable>
 		<StyledRect />
-	</Draggable>
+	</Pannable>
 </Canvas>
 
 <style>
+	:global([draggable]) {
+		-webkit-touch-callout: none;
+		-ms-touch-action: none;
+		touch-action: none;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+	}
 	.draggable {
 		width: fit-content;
 	}

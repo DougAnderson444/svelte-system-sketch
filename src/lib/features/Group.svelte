@@ -3,6 +3,8 @@
 	import { elasticOut } from 'svelte/easing';
 	import { scale } from 'svelte/transition';
 
+	export let group = {};
+
 	let offsetHeight;
 	let offsetWidth;
 </script>
@@ -14,6 +16,7 @@
 		bind:offsetHeight
 		bind:offsetWidth
 	>
+		<b>{group?.name}</b>
 		<slot />
 	</div>
 {/key}
@@ -21,8 +24,8 @@
 <style>
 	.group {
 		border: 2px dashed grey;
-		/* width: fit-content;
-		height: fit-content; */
+		width: fit-content;
+		height: fit-content;
 		min-width: fit-content;
 		min-height: fit-content;
 		padding: 1em;
