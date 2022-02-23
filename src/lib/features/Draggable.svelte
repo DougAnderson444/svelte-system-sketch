@@ -31,6 +31,11 @@
 		ev.dataTransfer.setData('group', String(group));
 		ev.dataTransfer.setData('item', String(item));
 
+		const offsets = { offsetX: ev.offsetX, offsetY: ev.offsetY };
+		console.log('Drag offsets:', { offsets });
+
+		ev.dataTransfer.setData('offset', JSON.stringify(offsets));
+
 		let targetBox = ev.target.getBoundingClientRect();
 		DeltaX = ev.pageX - targetBox.left - window.scrollX;
 		DeltaY = ev.pageY - targetBox.top - window.scrollY;
