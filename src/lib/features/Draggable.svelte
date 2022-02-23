@@ -2,10 +2,12 @@
 	import { onMount } from 'svelte';
 
 	export let arena;
-	export let groups;
 	export let item;
 	export let g;
 	export let i;
+
+	let offsetWidth;
+	let offsetHeight;
 
 	let Conversion;
 
@@ -14,10 +16,10 @@
 	$: Y = item?.Y || 0;
 	let DeltaX, DeltaY;
 	const minX = 0;
-	const maxX = 400 - 80;
+	$: maxX = arena?.clientWidth - offsetWidth || 400;
 
 	const minY = 0;
-	const maxY = 400 - 30;
+	$: maxY = arena?.clientHeight - offsetHeight || 400;
 
 	let PositioningWasDelayed = false; // workaround for problem with "drag" events
 
@@ -91,6 +93,8 @@
 		on:dragstart={(event) => dragstart(event, g, i)}
 		on:drag={continueDragging}
 		on:dragend={finishDragging}
+		bind:offsetWidth
+		bind:offsetHeight
 		style="left:{X}px; top:{Y}px; background:{i.color}; "
 	>
 		{X}, {Y}
@@ -102,8 +106,8 @@
 	div.draggable {
 		display: block;
 		position: absolute;
-		width: 80px;
-		height: 30px;
+		width: fit-content;
+		height: fit-content;
 		color: black;
 		line-height: 30px;
 		text-align: center;
