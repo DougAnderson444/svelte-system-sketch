@@ -23,37 +23,40 @@
 		{
 			name: 'Fruit basket 2',
 			items: [
-				{ name: 'Banana', color: 'lightyellow' },
+				{ name: 'Banana', color: 'blue' },
 				{ name: 'Apple', color: 'red' }
 			]
 		}
 	];
 </script>
 
+{#each groups as group, g}
+	<b>{group.name}</b>
+	<ul>
+		{#each group.items as item, i}
+			<li>{item.name} {item.X},{item.Y}</li>
+		{/each}
+	</ul>
+{/each}
+
 <Canvas>
 	{#each groups as group, g}
 		<Droppable bind:groups {g}>
-			<Group {group}>
+			<Group {group} let:arena>
 				{#each group.items as item, i}
-					<Draggable {groups} {g} {i}>
-						<StyledRect rectColor={item.color}>{item.name}</StyledRect>
+					<Draggable {groups} bind:item {g} {i} {arena} let:thisItem>
+						<StyledRect rectColor={thisItem.color}
+							>{thisItem.name}
+							<div slot="footer">
+								Group {g}<br />
+								<span>Item {i}</span>
+							</div>
+						</StyledRect>
 					</Draggable>
 				{/each}
 			</Group>
 		</Droppable>
 	{/each}
-
-	<Pannable>
-		<Group>
-			<Pannable>
-				<StyledRect />
-			</Pannable>
-		</Group>
-	</Pannable>
-
-	<Pannable>
-		<StyledRect />
-	</Pannable>
 </Canvas>
 
 <style>

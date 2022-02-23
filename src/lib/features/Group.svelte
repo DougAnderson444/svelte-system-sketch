@@ -7,6 +7,7 @@
 
 	let offsetHeight;
 	let offsetWidth;
+	let arena;
 </script>
 
 {#key offsetHeight || offsetWidth}
@@ -15,17 +16,18 @@
 		class="group"
 		bind:offsetHeight
 		bind:offsetWidth
+		bind:this={arena}
 	>
 		<b>{group?.name}</b>
-		<slot />
+		<slot {arena} />
 	</div>
 {/key}
 
 <style>
 	.group {
 		border: 2px dashed grey;
-		width: fit-content;
-		height: fit-content;
+		width: 250px;
+		height: 250px;
 		min-width: fit-content;
 		min-height: fit-content;
 		padding: 1em;
