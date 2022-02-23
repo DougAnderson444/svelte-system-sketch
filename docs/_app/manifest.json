@@ -1,10 +1,10 @@
 {
   ".svelte-kit/runtime/client/start.js": {
-    "file": "start-35d71ef2.js",
+    "file": "start-55c96e1b.js",
     "src": ".svelte-kit/runtime/client/start.js",
     "isEntry": true,
     "imports": [
-      "_vendor-e0cacac1.js",
+      "_vendor-511b22c9.js",
       "_preload-helper-78946fdc.js"
     ],
     "dynamicImports": [
@@ -14,41 +14,42 @@
     ]
   },
   ".svelte-kit/runtime/components/layout.svelte": {
-    "file": "layout.svelte-998491fe.js",
+    "file": "layout.svelte-8172dd3f.js",
     "src": ".svelte-kit/runtime/components/layout.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-e0cacac1.js"
+      "_vendor-511b22c9.js"
     ]
   },
   ".svelte-kit/runtime/components/error.svelte": {
-    "file": "error.svelte-0325e946.js",
+    "file": "error.svelte-f4d1499c.js",
     "src": ".svelte-kit/runtime/components/error.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-e0cacac1.js"
+      "_vendor-511b22c9.js"
     ]
   },
   "src/routes/index.svelte": {
-    "file": "pages/index.svelte-0d681f96.js",
+    "file": "pages/index.svelte-c7b2ba41.js",
     "src": "src/routes/index.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-e0cacac1.js",
+      "_vendor-511b22c9.js",
       "_preload-helper-78946fdc.js"
     ],
     "dynamicImports": [
-      "node_modules/svelte-drag-drop-touch/dist/svelte-drag-drop-touch.esm.js"
+      "node_modules/svelte-drag-drop-touch/dist/svelte-drag-drop-touch.esm.js",
+      "node_modules/svelte-coordinate-conversion/dist/svelte-coordinate-conversion.esm.js"
     ],
     "css": [
-      "assets/pages/index.svelte-f0076125.css"
+      "assets/pages/index.svelte-449650b3.css"
     ]
   },
-  "_vendor-e0cacac1.js": {
-    "file": "chunks/vendor-e0cacac1.js"
+  "_vendor-511b22c9.js": {
+    "file": "chunks/vendor-511b22c9.js"
   },
   "_preload-helper-78946fdc.js": {
     "file": "chunks/preload-helper-78946fdc.js"
@@ -56,6 +57,11 @@
   "node_modules/svelte-drag-drop-touch/dist/svelte-drag-drop-touch.esm.js": {
     "file": "chunks/svelte-drag-drop-touch.esm-bd0b41cd.js",
     "src": "node_modules/svelte-drag-drop-touch/dist/svelte-drag-drop-touch.esm.js",
+    "isDynamicEntry": true
+  },
+  "node_modules/svelte-coordinate-conversion/dist/svelte-coordinate-conversion.esm.js": {
+    "file": "chunks/svelte-coordinate-conversion.esm-f7309695.js",
+    "src": "node_modules/svelte-coordinate-conversion/dist/svelte-coordinate-conversion.esm.js",
     "isDynamicEntry": true
   }
 }

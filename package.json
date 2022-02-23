@@ -1,6 +1,6 @@
 {
 	"name": "svelte-system-sketch",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"scripts": {
 		"dev": "svelte-kit dev --port 3002",
 		"build": "svelte-kit build",
@@ -30,6 +30,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"svelte-coordinate-conversion": "^1.0.0",
 		"svelte-drag-drop-touch": "^0.1.9"
 	}
 }
