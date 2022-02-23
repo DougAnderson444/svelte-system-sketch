@@ -1,6 +1,6 @@
 {
 	"name": "svelte-system-sketch",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"scripts": {
 		"dev": "svelte-kit dev --port 3002",
 		"build": "svelte-kit build",

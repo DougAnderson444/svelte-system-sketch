@@ -1,8 +1,4 @@
 <script>
-<<<<<<< HEAD
-	// https://svelte.dev/repl/e1c6ee3a5b10464585d86cec61cccab4?version=3.46.4
-=======
->>>>>>> feat--pan-drop
 	import { onMount } from 'svelte';
 	import Group from './features/Group.svelte';
 
@@ -12,15 +8,9 @@
 	import Draggable from './features/Draggable.svelte';
 	import Droppable from './features/Droppable.svelte';
 
-	let Arena;
-	let PositioningWasDelayed = false; // workaround for problem with "drag" events
-
 	onMount(() => {
 		import('svelte-drag-drop-touch');
 	});
-
-	let Arena;
-	let PositioningWasDelayed = false; // workaround for problem with "drag" events
 
 	export let groups = [
 		{
