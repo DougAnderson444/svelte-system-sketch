@@ -30,6 +30,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"d3-force": "^3.0.0",
 		"svelte-coordinate-conversion": "^1.0.0",
 		"svelte-drag-drop-touch": "^0.1.9"
 	}
