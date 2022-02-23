@@ -11,10 +11,11 @@
 		var i = ev.dataTransfer.getData('item');
 		var old_g = ev.dataTransfer.getData('group');
 
-		// console.log({ new_g, old_g }, new_g == old_g);
 		if (new_g == old_g) return;
 
 		const item = groups[old_g].items.splice(i, 1)[0];
+		item.X = ev.offsetX;
+		item.Y = ev.offsetY;
 		groups[new_g].items.push(item);
 		groups = groups;
 	}
