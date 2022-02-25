@@ -34,14 +34,20 @@
 			{/each}
 			{#each nodes as node, n}
 				{#if node?.children?.length}
-					<svelte:self
-						nodes={node.children}
-						name={node.name}
-						group={`${group}[${n}].children`}
-						item={n}
+					<div
+						class="draggableGroup"
+						draggable={true}
+						use:draggable={{ group: String(group), item: String(n) }}
 					>
-						{node.name} has {node?.children?.length} children
-					</svelte:self>
+						<svelte:self
+							nodes={node.children}
+							name={node.name}
+							group={`${group}[${n}].children`}
+							item={n}
+						>
+							{node.name} has {node?.children?.length} children
+						</svelte:self>
+					</div>
 				{/if}
 			{/each}
 		{/if}

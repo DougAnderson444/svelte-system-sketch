@@ -25,7 +25,6 @@
 		var i = ev.dataTransfer.getData('item');
 		var old_g = ev.dataTransfer.getData('group');
 
-		console.log({ new_g });
 		// Move first, then drop element from array
 		const item = (old_g ? _get($groups, old_g) : $groups)[i];
 
