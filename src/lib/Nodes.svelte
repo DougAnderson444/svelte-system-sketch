@@ -25,11 +25,14 @@
 		var old_g = ev.dataTransfer.getData('group');
 
 		console.log(`Dropping from ${old_g} [${i}]  to ${new_g}`);
-		const item = (old_g ? _get($groups, old_g) : $groups)?.splice(i, 1)[0];
+		// Move first, then drop element from array
+		// const item = (old_g ? _get($groups, old_g) : $groups)?.splice(i, 1)[0];
+		const item = (old_g ? _get($groups, old_g) : $groups)[i];
+		console.log({ item }); // get the item from the group + item index
 
-		console.log('New grp', { groups: $groups }, { new_g }, _get($groups, new_g));
+		(new_g ? _get($groups, new_g) : $groups)?.push(item); // add item to new group
+		(old_g ? _get($groups, old_g) : $groups)?.splice(i, 1)[0]; // remove from old group
 
-		(new_g ? _get($groups, new_g) : $groups)?.push(item);
 		$groups = $groups;
 	}
 </script>
