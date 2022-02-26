@@ -1,6 +1,8 @@
 <script>
-	import { groups, draggable } from '$lib/features/directives/draggable';
+	import { onMount } from 'svelte';
+	import { groups, draggable, dragndrop } from '$lib/features/directives/draggable';
 	import Droppable from './Droppable.svelte';
+	import StyledRect from './atomic/StyledRect.svelte';
 
 	import _get from 'lodash-es/get';
 	import _remove from 'lodash-es/remove';
@@ -10,7 +12,13 @@
 	export let group;
 	export let item;
 
+	const sortByKids = (f, s) => (!!f.children.length < !!s.children.length ? -1 : 1);
+
 	let html = [];
+	let mounted;
+	onMount(() => {
+		mounted = true;
+	});
 </script>
 
 {#if name}
@@ -19,23 +27,19 @@
 			<h2>{name}</h2>
 			Item {item}<br />
 			<slot />
-			{#each nodes as node, n}
-				{#if !node?.children?.length}
-					<div
-						class="_leaf"
-						draggable={true}
-						use:draggable={{ group: String(group), item: String(n) }}
-					>
-						<Droppable name={node?.name} group={group + `[${n}].children`}>
-							{group} + {`[${n}]`} - {node?.name}
-						</Droppable>
-					</div>
-				{:else}
-					<div
-						class="draggableGroup"
-						draggable={true}
-						use:draggable={{ group: String(group), item: String(n) }}
-					>
+			{#each nodes.sort(sortByKids) as node, n}
+				<div
+					class="draggableGroup"
+					draggable={mounted}
+					use:draggable={{ group: String(group), item: String(n) }}
+				>
+					{#if !node?.children?.length}
+						<StyledRect rectColor={node.color}>
+							<Droppable name={node?.name} group={`${group}[${n}].children`}>
+								{group + `[${n}]`} - {node?.name}
+							</Droppable>
+						</StyledRect>
+					{:else}
 						<svelte:self
 							nodes={node.children}
 							name={node.name}
@@ -44,8 +48,8 @@
 						>
 							{node.name} has {node?.children?.length} children
 						</svelte:self>
-					</div>
-				{/if}
+					{/if}
+				</div>
 			{/each}
 		{/if}
 	</Droppable>
@@ -58,9 +62,8 @@
 		margin: 9px;
 		font-size: 0.9em;
 	}
-	.leaf {
-		border: 3px dashed darkgrey;
-		padding: 25px;
-		margin: 15px;
+	.leaf,
+	.draggableGroup {
+		width: fit-content;
 	}
 </style>
