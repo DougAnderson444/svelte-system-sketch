@@ -10,7 +10,7 @@
 	export let group;
 
 	let dropZone;
-	let sortByKids = (f, s) => (f.children.length < s.children.length ? -1 : 1);
+	let sortByKids = (f, s) => (!!f.children.length < !!s.children.length ? -1 : 1);
 
 	export function dragover(ev) {
 		ev.preventDefault();
@@ -18,42 +18,39 @@
 	}
 
 	export function drop(ev, new_g) {
-		if (ev.target !== dropZone) {
-			console.log('Wrong zone', { target: ev.target }, { dropZone });
-			return;
-		}
 		ev.preventDefault();
 		ev.stopPropagation();
-		var i = ev.dataTransfer.getData('item');
-		var old_g = ev.dataTransfer.getData('group');
-
-		// Move first, then drop element from array
-		// const item = (old_g ? _get($groups, old_g) : $groups)[i];
-		// const item = (old_g ? _get($groups, old_g) : $groups)?.splice(i, 1)[0]; // remove from old group
+		const old_g = ev.dataTransfer.getData('group');
+		const i = ev.dataTransfer.getData('item');
 
 		let newGrp = _get($groups, new_g);
 
+		// new group cannot be a child of the old group! cannot move to inside yourself
+		if (old_g + `[${i}]` + '.children' == new_g) {
+			console.log("Can't move to a child of the current existing group");
+			return;
+		}
+
 		// if the child group doesnt exist, create it
-		if (!new_g)
-			$groups = [...$groups, (old_g ? _get($groups, old_g) : $groups)?.splice(i, 1)[0]].sort(
-				sortByKids
-			);
-		// add to root of group object
-		else if (!newGrp)
+		if (!new_g) {
+			// add to root of group object
+			let old_item = (old_g ? _get($groups, old_g) : $groups)?.splice(i, 1)[0];
+			$groups = [...$groups, old_item].sort(sortByKids);
+		} else if (!newGrp) {
 			_set($groups, new_g, [(old_g ? _get($groups, old_g) : $groups)?.splice(i, 1)[0]]).sort(
 				sortByKids
 			);
-		// create the new group as it didn't exist
-		else {
+			// create the new group as it didn't exist
+		} else {
 			_get($groups, new_g).push((old_g ? _get($groups, old_g) : $groups)?.splice(i, 1)[0]);
-			_get($groups, new_g).sort(sortByKids);
+			_get($groups, new_g)?.sort(sortByKids);
 		}
+
+		(old_g ? _get($groups, old_g) : $groups)?.sort(sortByKids); // also sort the old group
 
 		// sort by if the groups have children or not
 		$groups = $groups;
 	}
-
-	function sortGroup(group) {}
 </script>
 
 {#if name}
