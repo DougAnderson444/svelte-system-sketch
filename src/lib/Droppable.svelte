@@ -10,6 +10,7 @@
 	export let group;
 
 	let dropZone;
+	let sortByKids = (f, s) => (f.children.length < s.children.length ? -1 : 1);
 
 	export function dragover(ev) {
 		ev.preventDefault();
@@ -35,15 +36,18 @@
 		// if the child group doesnt exist, create it
 		if (!new_g)
 			$groups = [...$groups, (old_g ? _get($groups, old_g) : $groups)?.splice(i, 1)[0]].sort(
-				(f, s) => (f.children.length < s.children.length ? -1 : 1)
+				sortByKids
 			);
 		// add to root of group object
 		else if (!newGrp)
 			_set($groups, new_g, [(old_g ? _get($groups, old_g) : $groups)?.splice(i, 1)[0]]).sort(
-				(f, s) => (f.children.length < s.children.length ? -1 : 1)
+				sortByKids
 			);
 		// create the new group as it didn't exist
-		else _get($groups, new_g).push((old_g ? _get($groups, old_g) : $groups)?.splice(i, 1)[0]);
+		else {
+			_get($groups, new_g).push((old_g ? _get($groups, old_g) : $groups)?.splice(i, 1)[0]);
+			_get($groups, new_g).sort(sortByKids);
+		}
 
 		// sort by if the groups have children or not
 		$groups = $groups;
