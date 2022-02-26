@@ -30,10 +30,7 @@
 							{group} + {`[${n}]`} - {node?.name}
 						</Droppable>
 					</div>
-				{/if}
-			{/each}
-			{#each nodes as node, n}
-				{#if node?.children?.length}
+				{:else}
 					<div
 						class="draggableGroup"
 						draggable={true}
