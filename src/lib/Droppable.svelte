@@ -2,9 +2,6 @@
 	import { groups } from '$lib/features/directives/draggable';
 
 	import _ from 'lodash-es';
-	import _get from 'lodash-es/get';
-	import _set from 'lodash-es/set';
-	import _remove from 'lodash-es/remove';
 
 	export let name;
 	export let group;
@@ -23,7 +20,7 @@
 		const old_g = ev.dataTransfer.getData('group');
 		const i = ev.dataTransfer.getData('item');
 
-		let newGrp = _get($groups, new_g);
+		let newGrp = _.get($groups, new_g);
 
 		// new group cannot be a child of the old group! cannot move to inside yourself
 		if (old_g + `[${i}]` + '.children' == new_g) {
@@ -34,19 +31,19 @@
 		// if the child group doesnt exist, create it
 		if (!new_g) {
 			// add to root of group object
-			let old_item = (old_g ? _get($groups, old_g) : $groups)?.splice(i, 1)[0];
+			let old_item = (old_g ? _.get($groups, old_g) : $groups)?.splice(i, 1)[0];
 			$groups = [...$groups, old_item].sort(sortByKids);
 		} else if (!newGrp) {
-			_set($groups, new_g, [(old_g ? _get($groups, old_g) : $groups)?.splice(i, 1)[0]]).sort(
+			_.set($groups, new_g, [(old_g ? _.get($groups, old_g) : $groups)?.splice(i, 1)[0]]).sort(
 				sortByKids
 			);
 			// create the new group as it didn't exist
 		} else {
-			_get($groups, new_g).push((old_g ? _get($groups, old_g) : $groups)?.splice(i, 1)[0]);
-			_get($groups, new_g)?.sort(sortByKids);
+			_.get($groups, new_g).push((old_g ? _.get($groups, old_g) : $groups)?.splice(i, 1)[0]);
+			_.get($groups, new_g)?.sort(sortByKids);
 		}
 
-		(old_g ? _get($groups, old_g) : $groups)?.sort(sortByKids); // also sort the old group
+		(old_g ? _.get($groups, old_g) : $groups)?.sort(sortByKids); // also sort the old group
 
 		// sort by if the groups have children or not
 		$groups = $groups;
