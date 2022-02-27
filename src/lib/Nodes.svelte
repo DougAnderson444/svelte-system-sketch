@@ -4,8 +4,8 @@
 	import Droppable from './Droppable.svelte';
 	import StyledRect from './atomic/StyledRect.svelte';
 
-	import _get from 'lodash-es/get';
-	import _remove from 'lodash-es/remove';
+	import { elasticOut } from 'svelte/easing';
+	import { scale } from 'svelte/transition';
 
 	export let name;
 	export let nodes;
@@ -15,7 +15,7 @@
 	const sortByKids = (f, s) => (!!f.children.length < !!s.children.length ? -1 : 1);
 
 	let html = [];
-	let mounted;
+	let mounted = false;
 	onMount(() => {
 		mounted = true;
 	});
@@ -32,6 +32,7 @@
 					class="draggableGroup"
 					draggable={mounted}
 					use:draggable={{ group: String(group), item: String(n) }}
+					in:scale={{ duration: 400, delay: 0, opacity: 0.5, start: 1.2, easing: elasticOut }}
 				>
 					{#if !node?.children?.length}
 						<StyledRect rectColor={node.color}>
