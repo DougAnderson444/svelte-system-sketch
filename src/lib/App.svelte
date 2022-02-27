@@ -1,65 +1,61 @@
 <script>
 	import { onMount } from 'svelte';
-	import Group from './features/Group.svelte';
+	import Nodes from './Nodes.svelte';
+	import { groups } from '$lib/features/directives/draggable';
 
-	import StyledRect from './atomic/StyledRect.svelte';
-	import Canvas from './features/Canvas.svelte';
-	import Pannable from './features/Pannable.svelte';
-	import Draggable from './features/Draggable.svelte';
-	import Droppable from './features/Droppable.svelte';
+	let rectColor = '#' + (((1 << 24) * Math.random()) | 0).toString(16);
 
 	let canvas;
 
-	onMount(() => {
+	onMount(async () => {
 		import('svelte-drag-drop-touch');
 	});
 
-	export let groups = [
+	$groups = [
 		{
-			name: 'Fruit basket 1',
-			items: [
-				{ name: 'Orange', color: 'orange' },
-				{ name: 'Pineapple', color: 'yellow' }
+			name: 'First Fruit basket',
+			color: 'brown',
+			children: [
+				{ name: 'Orange', color: 'orange', children: [] },
+				{ name: 'Pineapple', color: 'yellow', children: [] }
 			]
 		},
 		{
-			name: 'Fruit basket 2',
-			items: [
-				{ name: 'Banana', color: 'blue' },
-				{ name: 'Apple', color: 'red' }
+			name: 'Second Fruit basket',
+			color: 'brown',
+			children: [
+				{ name: 'Banana', color: 'blue', children: [] },
+				{
+					name: 'Apple',
+					color: 'red',
+					children: [
+						{ name: 'Gala', color: 'red', children: [] },
+						{ name: 'Granny', color: 'lightgreen', children: [] }
+					]
+				}
+			]
+		},
+		{
+			name: 'Third Fruit basket',
+			color: 'brown',
+			children: [
+				{ name: 'Banana', color: 'blue', children: [] },
+				{
+					name: 'EXOTIC Apples',
+					color: 'red',
+					children: [
+						{ name: 'Gala', color: 'red', children: [] },
+						{ name: 'Granny', color: 'lightgreen', children: [] }
+					]
+				}
 			]
 		}
 	];
 </script>
 
-{#each groups as group, g}
-	<b>{group.name}</b>
-	<ul>
-		{#each group.items as item, i}
-			<li>{item.name} {item.X},{item.Y}</li>
-		{/each}
-	</ul>
-{/each}
-
-<Canvas bind:canvas>
-	{#each groups as group, g}
-		<Droppable bind:groups {g}>
-			<Group {group} let:arena>
-				{#each group.items as item, i}
-					<Draggable {groups} bind:item {g} {i} {arena} let:thisItem>
-						<StyledRect rectColor={thisItem.color}
-							>{thisItem.name}
-							<div slot="footer">
-								Group {g}<br />
-								<span>Item {i}</span>
-							</div>
-						</StyledRect>
-					</Draggable>
-				{/each}
-			</Group>
-		</Droppable>
-	{/each}
-</Canvas>
+{#if $groups}
+	<Nodes nodes={$groups} name={'My Awesome Flex Drop Group'} group={''} item={''} />
+{/if}
 
 <style>
 	:global([draggable]) {
