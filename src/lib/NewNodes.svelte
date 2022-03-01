@@ -39,13 +39,13 @@
 		<div slot="children">
 			{#if node.hasOwnProperty('children')}
 				<section
-					class="dragndropSection"
+					class="dragndropSection item"
 					use:dndzone={{
 						items: node.children,
 						dropTargetStyle,
 						flipDurationMs,
 						transformDraggedElement,
-						centreDraggedOnCursor: false
+						centreDraggedOnCursor: true
 					}}
 					on:consider={handleDndConsider}
 					on:finalize={handleDndFinalize}
@@ -53,7 +53,7 @@
 					<!-- WE FILTER THE SHADOW PLACEHOLDER THAT WAS ADDED IN VERSION 0.7.4, filtering this way rather than checking whether 'nodes' have the id became possible in version 0.9.1 -->
 					{#each node.children.filter((item) => item.id !== SHADOW_PLACEHOLDER_ITEM_ID) as item (item.id)}
 						<div animate:flip={{ duration: flipDurationMs }} class="_item">
-							<div class="dragWrapper item">
+							<div class="dragWrapper">
 								<svelte:self bind:nodes node={item} {wrapper} />
 							</div>
 						</div>
@@ -68,7 +68,7 @@
 
 <style>
 	section.dragndropSection {
-		width: 100%;
+		width: auto;
 		border: 1px dashed rgba(128, 128, 128, 0.486);
 		border-radius: 5px;
 		padding: 0.4em;
@@ -79,9 +79,9 @@
 		min-height: 10px;
 	}
 	div {
-		width: 90%;
+		/* width: 90%;
 		padding: 0.05em;
-		margin: 0.05em 0;
+		margin: 0.05em 0; */
 	}
 	.item {
 		background-color: rgba(00, 100, 100, 0.025);
