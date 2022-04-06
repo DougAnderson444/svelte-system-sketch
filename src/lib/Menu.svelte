@@ -26,7 +26,7 @@
 			DataToOffer: { 'item/plain': '' }
 		}}
 	>
-		+Add Note
+		+ Drag Me
 	</div>
 	<!-- <button on:click={handleAddGridItem}>Add Grid Item</button>
 	<button on:click={handleAddMapItem}>Add Map</button>
