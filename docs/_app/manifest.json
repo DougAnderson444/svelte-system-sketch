@@ -1,27 +1,26 @@
 {
   ".svelte-kit/runtime/client/start.js": {
-    "file": "start-e96562b2.js",
+    "file": "start-e9927805.js",
     "src": ".svelte-kit/runtime/client/start.js",
     "isEntry": true,
     "imports": [
-      "_vendor-12395ee4.js",
+      "_vendor-23e7b3e7.js",
       "_preload-helper-3611e375.js"
     ],
     "dynamicImports": [
       "src/routes/__layout.svelte",
       ".svelte-kit/runtime/components/error.svelte",
-      "src/routes/index.svelte",
-      "src/routes/copy.svelte"
+      "src/routes/index.svelte"
     ]
   },
   "src/routes/__layout.svelte": {
-    "file": "pages/__layout.svelte-4e5edb1b.js",
+    "file": "pages/__layout.svelte-6d37ad8d.js",
     "src": "src/routes/__layout.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_preload-helper-3611e375.js",
-      "_vendor-12395ee4.js"
+      "_vendor-23e7b3e7.js"
     ],
     "dynamicImports": [
       "node_modules/svelte-drag-drop-touch/dist/svelte-drag-drop-touch.esm.js"
@@ -31,57 +30,34 @@
     ]
   },
   ".svelte-kit/runtime/components/error.svelte": {
-    "file": "error.svelte-33b0c5b5.js",
+    "file": "error.svelte-a33d9c17.js",
     "src": ".svelte-kit/runtime/components/error.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-12395ee4.js"
+      "_vendor-23e7b3e7.js"
     ]
   },
   "src/routes/index.svelte": {
-    "file": "pages/index.svelte-0451be29.js",
+    "file": "pages/index.svelte-748fee61.js",
     "src": "src/routes/index.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-12395ee4.js",
-      "_zoomable-7b889881.js"
+      "_vendor-23e7b3e7.js"
     ],
     "css": [
-      "assets/pages/index.svelte-22fce4fa.css"
+      "assets/pages/index.svelte-739ca861.css"
     ]
   },
-  "src/routes/copy.svelte": {
-    "file": "pages/copy.svelte-bbbc1adb.js",
-    "src": "src/routes/copy.svelte",
-    "isEntry": true,
-    "isDynamicEntry": true,
-    "imports": [
-      "_vendor-12395ee4.js",
-      "_zoomable-7b889881.js"
-    ],
-    "css": [
-      "assets/pages/copy.svelte-ef57ed07.css"
-    ]
-  },
-  "_vendor-12395ee4.js": {
-    "file": "chunks/vendor-12395ee4.js",
+  "_vendor-23e7b3e7.js": {
+    "file": "chunks/vendor-23e7b3e7.js",
     "css": [
       "assets/vendor-dc74a490.css"
     ]
   },
   "_preload-helper-3611e375.js": {
     "file": "chunks/preload-helper-3611e375.js"
-  },
-  "_zoomable-7b889881.js": {
-    "file": "chunks/zoomable-7b889881.js",
-    "imports": [
-      "_vendor-12395ee4.js"
-    ],
-    "css": [
-      "assets/zoomable-a72ee3c0.css"
-    ]
   },
   "node_modules/svelte-drag-drop-touch/dist/svelte-drag-drop-touch.esm.js": {
     "file": "chunks/svelte-drag-drop-touch.esm-bd0b41cd.js",
