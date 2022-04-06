@@ -143,6 +143,7 @@
 				bind:width={node.style.width}
 				bind:height={node.style.height}
 				bind:isDragging
+				name={node.name}
 				{maxFrameWidth}
 				{minFrameWidth}
 				{arenaWidth}

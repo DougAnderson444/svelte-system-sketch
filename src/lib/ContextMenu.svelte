@@ -5,13 +5,16 @@
 
 	let backgroundColor = node?.style?.backgroundColor || '#fee9004b';
 
-	$: node = {
-		...node,
-		style: {
-			...node.style,
-			backgroundColor
-		}
-	};
+	console.log({ backgroundColor });
+
+	$: if (backgroundColor)
+		node = {
+			...node,
+			style: {
+				...node.style,
+				backgroundColor
+			}
+		};
 
 	function handleDelete(e) {
 		// TODO: tentatively delete it, with an undo snackbar

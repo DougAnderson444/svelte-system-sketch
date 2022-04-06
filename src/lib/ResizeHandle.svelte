@@ -7,6 +7,9 @@
 	export let y;
 	export let width;
 	export let height;
+	export let name;
+
+	console.log(name, { height });
 
 	export let maxFrameHeight = 2500;
 	export let maxFrameWidth = 2500;

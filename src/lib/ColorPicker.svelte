@@ -4,13 +4,15 @@
 </script>
 
 <main>
-	{#each colors as color}
-		<div
-			class="colorOption"
-			on:click|stopPropagation={(_) => (backgroundColor = color)}
-			style="background-color: {color};"
-		/>
-	{/each}
+	{#if colors}
+		{#each colors as color}
+			<div
+				class="colorOption"
+				on:click|stopPropagation={(_) => (backgroundColor = color)}
+				style="background-color: {color};"
+			/>
+		{/each}
+	{/if}
 </main>
 
 <style>
