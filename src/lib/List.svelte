@@ -1,17 +1,14 @@
 <script>
-	/**
-	 * Svelte DND Action draggable handle example
-	 */
-
 	import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, SOURCES, TRIGGERS } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
-
+	import { children } from 'svelte/internal';
+	import Container from './Container.svelte';
 	import Gripper from './Gripper.svelte';
-	import Group from './Group.svelte';
+	import Nodes from './Nodes.svelte';
 
-	export let data;
-	export let node;
 	export let wrapper;
+	export let props;
+	export let data;
 
 	const flipDurationMs = 300;
 	let dragDisabled = true;
@@ -21,7 +18,7 @@
 			items: newItems,
 			info: { source, trigger }
 		} = e.detail;
-		node.children = newItems;
+		props.items = newItems;
 		// Ensure dragging is stopped on drag finish via keyboard
 		if (source === SOURCES.KEYBOARD && trigger === TRIGGERS.DRAG_STOPPED) {
 			dragDisabled = true;
@@ -32,15 +29,17 @@
 			items: newItems,
 			info: { source }
 		} = e.detail;
-		node.children = newItems;
+		props.items = newItems;
 		// Ensure dragging is stopped on drag finish via pointer (mouse, touch)
 		if (source === SOURCES.POINTER) {
 			dragDisabled = true;
 		}
 	}
 	function startDrag(e) {
+		console.log('dragstart');
 		// preventing default to prevent lag on touch devices (because of the browser checking for screen scrolling)
 		e.preventDefault();
+		e.stopPropagation();
 		dragDisabled = false;
 	}
 	function handleKeyDown(e) {
@@ -48,41 +47,38 @@
 	}
 </script>
 
-{#if node}
-	<b style="color:{node?.color}">{node.name}</b>
-	{#if node.hasOwnProperty('children')}
-		<section
-			class="node-section"
-			use:dndzone={{
-				items: node.children,
-				dragDisabled,
-				flipDurationMs,
-				centreDraggedOnCursor: true
-			}}
-			on:consider={handleConsider}
-			on:finalize={handleFinalize}
-		>
-			<!-- WE FILTER THE SHADOW PLACEHOLDER THAT WAS ADDED IN VERSION 0.7.4, filtering this way rather than checking whether 'nodes' have the id became possible in version 0.9.1 -->
-			{#each node.children.filter((item) => item.id !== SHADOW_PLACEHOLDER_ITEM_ID) as item (item.id)}
-				<div animate:flip={{ duration: flipDurationMs }} class="item">
-					<div
-						tabindex={dragDisabled ? 0 : -1}
-						aria-label="drag-handle"
-						class="handle"
-						style={dragDisabled ? 'cursor: grab' : 'cursor: grabbing'}
-						on:mousedown={startDrag}
-						on:touchstart={startDrag}
-						on:keydown={handleKeyDown}
-					>
-						<Gripper />
-					</div>
-					<!-- <span>{item.name}</span> -->
-					<svelte:self bind:data node={item} {wrapper} />
-				</div>
-			{/each}
-		</section>
-	{/if}
-{/if}
+<section
+	class="node-section"
+	use:dndzone={{
+		items: props.items,
+		dragDisabled,
+		flipDurationMs,
+		centreDraggedOnCursor: true
+	}}
+	on:consider={handleConsider}
+	on:finalize={handleFinalize}
+>
+	<!-- WE FILTER THE SHADOW PLACEHOLDER THAT WAS ADDED IN VERSION 0.7.4, filtering this way rather than checking whether 'nodes' have the id became possible in version 0.9.1 -->
+	{#each props.items.filter((item) => item.id !== SHADOW_PLACEHOLDER_ITEM_ID) as item (item.id)}
+		<div animate:flip={{ duration: flipDurationMs }} class="item">
+			<div
+				tabindex={dragDisabled ? 0 : -1}
+				aria-label="drag-handle"
+				class="handle"
+				style={dragDisabled ? 'cursor: grab' : 'cursor: grabbing'}
+				on:mousedown={startDrag}
+				on:touchstart={startDrag}
+				on:keydown={handleKeyDown}
+			>
+				<Gripper />
+			</div>
+			<span>{item.name}</span>
+			{#if item.children}
+				<Container bind:data node={item.children} />
+			{/if}
+		</div>
+	{/each}
+</section>
 
 <style>
 	section.node-section {
@@ -91,6 +87,7 @@
 		border-radius: 5px;
 		padding: 0.4em;
 		/* this will allow the dragged element to scroll the list */
+		overflow: hidden;
 		height: auto;
 		/* background-color: rgba(100, 100, 100, 0.1); */
 		min-height: 6em;

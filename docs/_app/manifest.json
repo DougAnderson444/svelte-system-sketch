@@ -1,73 +1,91 @@
 {
   ".svelte-kit/runtime/client/start.js": {
-    "file": "start-05193874.js",
+    "file": "start-a23401d8.js",
     "src": ".svelte-kit/runtime/client/start.js",
     "isEntry": true,
     "imports": [
-      "_vendor-d0cdc2d5.js",
-      "_preload-helper-78946fdc.js"
+      "_vendor-12395ee4.js",
+      "_preload-helper-3611e375.js"
     ],
     "dynamicImports": [
-      ".svelte-kit/runtime/components/layout.svelte",
+      "src/routes/__layout.svelte",
       ".svelte-kit/runtime/components/error.svelte",
-      "src/routes/index.svelte"
+      "src/routes/index.svelte",
+      "src/routes/copy.svelte"
     ]
   },
-  ".svelte-kit/runtime/components/layout.svelte": {
-    "file": "layout.svelte-d505310e.js",
-    "src": ".svelte-kit/runtime/components/layout.svelte",
+  "src/routes/__layout.svelte": {
+    "file": "pages/__layout.svelte-4e5edb1b.js",
+    "src": "src/routes/__layout.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-d0cdc2d5.js"
+      "_preload-helper-3611e375.js",
+      "_vendor-12395ee4.js"
+    ],
+    "dynamicImports": [
+      "node_modules/svelte-drag-drop-touch/dist/svelte-drag-drop-touch.esm.js"
+    ],
+    "css": [
+      "assets/pages/__layout.svelte-a2da8b2d.css"
     ]
   },
   ".svelte-kit/runtime/components/error.svelte": {
-    "file": "error.svelte-89783589.js",
+    "file": "error.svelte-33b0c5b5.js",
     "src": ".svelte-kit/runtime/components/error.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-d0cdc2d5.js"
+      "_vendor-12395ee4.js"
     ]
   },
   "src/routes/index.svelte": {
-    "file": "pages/index.svelte-660f2ef2.js",
+    "file": "pages/index.svelte-1dbd3348.js",
     "src": "src/routes/index.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-d0cdc2d5.js",
-      "_preload-helper-78946fdc.js"
-    ],
-    "dynamicImports": [
-      "node_modules/svelte-drag-drop-touch/dist/svelte-drag-drop-touch.esm.js",
-      "node_modules/svelte-coordinate-conversion/dist/svelte-coordinate-conversion.esm.js",
-      "node_modules/d3-force/src/index.js"
+      "_vendor-12395ee4.js",
+      "_zoomable-7b889881.js"
     ],
     "css": [
-      "assets/pages/index.svelte-a36cd825.css"
+      "assets/pages/index.svelte-22fce4fa.css"
     ]
   },
-  "_vendor-d0cdc2d5.js": {
-    "file": "chunks/vendor-d0cdc2d5.js"
+  "src/routes/copy.svelte": {
+    "file": "pages/copy.svelte-bbbc1adb.js",
+    "src": "src/routes/copy.svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-12395ee4.js",
+      "_zoomable-7b889881.js"
+    ],
+    "css": [
+      "assets/pages/copy.svelte-ef57ed07.css"
+    ]
   },
-  "_preload-helper-78946fdc.js": {
-    "file": "chunks/preload-helper-78946fdc.js"
+  "_vendor-12395ee4.js": {
+    "file": "chunks/vendor-12395ee4.js",
+    "css": [
+      "assets/vendor-dc74a490.css"
+    ]
+  },
+  "_preload-helper-3611e375.js": {
+    "file": "chunks/preload-helper-3611e375.js"
+  },
+  "_zoomable-7b889881.js": {
+    "file": "chunks/zoomable-7b889881.js",
+    "imports": [
+      "_vendor-12395ee4.js"
+    ],
+    "css": [
+      "assets/zoomable-a72ee3c0.css"
+    ]
   },
   "node_modules/svelte-drag-drop-touch/dist/svelte-drag-drop-touch.esm.js": {
     "file": "chunks/svelte-drag-drop-touch.esm-bd0b41cd.js",
     "src": "node_modules/svelte-drag-drop-touch/dist/svelte-drag-drop-touch.esm.js",
-    "isDynamicEntry": true
-  },
-  "node_modules/d3-force/src/index.js": {
-    "file": "chunks/index-7e367f70.js",
-    "src": "node_modules/d3-force/src/index.js",
-    "isDynamicEntry": true
-  },
-  "node_modules/svelte-coordinate-conversion/dist/svelte-coordinate-conversion.esm.js": {
-    "file": "chunks/svelte-coordinate-conversion.esm-f7309695.js",
-    "src": "node_modules/svelte-coordinate-conversion/dist/svelte-coordinate-conversion.esm.js",
     "isDynamicEntry": true
   }
 }

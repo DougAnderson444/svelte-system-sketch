@@ -1,10 +1,3 @@
-# JSPlumb in svelte
+# Svelte Systems Sketch
 
-# Pan the canvas
-
-# Zoom the canvas
-
-# Pan in Groups
-
-# Use Connectors
-
+Drag and drop projects notes and whatnot.

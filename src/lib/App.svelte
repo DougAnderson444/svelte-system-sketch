@@ -1,102 +1,212 @@
 <script>
 	import { onMount } from 'svelte';
-	import Nodes from './Nodes.svelte';
-	import NewNodes from './NewNodes.svelte';
-	import { nanoid } from 'nanoid';
-	import Wrapper from './atomic/Basic.svelte';
-	import GridControls from './GridControls.svelte';
+	import Sketch from '$lib/Sketch.svelte';
+	import { safeid } from '$lib/utils';
+	import { colors } from '$lib/config';
 
-	let rectColor = '#' + (((1 << 24) * Math.random()) | 0).toString(16);
-
-	let canvas;
+	let width;
+	let height;
 	let mounted;
-	onMount(async () => {
-		import('svelte-drag-drop-touch');
+
+	let rectColor = () => '#' + (((1 << 24) * Math.random()) | 0).toString(16);
+
+	function randomColor() {
+		return Math.floor((Math.random() * 10) % colors.length);
+	}
+
+	let data = {
+		name: 'My Dashboard of Lists',
+		id: safeid(),
+		x: 20,
+		y: 20,
+		style: {
+			backgroundColor: colors[randomColor()],
+			width: 600,
+			left: 20,
+			top: 20,
+			height: 800
+		},
+		children: [
+			{
+				name: 'Child 1',
+				id: safeid(),
+				x: 60,
+				y: 80,
+				style: {
+					backgroundColor: colors[randomColor()],
+					width: 220,
+					height: 520,
+					left: 20,
+					top: 20
+				},
+				// component: DragHandles,
+				props: [],
+				children: [
+					{
+						name: 'Child A',
+						id: safeid(),
+						x: 20,
+						y: 80,
+						style: {
+							backgroundColor: colors[randomColor()],
+							width: 120,
+							height: 120,
+							left: 20,
+							top: 20
+						},
+						// component: DragHandles,
+						props: [],
+						children: []
+					}
+				]
+			},
+			{
+				name: 'Child 2',
+				id: safeid(),
+				x: 300,
+				y: 80,
+				style: {
+					backgroundColor: colors[randomColor()],
+					width: 100,
+					height: 140,
+					left: 20,
+					top: 20
+				},
+				// component: DragHandles,
+				props: [],
+				children: []
+			},
+			{
+				name: 'Child 3',
+				id: safeid(),
+				x: 420,
+				y: 80,
+				style: {
+					backgroundColor: colors[randomColor()],
+					width: 100,
+					height: 160,
+					left: 20,
+					top: 20
+				},
+
+				// component: DragHandles,
+				props: [],
+				children: []
+			}
+
+			// {
+			// 	name: 'List 2',
+			// 	component: Resizable,
+			// 	x: 0,
+			// 	y: 0,
+			// 	props: [
+			// 		{
+			// 			id: safeid(),
+			// 			text: 'Item A'
+			// 		},
+			// 		{
+			// 			id: safeid(),
+			// 			text: 'Item B'
+			// 		},
+			// 		{
+			// 			id: safeid(),
+			// 			text: 'Item C'
+			// 		}
+			// 	]
+			// },
+			// {
+			// 	name: 'List 3',
+			// 	component: Draggable,
+			// 	props: [
+			// 		{
+			// 			id: safeid(),
+			// 			text: 'Item A'
+			// 		},
+			// 		{
+			// 			id: safeid(),
+			// 			text: 'Item B'
+			// 		},
+			// 		{
+			// 			id: safeid(),
+			// 			text: 'Item C'
+			// 		}
+			// 	]
+			// },
+			// {
+			// 	name: 'StickyNote',
+			// 	component: StickyNote,
+			// 	x: 0,
+			// 	y: 0,
+			// 	props: [
+			// 		{
+			// 			id: safeid(),
+			// 			text: 'Item A'
+			// 		},
+			// 		{
+			// 			id: safeid(),
+			// 			text: 'Item B'
+			// 		},
+			// 		{
+			// 			id: safeid(),
+			// 			text: 'Item C'
+			// 		}
+			// 	]
+			// }
+		]
+	};
+
+	// let data = {
+	// 	id: safeid(),
+	// 	name: 'Dashboard',
+	// 	component: Dash,
+	// 	props: { name: 'world' },
+	// 	color: rectColor(),
+	// 	children: [
+	// 		{
+	// 			id: safeid(),
+	// 			name: 'List 1',
+	// 			color: rectColor(),
+	// 			x: 1,
+	// 			y: 1,
+	// 			component: DragHandles,
+	// 			props: {
+	// 				items: [
+	// 					{ id: safeid(), name: 'A', color: rectColor(), children: [] },
+	// 					{ id: safeid(), name: 'B', color: rectColor(), children: [] }
+	// 				]
+	// 			},
+	// 			children: []
+	// 		},
+	// 		{
+	// 			id: safeid(),
+	// 			name: 'List 2',
+	// 			color: rectColor(),
+	// 			x: 200,
+	// 			y: 0,
+	// 			component: DragHandles,
+	// 			props: {
+	// 				items: [
+	// 					{ id: safeid(), name: 'C', color: rectColor(), children: [] },
+	// 					{ id: safeid(), name: 'D', color: rectColor(), children: [] }
+	// 				]
+	// 			}
+	// 		}
+	// 	],
+	// 	links: []
+	// };
+
+	onMount(() => {
 		mounted = true;
+		handleViewportSize();
 	});
 
-	let groups = {
-		id: nanoid(),
-		name: 'Root',
-		color: 'red',
-		children: [
-			{
-				id: nanoid(),
-				name: 'First Fruit basket',
-				color: 'brown',
-				children: [
-					{ id: nanoid(), name: 'Orange', color: 'orange' },
-					{ id: nanoid(), name: 'Pineapple', color: 'yellow', children: [] }
-				]
-			},
-			{
-				id: nanoid(),
-				name: 'Second Fruit basket',
-				color: 'brown',
-				children: [
-					{ id: nanoid(), name: 'Banana', color: 'blue', children: [] },
-					{
-						id: nanoid(),
-						name: 'Apple',
-						color: 'red',
-						children: [
-							{ id: nanoid(), name: 'Gala', color: 'red', children: [] },
-							{ id: nanoid(), name: 'Granny', color: 'lightgreen', children: [] }
-						]
-					}
-				]
-			},
-			{
-				id: nanoid(),
-				name: 'Third Fruit basket',
-				color: 'brown',
-				children: [
-					{ id: nanoid(), name: 'Banana', color: 'blue', children: [] },
-					{
-						id: nanoid(),
-						name: 'EXOTIC Apples',
-						color: 'red',
-						children: [
-							{ id: nanoid(), name: 'Gala', color: 'red', children: [] },
-							{ id: nanoid(), name: 'Granny', color: 'lightgreen', children: [] }
-						]
-					}
-				]
-			}
-		]
-	};
-	let layoutNodes = {
-		id: nanoid(),
-		name: 'Root',
-		color: 'red',
-		children: [
-			{ id: nanoid(), name: 'Left', color: 'grey' },
-			{ id: nanoid(), name: 'TopRight', color: 'grey' },
-			{ id: nanoid(), name: 'BottomRight', color: 'grey' }
-		]
-	};
+	function handleViewportSize(_) {
+		height = document?.body.offsetHeight;
+		width = document?.body.offsetWidth;
+	}
 </script>
 
-{#if mounted && groups}
-	<NewNodes bind:nodes={groups} node={groups} wrapper={Wrapper} />
-	<!-- <Nodes nodes={$groups} name={'My Awesome Flex Drop Group'} group={''} item={''} /> -->
+<svelte:window on:resize={handleViewportSize} />
+{#if mounted}
+	<Sketch bind:data {width} {height} />
 {/if}
-
-<style>
-	:global([draggable]) {
-		-webkit-touch-callout: none;
-		-ms-touch-action: none;
-		touch-action: none;
-		-moz-user-select: none;
-		-webkit-user-select: none;
-		-ms-user-select: none;
-		user-select: none;
-	}
-	.draggable {
-		width: fit-content;
-	}
-	.group {
-		/* width: fit-content;
-		height: fit-content; */
-	}
-</style>

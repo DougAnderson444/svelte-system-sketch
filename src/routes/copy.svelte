@@ -1,0 +1,156 @@
+<script>
+	import { panzoom } from '@douganderson444/panzoom-node';
+	import Spot from '$lib/utils/Spot.svelte';
+	import Nodes from '$lib/Nodes.svelte';
+	import Links from '$lib/Links.svelte';
+	import Wrapper from '$lib/Wrapper.svelte';
+
+	let zoomable, container;
+	let style = ''; // show styling applied
+	let scale = { value: 1 };
+	let count = 10;
+	let min = count;
+
+	function handleZoom(e) {
+		console.log('Zoomed.', { detail: e.detail });
+		scale = e.detail.scale;
+		style = zoomable.style.transform;
+	}
+
+	const grid = Array.from({ length: count }, (_, i) =>
+		Array.from({ length: count }, (_, j) => ({ id: i * count + j }))
+	);
+
+	import { safeid } from '$lib/utils';
+
+	let rectColor = () => '#' + (((1 << 24) * Math.random()) | 0).toString(16);
+
+	let data = {
+		id: safeid(),
+		name: 'Counts',
+		color: rectColor(),
+		children: [
+			{ id: safeid(), name: 'Two', color: rectColor(), children: [] },
+			{ id: safeid(), name: 'Three', color: rectColor(), children: [] },
+			{
+				id: safeid(),
+				name: 'Four',
+				color: rectColor(),
+				children: [
+					{ id: safeid(), name: 'A', color: rectColor(), children: [] },
+					{ id: safeid(), name: 'B', color: rectColor(), children: [] }
+				]
+			}
+		],
+		links: []
+	};
+</script>
+
+<div>
+	<h1>Pan and Zoom</h1>
+	<p>Try out the mouse wheel scroll in the red box below</p>
+
+	<h2>Inside</h2>
+	<p>Inside the red box should pan and zoom</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+	<p>Scroll</p>
+</div>
+
+<div class="container" bind:this={container}>
+	<div class="menu">
+		<div>
+			Zoom Level: {scale.value}
+		</div>
+
+		<div>Style: {style}</div>
+	</div>
+	<div class="zoomable flexbox" bind:this={zoomable} use:panzoom on:zoomed={handleZoom}>
+		{#if container}
+			<div class="grid">
+				{#each grid as col, x}
+					<div class="col">
+						{#each col as square, y}
+							<Spot
+								left={min + (x * container.offsetWidth) / count}
+								top={min + (y * container.offsetWidth) / count}
+							/>
+						{/each}
+					</div>
+				{/each}
+			</div>
+		{/if}
+	</div>
+
+	<div class="zoomable flexbox" use:panzoom>
+		<Nodes bind:data bind:node={data} wrapper={Wrapper} />
+		<Links links={data.links} />
+	</div>
+</div>
+
+<style>
+	.container {
+		border: 3px solid red;
+		height: 600px;
+		width: 600px;
+		/* overflow: hidden;  move to directive */
+		/* touch-action: none;  its set by the directive :) */
+		/* position: relative; */
+		margin: 3em;
+		top: 20px;
+		left: 100px;
+	}
+	.zoomable {
+		border: 4px dashed blue;
+		height: 100%;
+		width: 100%;
+		/* margin: 1em; */
+		/* position: relative; */
+	}
+	.flexbox {
+		display: flex;
+		flex-wrap: nowrap;
+		align-content: stretch;
+		justify-content: space-evenly;
+		align-items: stretch;
+	}
+	.flexitem {
+		margin: 1em;
+		padding: 1em;
+		background-color: lightgray;
+	}
+	.item {
+		/* 		flex: 1; */
+		border: 1px solid grey;
+		height: 30px;
+		width: 50px;
+	}
+	ul {
+		padding: 1em;
+	}
+
+	.menu {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		margin: 0.1em;
+		padding: 2em;
+		z-index: 10;
+		background-color: rgba(133, 198, 255, 0.801);
+	}
+</style>

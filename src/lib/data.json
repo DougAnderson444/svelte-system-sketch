@@ -1,0 +1,7 @@
+{
+	"dashboard": {
+		"id": 0,
+		"name": "root",
+		"nodes": [{ "people": { "name": "Doug" } }, { "projects": { "todo": "list" } }]
+	}
+}

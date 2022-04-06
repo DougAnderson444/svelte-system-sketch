@@ -1,5 +1,14 @@
 <script>
+	import { onMount } from 'svelte';
 	import App from '$lib/App.svelte';
+
+	let mounted;
+
+	onMount(() => {
+		mounted = true;
+	});
 </script>
 
-<App />
+{#if mounted}
+	<App />
+{/if}

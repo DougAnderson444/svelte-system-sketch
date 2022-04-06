@@ -1,0 +1,60 @@
+<script>
+	import Canvas from './Canvas.svelte';
+	import Menu from './Menu.svelte';
+	import Nodes from './Nodes.svelte';
+	import Links from './Links.svelte';
+	import Object from './Object.svelte';
+	import Wrapper from './Wrapper.svelte';
+
+	import { panzoom } from '@douganderson444/panzoom-node';
+	import Container from './Container.svelte';
+	import { scale } from './stores.js';
+
+	export let data;
+	export let width = 400;
+	export let height = 600;
+
+	let clientWidth, clientHeight;
+
+	function handleZoom(e) {
+		// console.log('Zoomed.', { detail: e.detail });
+		$scale = e.detail.scale;
+	}
+</script>
+
+{#if $scale}
+	<div
+		class="canvas"
+		style="height: {height}px; width: {width}px;"
+		bind:clientWidth
+		bind:clientHeight
+	>
+		<Menu bind:scale={$scale.value} />
+
+		<div class="zoomable flexbox" use:panzoom on:zoomed={handleZoom}>
+			<Container bind:node={data} arenaWidth={clientWidth * 100} arenaHeight={clientHeight * 100} />
+			<!-- <Links links={data.links} /> -->
+		</div>
+		<!-- <Object val={data} /> -->
+	</div>
+{/if}
+
+<style>
+	.canvas {
+		border: 1px solid forestgreen;
+		margin: 0em;
+		overflow: hidden;
+	}
+	.zoomable {
+		/* border-top: 1px dashed fuchsia;
+		border-left: 1px dashed fuchsia; */
+	}
+	.flexbox {
+		display: flex;
+		flex-direction: column;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+		align-items: flex-start;
+		align-content: flex-start;
+	}
+</style>
