@@ -30,6 +30,7 @@
 		bind:clientHeight
 	>
 		<Menu bind:scale={$scale.value} />
+		{width}px x {height}px
 
 		<div class="zoomable flexbox" use:panzoom on:zoomed={handleZoom}>
 			<Container bind:node={data} arenaWidth={clientWidth * 100} arenaHeight={clientHeight * 100} />
