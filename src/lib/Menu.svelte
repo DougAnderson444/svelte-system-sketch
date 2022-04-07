@@ -52,7 +52,7 @@
 		position: absolute;
 		bottom: 0em;
 		box-sizing: border-box;
-		width: 90%;
+		width: 99%;
 		z-index: 999;
 	}
 

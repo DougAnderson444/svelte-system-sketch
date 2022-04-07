@@ -195,18 +195,29 @@
 	// 	links: []
 	// };
 
+	let vh;
+
 	onMount(() => {
-		mounted = true;
 		handleViewportSize();
 	});
 
 	function handleViewportSize(_) {
-		height = document?.body.clientHeight;
+		vh = window.innerHeight * 0.01;
+		height = window.innerHeight;
 		width = document?.body.clientWidth;
 	}
 </script>
 
 <svelte:window on:resize={handleViewportSize} />
-{#if mounted}
-	<Sketch bind:data {width} {height} />
-{/if}
+
+<div class="app" style="--vh: {vh}px; height: calc(var(--vh, 1vh) * 100);">
+	{#if vh}
+		<Sketch bind:data {width} {height} />
+	{/if}
+</div>
+
+<style>
+	.app {
+		height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+	}
+</style>
