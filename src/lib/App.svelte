@@ -201,8 +201,8 @@
 	});
 
 	function handleViewportSize(_) {
-		height = document?.body.offsetHeight;
-		width = document?.body.offsetWidth;
+		height = document?.body.clientHeight;
+		width = document?.body.clientWidth;
 	}
 </script>
 
