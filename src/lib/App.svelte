@@ -204,7 +204,7 @@
 	function handleViewportSize(_) {
 		vh = window.innerHeight * 0.01;
 		height = window.innerHeight;
-		width = document?.body.clientWidth;
+		width = document?.body.clientWidth; // excludes scrollbar
 	}
 </script>
 
