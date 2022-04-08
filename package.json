@@ -14,7 +14,6 @@
 	},
 	"devDependencies": {
 		"@douganderson444/panzoom-node": "file:../panzoom-node",
-		"@douganderson444/svelte-panhandle": "file:../svelte-panhandle",
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/adapter-static": "^1.0.0-next.29",
 		"@sveltejs/kit": "next",
