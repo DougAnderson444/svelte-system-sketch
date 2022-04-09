@@ -7,7 +7,6 @@
 	import { flip } from 'svelte/animate';
 
 	import Gripper from './Gripper.svelte';
-	import Group from './Group.svelte';
 
 	export let data;
 	export let node;
