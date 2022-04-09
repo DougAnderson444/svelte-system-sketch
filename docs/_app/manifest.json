@@ -1,6 +1,6 @@
 {
   ".svelte-kit/runtime/client/start.js": {
-    "file": "start-67314bf3.js",
+    "file": "start-1e314ae9.js",
     "src": ".svelte-kit/runtime/client/start.js",
     "isEntry": true,
     "imports": [
@@ -39,15 +39,19 @@
     ]
   },
   "src/routes/index.svelte": {
-    "file": "pages/index.svelte-fe59c40b.js",
+    "file": "pages/index.svelte-0fd2cc2a.js",
     "src": "src/routes/index.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-e4fe7460.js"
+      "_vendor-e4fe7460.js",
+      "_preload-helper-3611e375.js"
+    ],
+    "dynamicImports": [
+      "node_modules/svelte-drag-drop-touch/dist/svelte-drag-drop-touch.esm.js"
     ],
     "css": [
-      "assets/pages/index.svelte-cab0f22b.css"
+      "assets/pages/index.svelte-2870acbf.css"
     ]
   },
   "_vendor-e4fe7460.js": {
