@@ -8,6 +8,10 @@
 	import EditableText from './EditableText.svelte';
 	import ContextMenu from './ContextMenu.svelte';
 
+	onMount(async () => {
+		import('svelte-drag-drop-touch');
+	});
+
 	// export let data;
 	export let node;
 	export let arenaHeight;
@@ -160,9 +164,8 @@
 {/if}
 
 <style>
-	/* Works, but CDNs are bad...
-	@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap'); 
-	*/
+	/* Works, but CDNs are bad... */
+	@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 
 	.title {
 		width: 80%;
