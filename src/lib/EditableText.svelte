@@ -6,7 +6,6 @@
 	export let type = 'text';
 	export let placeholder = '';
 	export let labelClasses = '';
-	export let inputClasses = '';
 
 	let offsetWidth;
 	let editing = false;

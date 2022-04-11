@@ -49,9 +49,6 @@
 </div>
 
 <style>
-	.slider-container {
-		margin: 2.5em 0.5em;
-	}
 	.yellow {
 		background-color: #fee9004b;
 		width: 10em;
