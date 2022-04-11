@@ -26,7 +26,9 @@
 </script>
 
 <div style="left: {node.x + node.style.width}px; top: {node.y}px;">
-	<ColorPicker bind:backgroundColor />
+	{#if backgroundColor}
+		<ColorPicker bind:backgroundColor />
+	{/if}
 	<span on:click|stopPropagation={handleConnect} class="connect">↪</span>
 	<span on:click|stopPropagation={handleDelete}>🗑️</span>
 </div>

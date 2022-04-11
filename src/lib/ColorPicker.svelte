@@ -1,6 +1,10 @@
 <script>
 	import { colors } from '$lib/config';
 	export let backgroundColor;
+
+	function handleClick(color) {
+		backgroundColor = color;
+	}
 </script>
 
 <main>
@@ -8,7 +12,7 @@
 		{#each colors as color}
 			<div
 				class="colorOption"
-				on:click|stopPropagation={(_) => (backgroundColor = color)}
+				on:click|stopPropagation={(e) => handleClick(color)}
 				style="background-color: {color};"
 			/>
 		{/each}

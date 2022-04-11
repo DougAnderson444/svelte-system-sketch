@@ -94,6 +94,7 @@
 		isFocused = false;
 	}
 	function handleFocus(e) {
+		console.log('Clicked');
 		container.focus();
 		$selected = container;
 		isFocused = true;
