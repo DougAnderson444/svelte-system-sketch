@@ -1,6 +1,7 @@
 <script>
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { asDraggable, asDropZone } from 'svelte-drag-and-drop-actions';
+	import { asDraggable, asDroppable, asDropZone } from 'svelte-drag-and-drop-actions';
+	import PointerTracker from 'pointer-tracker';
 
 	import ResizeHandle from './ResizeHandle.svelte';
 	import { scale, selected } from './stores.js';
@@ -10,6 +11,26 @@
 
 	onMount(async () => {
 		import('svelte-drag-drop-touch');
+
+		// Watch for pointers
+		const pointerTracker = new PointerTracker(container, {
+			start: (pointer, event) => {
+				// We only want to track 2 pointers at most
+				if (pointerTracker.currentPointers.length === 2) return false;
+				event.stopPropagation();
+				event.preventDefault();
+				return true;
+			},
+			move: (previousPointers, changedPointers, event) => {
+				let dx = event.clientX - previousPointers[0].clientX;
+				let dy = event.clientY - previousPointers[0].clientY;
+				dragFrame(event.clientX, event.clientY, dx, dy);
+			},
+			end: (pointer, event, cancelled) => {
+				onDragEnd();
+				handleFocus(event);
+			}
+		});
 	});
 
 	// export let data;
@@ -36,13 +57,21 @@
 	let directions = ['nw', 'w', 'sw', 'ne', 'e', 'se', 'n', 's'];
 
 	/**** event handling ***/
+	function handleDragStart(e) {
+		console.log('Drag started');
+		e.preventDefault();
+	}
+
+	function onDragStart() {
+		return { x: node.x, y: node.y };
+	}
 	function dragFrame(_x, _y, dx, dy) {
 		node.x = node.x + dx / $scale.value;
 		node.y = node.y + dy / $scale.value;
 		assertArenaBounds();
 	}
 
-	function onDragEnd(x, y, dx, dy, extras) {
+	function onDragEnd() {
 		isDragging = false;
 
 		node.x = Math.round(node.x / grid) * grid;
@@ -52,12 +81,12 @@
 	}
 
 	function onDrop(x, y, Operation, DataOffered, DroppableExtras, DropZoneExtras) {
-		// console.log(`DropZone.onDrop:
-		//  x,y:            ${x}, ${y}
-		//  Operation:      ', ${Operation}
-		//  DataOffered:    ', ${JSON.stringify(DataOffered)}
-		//  DroppableExtras:', ${JSON.stringify(DroppableExtras, null, 2)}
-		//  DropZoneExtras: ', ${DropZoneExtras}`);
+		console.log(`DropZone.onDrop:
+		 x,y:            ${x}, ${y}
+		 Operation:      ', ${Operation}
+		 DataOffered:    ', ${JSON.stringify(DataOffered)}
+		 DroppableExtras:', ${JSON.stringify(DroppableExtras, null, 2)}
+		 DropZoneExtras: ', ${DropZoneExtras}`);
 
 		let TypeAccepted = undefined;
 		for (let Type in DataOffered) {
@@ -94,7 +123,6 @@
 		isFocused = false;
 	}
 	function handleFocus(e) {
-		console.log('Clicked');
 		container.focus();
 		$selected = container;
 		isFocused = true;
@@ -115,11 +143,14 @@
 		style="position: absolute; left:{node.x}px; top:{node.y}px; width:{node?.style
 			?.width}px; height:{node?.style?.height}px; 
 		background-color: {node?.style?.backgroundColor || '#fee9004b'}"
-		use:asDraggable={{ onDragStart: { x: node.x, y: node.y }, onDragMove: dragFrame, onDragEnd }}
+		use:asDroppable={{
+			Operations: 'move',
+			DataToOffer: { 'item/plain': '' }
+		}}
 		use:asDropZone={{ TypesToAccept: { 'item/plain': 'all' }, onDrop }}
 		use:clickOutside={{ enabled: isFocused, handleUnselect }}
-		on:click|stopPropagation={handleFocus}
 		on:focusout={handleUnselect}
+		on:dragstart={handleDragStart}
 	>
 		<div class="title"><EditableText bind:value={node.name} /></div>
 		<!-- x: {node.x?.toFixed(1)}px; y: {node.y.toFixed(1)}px; <br />
@@ -137,6 +168,11 @@
 				/>
 			{/each}
 		{/if}
+
+		{#if container && isFocused}
+			<!-- OnSelect Context Menu  -->
+			<ContextMenu bind:node />
+		{/if}
 	</div>
 
 	{#if container && isFocused}
@@ -148,7 +184,6 @@
 				bind:width={node.style.width}
 				bind:height={node.style.height}
 				bind:isDragging
-				name={node.name}
 				{maxFrameWidth}
 				{minFrameWidth}
 				{arenaWidth}
@@ -159,8 +194,6 @@
 				{grid}
 			/>
 		{/each}
-		<!-- OnSelect Context Menu  -->
-		<ContextMenu bind:node />
 	{/if}
 {/if}
 
