@@ -1,15 +1,14 @@
-<script>
-	import { asDraggable } from 'svelte-drag-and-drop-actions';
-	import { scale } from './stores.js';
+<script lang="ts">
+	import PointerTracker from 'pointer-tracker';
 	import { onMount } from 'svelte';
+
+	import { scale } from './stores.js';
 
 	export let x;
 	export let y;
 	export let width;
 	export let height;
 	export let name;
-
-	console.log(name, { height });
 
 	export let maxFrameHeight = 2500;
 	export let maxFrameWidth = 2500;
@@ -24,6 +23,8 @@
 
 	export let grid;
 
+	const isPointerEvent = (event: any): event is PointerEvent => 'pointerId' in event;
+
 	let handleEl;
 	let size = '1em';
 	let handleWidth = 8;
@@ -36,6 +37,27 @@
 		// ask the browser what the px size is based on the --size in em
 		handleWidth = handleEl ? parseFloat(getComputedStyle(handleEl).width.replace('px', '')) : 8;
 		handleHeight = handleEl ? parseFloat(getComputedStyle(handleEl).height.replace('px', '')) : 8;
+
+		// Watch for pointers
+		const pointerTracker = new PointerTracker(handleEl, {
+			start: (pointer, event) => {
+				// We only want to track 2 pointers at most
+
+				if (pointerTracker.currentPointers.length === 2) return false;
+				event.stopPropagation();
+				event.preventDefault();
+				return true;
+			},
+			move: (previousPointers, changedPointers, event) => {
+				if (!isPointerEvent(event)) return;
+				let dx = event.clientX - previousPointers[0].clientX;
+				let dy = event.clientY - previousPointers[0].clientY;
+				dragHandle(event.clientX, event.clientY, dx, dy);
+			},
+			end: (pointer, event, cancelled) => {
+				onDragEnd();
+			}
+		});
 	});
 
 	let cursor =
@@ -81,8 +103,8 @@
 		}
 	}
 
-	function dragHandle(_x, _y, dx, dy, Extras) {
-		switch (Extras) {
+	function dragHandle(_x, _y, dx, dy) {
+		switch (direction) {
 			case 'nw':
 			case 'w':
 			case 'sw':
@@ -105,7 +127,7 @@
 					) - x;
 		}
 
-		switch (Extras) {
+		switch (direction) {
 			case 'nw':
 			case 'n':
 			case 'ne':
@@ -127,7 +149,7 @@
 					) - y;
 		}
 	}
-	function onDragEnd(_x, _y, dx, dy, extras) {
+	function onDragEnd() {
 		isDragging = false;
 		if (grid) {
 			x = Math.floor(x / grid) * grid;
@@ -142,12 +164,6 @@
 	bind:this={handleEl}
 	class="resize-handle {direction}"
 	style="--size: {size}; left:{left}px; top:{top}px; cursor: {cursor};"
-	use:asDraggable={{
-		Extras: direction,
-		onDragStart: { x: x, y: y },
-		onDragMove: dragHandle,
-		onDragEnd
-	}}
 />
 
 <style>
