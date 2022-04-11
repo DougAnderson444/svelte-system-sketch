@@ -16,7 +16,26 @@ const config = {
 		paths: {
 			// change below to your repo name
 			base: process.env.NODE_ENV === 'development' ? '' : '/svelte-system-sketch'
-		}
+		},
+		vite: () => ({
+			build: {
+				rollupOptions: {
+					plugins: [],
+					output: {
+						minifyInternalExports: false,
+						compact: false
+					}
+				},
+				minify: false,
+				sourcemap: true,
+				optimization: {
+					minimize: false
+				}
+			},
+			optimization: {
+				minimize: false
+			}
+		})
 	}
 };
 
