@@ -3,11 +3,12 @@
 
 	export let node;
 
+	let offsetWidth;
 	let backgroundColor = node?.style?.backgroundColor || '#fee9004b';
 
-	console.log({ backgroundColor });
+	console.log({ backgroundColor, node });
 
-	$: if (backgroundColor)
+	$: if (node && backgroundColor)
 		node = {
 			...node,
 			style: {
@@ -25,7 +26,7 @@
 	}
 </script>
 
-<div style="left: {node.x + node.style.width}px; top: {node.y}px;">
+<div class="context-menu" style="right: -{offsetWidth * 1.5}px; top: 0;" bind:offsetWidth>
 	{#if backgroundColor}
 		<ColorPicker bind:backgroundColor />
 	{/if}
@@ -34,6 +35,13 @@
 </div>
 
 <style>
+	.context-menu {
+		display: block;
+		position: absolute;
+		width: fit-content;
+		margin-left: 2em;
+		z-index: 99;
+	}
 	.connect {
 		--s: 0.05em;
 		display: block;
@@ -42,15 +50,9 @@
 		text-shadow: calc(var(--s) * -0.5) calc(var(--s) * -1) calc(var(--s) * 1.25) #ccc;
 	}
 
-	span:hover,
-	div:before {
+	.context-menu:hover,
+	.context-menu:before {
 		cursor: pointer;
-	}
-	div {
-		position: absolute;
-		width: fit-content;
-		margin-left: 2em;
-		z-index: 99;
 	}
 	span:before {
 		/* content: '🗑️'; */
