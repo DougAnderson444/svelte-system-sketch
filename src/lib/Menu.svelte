@@ -3,9 +3,24 @@
 	import { createNewNode } from './utils';
 	import { asDroppable } from 'svelte-drag-and-drop-actions';
 	import { safeid } from '$lib/utils';
+	import PointerTracker from 'pointer-tracker';
+	import { onMount } from 'svelte';
 
 	export let children;
 	export let scale = 1;
+
+	let pallette;
+
+	onMount(async () => {
+		// Watch for pointers
+		const pointerTracker = new PointerTracker(pallette, {
+			start: (pointer, event) => {
+				// event.stopPropagation();
+				// event.preventDefault();
+				return false;
+			}
+		});
+	});
 
 	function handleAddNode(event) {
 		const newNode = createNewNode();
@@ -16,7 +31,7 @@
 	let newContainer = createNewNode();
 </script>
 
-<div class="pallette">
+<div class="pallette" bind:this={pallette}>
 	Scale {scale}
 	<div
 		class="yellow"
