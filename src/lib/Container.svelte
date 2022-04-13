@@ -30,10 +30,11 @@
 
 	let isFocused;
 	let directions = ['nw', 'w', 'sw', 'ne', 'e', 'se', 'n', 's'];
+	let pointerTracker;
 
 	onMount(async () => {
 		// Watch for pointers
-		const pointerTracker = new PointerTracker(container, {
+		pointerTracker = new PointerTracker(container, {
 			start: (pointer, event) => {
 				console.log('Container click', node.name);
 
@@ -41,7 +42,7 @@
 				// if there already exists 1 pointer, and now this would have been the 2nd pointer, stop here
 				if (pointerTracker.currentPointers.length === 1) return false;
 
-				event.stopPropagation();
+				event.stopPropagation(); // otherwise it will move the other containers too
 				event.preventDefault();
 				return true;
 			},

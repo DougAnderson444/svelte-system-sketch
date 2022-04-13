@@ -958,8 +958,8 @@ class Pointer {
     return [this];
   }
 }
-const isPointerEvent = (event2) => "pointerId" in event2;
-const isTouchEvent = (event2) => "changedTouches" in event2;
+const isPointerEvent = (event) => "pointerId" in event;
+const isTouchEvent = (event) => "changedTouches" in event;
 const noop = () => {
 };
 class PointerTracker {
@@ -968,20 +968,20 @@ class PointerTracker {
     this.startPointers = [];
     this.currentPointers = [];
     this._excludeFromButtonsCheck = /* @__PURE__ */ new Set();
-    this._pointerStart = (event2) => {
-      if (isPointerEvent(event2) && event2.buttons === 0) {
-        this._excludeFromButtonsCheck.add(event2.pointerId);
-      } else if (!(event2.buttons & 1)) {
+    this._pointerStart = (event) => {
+      if (isPointerEvent(event) && event.buttons === 0) {
+        this._excludeFromButtonsCheck.add(event.pointerId);
+      } else if (!(event.buttons & 1)) {
         return;
       }
-      const pointer = new Pointer(event2);
+      const pointer = new Pointer(event);
       if (this.currentPointers.some((p) => p.id === pointer.id))
         return;
-      if (!this._triggerPointerStart(pointer, event2))
+      if (!this._triggerPointerStart(pointer, event))
         return;
-      if (isPointerEvent(event2)) {
-        const capturingElement = event2.target && "setPointerCapture" in event2.target ? event2.target : this._element;
-        capturingElement.setPointerCapture(event2.pointerId);
+      if (isPointerEvent(event)) {
+        const capturingElement = event.target && "setPointerCapture" in event.target ? event.target : this._element;
+        capturingElement.setPointerCapture(event.pointerId);
         this._element.addEventListener(this._rawUpdates ? "pointerrawupdate" : "pointermove", this._move, this._eventListenerOptions);
         this._element.addEventListener("pointerup", this._pointerEnd, this._eventListenerOptions);
         this._element.addEventListener("pointercancel", this._pointerEnd, this._eventListenerOptions);
@@ -990,18 +990,18 @@ class PointerTracker {
         window.addEventListener("mouseup", this._pointerEnd);
       }
     };
-    this._touchStart = (event2) => {
-      for (const touch of Array.from(event2.changedTouches)) {
-        this._triggerPointerStart(new Pointer(touch), event2);
+    this._touchStart = (event) => {
+      for (const touch of Array.from(event.changedTouches)) {
+        this._triggerPointerStart(new Pointer(touch), event);
       }
     };
-    this._move = (event2) => {
-      if (!isTouchEvent(event2) && (!isPointerEvent(event2) || !this._excludeFromButtonsCheck.has(event2.pointerId)) && event2.buttons === 0) {
-        this._pointerEnd(event2);
+    this._move = (event) => {
+      if (!isTouchEvent(event) && (!isPointerEvent(event) || !this._excludeFromButtonsCheck.has(event.pointerId)) && event.buttons === 0) {
+        this._pointerEnd(event);
         return;
       }
       const previousPointers = this.currentPointers.slice();
-      const changedPointers = isTouchEvent(event2) ? Array.from(event2.changedTouches).map((t) => new Pointer(t)) : [new Pointer(event2)];
+      const changedPointers = isTouchEvent(event) ? Array.from(event.changedTouches).map((t) => new Pointer(t)) : [new Pointer(event)];
       const trackedChangedPointers = [];
       for (const pointer of changedPointers) {
         const index = this.currentPointers.findIndex((p) => p.id === pointer.id);
@@ -1012,10 +1012,10 @@ class PointerTracker {
       }
       if (trackedChangedPointers.length === 0)
         return;
-      this._moveCallback(previousPointers, trackedChangedPointers, event2);
+      this._moveCallback(previousPointers, trackedChangedPointers, event);
     };
-    this._triggerPointerEnd = (pointer, event2) => {
-      if (!isTouchEvent(event2) && event2.buttons & 1) {
+    this._triggerPointerEnd = (pointer, event) => {
+      if (!isTouchEvent(event) && event.buttons & 1) {
         return false;
       }
       const index = this.currentPointers.findIndex((p) => p.id === pointer.id);
@@ -1024,14 +1024,14 @@ class PointerTracker {
       this.currentPointers.splice(index, 1);
       this.startPointers.splice(index, 1);
       this._excludeFromButtonsCheck.delete(pointer.id);
-      const cancelled = !(event2.type === "mouseup" || event2.type === "touchend" || event2.type === "pointerup");
-      this._endCallback(pointer, event2, cancelled);
+      const cancelled = !(event.type === "mouseup" || event.type === "touchend" || event.type === "pointerup");
+      this._endCallback(pointer, event, cancelled);
       return true;
     };
-    this._pointerEnd = (event2) => {
-      if (!this._triggerPointerEnd(new Pointer(event2), event2))
+    this._pointerEnd = (event) => {
+      if (!this._triggerPointerEnd(new Pointer(event), event))
         return;
-      if (isPointerEvent(event2)) {
+      if (isPointerEvent(event)) {
         if (this.currentPointers.length)
           return;
         this._element.removeEventListener(this._rawUpdates ? "pointerrawupdate" : "pointermove", this._move);
@@ -1042,9 +1042,9 @@ class PointerTracker {
         window.removeEventListener("mouseup", this._pointerEnd);
       }
     };
-    this._touchEnd = (event2) => {
-      for (const touch of Array.from(event2.changedTouches)) {
-        this._triggerPointerEnd(new Pointer(touch), event2);
+    this._touchEnd = (event) => {
+      for (const touch of Array.from(event.changedTouches)) {
+        this._triggerPointerEnd(new Pointer(touch), event);
       }
     };
     this._startCallback = start;
@@ -1075,8 +1075,8 @@ class PointerTracker {
     window.removeEventListener("mousemove", this._move);
     window.removeEventListener("mouseup", this._pointerEnd);
   }
-  _triggerPointerStart(pointer, event2) {
-    if (!this._startCallback(pointer, event2))
+  _triggerPointerStart(pointer, event) {
+    if (!this._startCallback(pointer, event))
       return false;
     this.currentPointers.push(pointer);
     this.startPointers.push(pointer);
@@ -1158,7 +1158,7 @@ function instance$8($$self, $$props, $$invalidate) {
   let pallette;
   onMount(async () => {
     new PointerTracker(pallette, {
-      start: (pointer, event2) => {
+      start: (pointer, event) => {
         return false;
       }
     });
@@ -1223,27 +1223,30 @@ class PinchZoom {
     this.node = node;
     this._parentEl = this.node.parentElement || document.body;
     new MutationObserver(() => this._stageElChange()).observe(this.node, { childList: true });
-    const pointerTracker = new PointerTracker(this._parentEl, {
+    this._pointerTracker = new PointerTracker(this._parentEl, {
       eventListenerOptions: { capture: true },
-      start: (pointer, event2) => {
-        console.log("PanZoom Start", { pointer }, pointerTracker.currentPointers.length);
-        if (pointerTracker.currentPointers.length === 2 || !this._parentEl)
+      start: (pointer, event) => {
+        console.log("PanZoom Start", { pointer }, this._pointerTracker.currentPointers.length);
+        if (this._pointerTracker.currentPointers.length === 2 || !this._parentEl)
           return false;
-        event2.preventDefault();
-        if (pointerTracker.currentPointers.length === 1) {
-          event2.stopPropagation();
+        event.preventDefault();
+        if (this._pointerTracker.currentPointers.length === 1) {
+          event.stopPropagation();
           return true;
         }
-        if (pointerTracker.currentPointers.length === 0 && (event2.target == this._parentEl || event2.target == node)) {
+        if (this._pointerTracker.currentPointers.length === 0 && (event.target == this._parentEl || event.target == node)) {
           return true;
         }
       },
-      move: (previousPointers) => {
+      move: (previousPointers, changedPointers, event) => {
         event.stopPropagation();
-        this._onPointerMove(previousPointers, pointerTracker.currentPointers);
+        this._onPointerMove(previousPointers, this._pointerTracker.currentPointers);
+      },
+      end: (pointer, event, cancelled) => {
+        console.log("PanZoom End", { pointer, event, cancelled }, this._pointerTracker.currentPointers.length);
       }
     });
-    this._parentEl.addEventListener("wheel", (event2) => this._onWheel(event2));
+    this._parentEl.addEventListener("wheel", (event) => this._onWheel(event));
   }
   static get observedAttributes() {
     return [minScaleAttr];
@@ -1339,21 +1342,21 @@ class PinchZoom {
     this._transform.d = this._transform.a = scale2;
     this.node.style.transform = `translate(${x}px,${y}px) scale(${scale2})`;
     if (allowChangeEvent) {
-      const event2 = new Event("change", { bubbles: true });
-      this.node.dispatchEvent(event2);
+      const event = new Event("change", { bubbles: true });
+      this.node.dispatchEvent(event);
     }
   }
   _stageElChange() {
     this._parentEl = this.node.parentElement || document.body;
     this.setTransform({ allowChangeEvent: true });
   }
-  _onWheel(event2) {
+  _onWheel(event) {
     if (!this._parentEl)
       return;
-    event2.preventDefault();
+    event.preventDefault();
     this._parentEl.getBoundingClientRect();
-    let { deltaY } = event2;
-    const { ctrlKey, deltaMode } = event2;
+    let { deltaY } = event;
+    const { ctrlKey, deltaMode } = event;
     if (deltaMode === 1) {
       deltaY *= 15;
     }
@@ -1361,8 +1364,8 @@ class PinchZoom {
     const scaleDiff = 1 - deltaY / divisor;
     this._applyChange({
       scaleDiff,
-      originX: event2.pageX - this._parentEl.offsetLeft - this._parentEl.clientWidth / 2,
-      originY: event2.pageY - this._parentEl.offsetTop - this._parentEl.clientHeight / 2,
+      originX: event.pageX - this._parentEl.offsetLeft - this._parentEl.clientWidth / 2,
+      originY: event.pageY - this._parentEl.offsetTop - this._parentEl.clientHeight / 2,
       allowChangeEvent: true
     });
   }
@@ -1474,7 +1477,7 @@ function instance$7($$self, $$props, $$invalidate) {
   let { direction } = $$props;
   let { isDragging = false } = $$props;
   let { grid: grid2 } = $$props;
-  const isPointerEvent2 = (event2) => "pointerId" in event2;
+  const isPointerEvent2 = (event) => "pointerId" in event;
   let handleEl;
   let handleWidth = 8;
   let handleHeight = 8;
@@ -1482,21 +1485,21 @@ function instance$7($$self, $$props, $$invalidate) {
     handleWidth = handleEl ? parseFloat(getComputedStyle(handleEl).width.replace("px", "")) : 8;
     handleHeight = handleEl ? parseFloat(getComputedStyle(handleEl).height.replace("px", "")) : 8;
     const pointerTracker = new PointerTracker(handleEl, {
-      start: (pointer, event2) => {
+      start: (pointer, event) => {
         if (pointerTracker.currentPointers.length === 2)
           return false;
-        event2.stopPropagation();
-        event2.preventDefault();
+        event.stopPropagation();
+        event.preventDefault();
         return true;
       },
-      move: (previousPointers, changedPointers, event2) => {
-        if (!isPointerEvent2(event2))
+      move: (previousPointers, changedPointers, event) => {
+        if (!isPointerEvent2(event))
           return;
-        let dx = event2.clientX - previousPointers[0].clientX;
-        let dy = event2.clientY - previousPointers[0].clientY;
-        dragHandle(event2.clientX, event2.clientY, dx, dy);
+        let dx = event.clientX - previousPointers[0].clientX;
+        let dy = event.clientY - previousPointers[0].clientY;
+        dragHandle(event.clientX, event.clientY, dx, dy);
       },
-      end: (pointer, event2, cancelled) => {
+      end: (pointer, event, cancelled) => {
         onDragEnd();
       }
     });
@@ -1842,7 +1845,7 @@ function instance$6($$self, $$props, $$invalidate) {
   let inputEl;
   let label = value;
   const dispatch = createEventDispatcher();
-  async function toggle(event2) {
+  async function toggle(event) {
     $$invalidate(2, editing = !editing);
     if (editing) {
       console.log("toggle editing");
@@ -2316,14 +2319,14 @@ class ContextMenu extends SvelteComponent {
 var Container_svelte_svelte_type_style_lang = "";
 function get_each_context(ctx, list, i) {
   const child_ctx = ctx.slice();
-  child_ctx[31] = list[i];
+  child_ctx[32] = list[i];
   return child_ctx;
 }
 function get_each_context_1(ctx, list, i) {
   const child_ctx = ctx.slice();
-  child_ctx[34] = list[i];
-  child_ctx[35] = list;
-  child_ctx[36] = i;
+  child_ctx[35] = list[i];
+  child_ctx[36] = list;
+  child_ctx[37] = i;
   return child_ctx;
 }
 function create_if_block$3(ctx) {
@@ -2698,7 +2701,7 @@ function create_each_block_1(ctx) {
   let updating_isDragging;
   let current;
   function container_1_node_binding(value) {
-    ctx[13](value, ctx[34], ctx[35], ctx[36]);
+    ctx[13](value, ctx[35], ctx[36], ctx[37]);
   }
   function container_1_isDragging_binding(value) {
     ctx[14](value);
@@ -2707,8 +2710,8 @@ function create_each_block_1(ctx) {
     arenaWidth: ctx[5],
     arenaHeight: ctx[6]
   };
-  if (ctx[34] !== void 0) {
-    container_1_props.node = ctx[34];
+  if (ctx[35] !== void 0) {
+    container_1_props.node = ctx[35];
   }
   if (ctx[1] !== void 0) {
     container_1_props.isDragging = ctx[1];
@@ -2736,7 +2739,7 @@ function create_each_block_1(ctx) {
         container_1_changes.arenaHeight = ctx[6];
       if (!updating_node && dirty[0] & 1) {
         updating_node = true;
-        container_1_changes.node = ctx[34];
+        container_1_changes.node = ctx[35];
         add_flush_callback(() => updating_node = false);
       }
       if (!updating_isDragging && dirty[0] & 2) {
@@ -2915,7 +2918,7 @@ function create_each_block(ctx) {
     arenaHeight: ctx[2],
     maxFrameHeight,
     minFrameHeight,
-    direction: ctx[31],
+    direction: ctx[32],
     grid
   };
   if (ctx[0].x !== void 0) {
@@ -3077,7 +3080,7 @@ function instance$3($$self, $$props, $$invalidate) {
   let $selected;
   let $scale;
   component_subscribe($$self, selected, ($$value) => $$invalidate(10, $selected = $$value));
-  component_subscribe($$self, scale, ($$value) => $$invalidate(23, $scale = $$value));
+  component_subscribe($$self, scale, ($$value) => $$invalidate(24, $scale = $$value));
   let { node } = $$props;
   let { arenaHeight } = $$props;
   let { arenaWidth } = $$props;
@@ -3087,22 +3090,23 @@ function instance$3($$self, $$props, $$invalidate) {
   let clientWidth, clientHeight;
   let isFocused;
   let directions = ["nw", "w", "sw", "ne", "e", "se", "n", "s"];
+  let pointerTracker;
   onMount(async () => {
-    const pointerTracker = new PointerTracker(container, {
-      start: (pointer, event2) => {
+    pointerTracker = new PointerTracker(container, {
+      start: (pointer, event) => {
         console.log("Container click", node.name);
         if (pointerTracker.currentPointers.length === 1)
           return false;
-        event2.stopPropagation();
-        event2.preventDefault();
+        event.stopPropagation();
+        event.preventDefault();
         return true;
       },
-      move: (previousPointers, changedPointers, event2) => {
-        let dx = event2.clientX - previousPointers[0].clientX;
-        let dy = event2.clientY - previousPointers[0].clientY;
-        dragFrame(event2.clientX, event2.clientY, dx, dy);
+      move: (previousPointers, changedPointers, event) => {
+        let dx = event.clientX - previousPointers[0].clientX;
+        let dy = event.clientY - previousPointers[0].clientY;
+        dragFrame(event.clientX, event.clientY, dx, dy);
       },
-      end: (pointer, event2, cancelled) => {
+      end: (pointer, event, cancelled) => {
         onDragEnd();
         handleFocus();
       }
@@ -3864,4 +3868,4 @@ class Routes extends SvelteComponent {
   }
 }
 export { Routes as default };
-//# sourceMappingURL=index.svelte-c9b7bdd8.js.map
+//# sourceMappingURL=index.svelte-a1274762.js.map
