@@ -20,14 +20,14 @@
 
 <style>
 	.colorOption {
-		height: 20px;
-		width: 20px;
+		height: 2em;
+		width: 2em;
 	}
 	main {
 		display: flex;
 		align-items: center;
 		justify-content: flex-start;
-		height: 170px;
+		height: 8em;
 		background-color: var(--bgColor);
 		z-index: 99;
 		flex-direction: column;
