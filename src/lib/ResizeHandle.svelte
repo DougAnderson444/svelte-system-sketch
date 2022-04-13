@@ -25,17 +25,16 @@
 	const isPointerEvent = (event: any): event is PointerEvent => 'pointerId' in event;
 
 	let handleEl;
-	let size = '1em';
-	let handleWidth = 8;
-	let handleHeight = 8;
+	let size = '4em';
 
-	$: left = handleX(direction, x, width);
-	$: top = handleY(direction, y, height);
+	$: handleWidth = handleEl ? handleEl.getClientRects()[0].height : 8;
+	$: handleHeight = handleEl ? handleEl.getClientRects()[0].width : 8;
+
+	$: left = handleX(direction, x, width, handleWidth);
+	$: top = handleY(direction, y, height, handleHeight);
 
 	onMount(() => {
 		// ask the browser what the px size is based on the --size in em
-		handleWidth = handleEl ? parseFloat(getComputedStyle(handleEl).width.replace('px', '')) : 8;
-		handleHeight = handleEl ? parseFloat(getComputedStyle(handleEl).height.replace('px', '')) : 8;
 
 		// Watch for pointers
 		const pointerTracker = new PointerTracker(handleEl, {
@@ -69,36 +68,36 @@
 			: 'ew-resize';
 
 	// handle positions
-	function handleX(direction, x, width) {
+	function handleX(direction, x, width, handleWidth) {
 		// extra arguments for reactivity
 		switch (direction) {
 			case 'nw':
 			case 'w':
 			case 'sw':
-				return x - handleWidth; // x - handleWidth;
+				return x - handleWidth / 2; // x - handleWidth;
 			case 'n':
 			case 's':
 				return x + width / 2;
 			case 'ne':
 			case 'e':
 			case 'se':
-				return x + width + handleWidth;
+				return x + width;
 		}
 	}
 
-	function handleY(direction, y, height) {
+	function handleY(direction, y, height, handleHeight) {
 		switch (direction) {
 			case 'nw':
 			case 'n':
 			case 'ne':
-				return y - handleHeight;
+				return y - handleHeight / 2;
 			case 'e':
 			case 'w':
 				return y + height / 2 - handleHeight / 2;
 			case 'sw':
 			case 's':
 			case 'se':
-				return y + height + handleHeight / 2;
+				return y + height;
 		}
 	}
 
@@ -163,16 +162,58 @@
 	bind:this={handleEl}
 	class="resize-handle {direction}"
 	style="--size: {size}; left:{left}px; top:{top}px; cursor: {cursor};"
-/>
+>
+	<div class="resize-handle-decoration {direction}" />
+</div>
 
 <style>
+	:root {
+		--color: rgba(121, 121, 121, 0.5);
+	}
+	.resize-handle-decoration {
+		height: calc(var(--size) / 2);
+		width: calc(var(--size) / 2);
+	}
+	.resize-handle-decoration.nw {
+		border-left: 0.25em solid var(--color);
+		border-top: 0.25em solid var(--color);
+	}
+	.resize-handle-decoration.w {
+		border-left: 0.25em solid var(--color);
+	}
+	.resize-handle-decoration.sw {
+		border-left: 0.25em solid var(--color);
+		border-bottom: 0.25em solid var(--color);
+	}
+	.resize-handle-decoration.ne {
+		border-top: 0.25em solid var(--color);
+		border-right: 0.25em solid var(--color);
+	}
+	.resize-handle-decoration.e {
+		border-right: 0.25em solid var(--color);
+	}
+	.resize-handle-decoration.se {
+		border-right: 0.25em solid var(--color);
+		border-bottom: 0.25em solid var(--color);
+	}
+	.resize-handle-decoration.n {
+		border-top: 0.25em solid var(--color);
+	}
+	.resize-handle-decoration.s {
+		border-bottom: 0.25em solid var(--color);
+	}
+
 	.resize-handle {
-		display: block;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		position: absolute;
 		width: var(--size);
 		height: var(--size);
-		border: solid 1px rgba(200, 200, 200, 1);
+		/* margin: var(--size);
+		padding: var(--size); */
+		/* border: solid 1px rgba(200, 200, 200, 0.1); */
 		border-radius: 50%;
-		background: rgb(255, 255, 255);
+		background: rgb(255, 255, 255, 0.1);
 	}
 </style>
