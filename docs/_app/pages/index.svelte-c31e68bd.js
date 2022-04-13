@@ -1,4 +1,4 @@
-import { SvelteComponent, init, safe_not_equal, element, text, space, claim_element, children, claim_text, claim_space, detach, attr, insert_hydration, append_hydration, action_destroyer, set_data, noop as noop$1, onMount, binding_callbacks, set_style, component_subscribe, add_render_callback, add_resize_listener, createEventDispatcher, tick, null_to_empty, listen, run_all, empty, destroy_each, create_component, claim_component, mount_component, add_flush_callback, transition_in, transition_out, destroy_component, stop_propagation, group_outros, check_outros, bind, is_function, set_store_value, globals } from "../chunks/index-182dfd00.js";
+import { SvelteComponent, init, safe_not_equal, element, text, space, claim_element, children, claim_text, claim_space, detach, attr, insert_hydration, append_hydration, action_destroyer, set_data, noop as noop$2, onMount, binding_callbacks, set_style, component_subscribe, add_render_callback, add_resize_listener, createEventDispatcher, tick, null_to_empty, listen, run_all, empty, destroy_each, create_component, claim_component, mount_component, add_flush_callback, transition_in, transition_out, destroy_component, stop_propagation, group_outros, check_outros, bind, is_function, set_store_value, globals } from "../chunks/index-182dfd00.js";
 import { writable } from "../chunks/index-dca0cab6.js";
 var Canvas_svelte_svelte_type_style_lang = "";
 var RangePips_svelte_svelte_type_style_lang = "";
@@ -935,6 +935,258 @@ function invokeHandler(Name, Options) {
     }
   }
 }
+class Pointer$1 {
+  constructor(nativePointer) {
+    this.id = -1;
+    this.nativePointer = nativePointer;
+    this.pageX = nativePointer.pageX;
+    this.pageY = nativePointer.pageY;
+    this.clientX = nativePointer.clientX;
+    this.clientY = nativePointer.clientY;
+    if (self.Touch && nativePointer instanceof Touch) {
+      this.id = nativePointer.identifier;
+    } else if (isPointerEvent$1(nativePointer)) {
+      this.id = nativePointer.pointerId;
+    }
+  }
+  getCoalesced() {
+    if ("getCoalescedEvents" in this.nativePointer) {
+      const events = this.nativePointer.getCoalescedEvents().map((p) => new Pointer$1(p));
+      if (events.length > 0)
+        return events;
+    }
+    return [this];
+  }
+}
+const isPointerEvent$1 = (event) => "pointerId" in event;
+const isTouchEvent$1 = (event) => "changedTouches" in event;
+const noop$1 = () => {
+};
+class PointerTracker$1 {
+  constructor(_element, { start = () => true, move = noop$1, end = noop$1, rawUpdates = false, avoidPointerEvents = false, eventListenerOptions = { capture: false, passive: false, once: false } } = {}) {
+    this._element = _element;
+    this.startPointers = [];
+    this.currentPointers = [];
+    this._excludeFromButtonsCheck = /* @__PURE__ */ new Set();
+    this._pointerStart = (event) => {
+      if (isPointerEvent$1(event) && event.buttons === 0) {
+        this._excludeFromButtonsCheck.add(event.pointerId);
+      } else if (!(event.buttons & 1)) {
+        return;
+      }
+      const pointer = new Pointer$1(event);
+      if (this.currentPointers.some((p) => p.id === pointer.id))
+        return;
+      if (!this._triggerPointerStart(pointer, event))
+        return;
+      if (isPointerEvent$1(event)) {
+        const capturingElement = event.target && "setPointerCapture" in event.target ? event.target : this._element;
+        capturingElement.setPointerCapture(event.pointerId);
+        this._element.addEventListener(this._rawUpdates ? "pointerrawupdate" : "pointermove", this._move, this._eventListenerOptions);
+        this._element.addEventListener("pointerup", this._pointerEnd, this._eventListenerOptions);
+        this._element.addEventListener("pointercancel", this._pointerEnd, this._eventListenerOptions);
+      } else {
+        window.addEventListener("mousemove", this._move);
+        window.addEventListener("mouseup", this._pointerEnd);
+      }
+    };
+    this._touchStart = (event) => {
+      for (const touch of Array.from(event.changedTouches)) {
+        this._triggerPointerStart(new Pointer$1(touch), event);
+      }
+    };
+    this._move = (event) => {
+      if (!isTouchEvent$1(event) && (!isPointerEvent$1(event) || !this._excludeFromButtonsCheck.has(event.pointerId)) && event.buttons === 0) {
+        this._pointerEnd(event);
+        return;
+      }
+      const previousPointers = this.currentPointers.slice();
+      const changedPointers = isTouchEvent$1(event) ? Array.from(event.changedTouches).map((t) => new Pointer$1(t)) : [new Pointer$1(event)];
+      const trackedChangedPointers = [];
+      for (const pointer of changedPointers) {
+        const index = this.currentPointers.findIndex((p) => p.id === pointer.id);
+        if (index === -1)
+          continue;
+        trackedChangedPointers.push(pointer);
+        this.currentPointers[index] = pointer;
+      }
+      if (trackedChangedPointers.length === 0)
+        return;
+      this._moveCallback(previousPointers, trackedChangedPointers, event);
+    };
+    this._triggerPointerEnd = (pointer, event) => {
+      if (!isTouchEvent$1(event) && event.buttons & 1) {
+        return false;
+      }
+      const index = this.currentPointers.findIndex((p) => p.id === pointer.id);
+      if (index === -1)
+        return false;
+      this.currentPointers.splice(index, 1);
+      this.startPointers.splice(index, 1);
+      this._excludeFromButtonsCheck.delete(pointer.id);
+      const cancelled = !(event.type === "mouseup" || event.type === "touchend" || event.type === "pointerup");
+      this._endCallback(pointer, event, cancelled);
+      return true;
+    };
+    this._pointerEnd = (event) => {
+      if (!this._triggerPointerEnd(new Pointer$1(event), event))
+        return;
+      if (isPointerEvent$1(event)) {
+        if (this.currentPointers.length)
+          return;
+        this._element.removeEventListener(this._rawUpdates ? "pointerrawupdate" : "pointermove", this._move);
+        this._element.removeEventListener("pointerup", this._pointerEnd);
+        this._element.removeEventListener("pointercancel", this._pointerEnd);
+      } else {
+        window.removeEventListener("mousemove", this._move);
+        window.removeEventListener("mouseup", this._pointerEnd);
+      }
+    };
+    this._touchEnd = (event) => {
+      for (const touch of Array.from(event.changedTouches)) {
+        this._triggerPointerEnd(new Pointer$1(touch), event);
+      }
+    };
+    this._startCallback = start;
+    this._moveCallback = move;
+    this._endCallback = end;
+    this._rawUpdates = rawUpdates && "onpointerrawupdate" in window;
+    this._eventListenerOptions = eventListenerOptions;
+    if (self.PointerEvent && !avoidPointerEvents) {
+      this._element.addEventListener("pointerdown", this._pointerStart, this._eventListenerOptions);
+    } else {
+      this._element.addEventListener("mousedown", this._pointerStart, this._eventListenerOptions);
+      this._element.addEventListener("touchstart", this._touchStart, this._eventListenerOptions);
+      this._element.addEventListener("touchmove", this._move, this._eventListenerOptions);
+      this._element.addEventListener("touchend", this._touchEnd, this._eventListenerOptions);
+      this._element.addEventListener("touchcancel", this._touchEnd, this._eventListenerOptions);
+    }
+  }
+  stop() {
+    this._element.removeEventListener("pointerdown", this._pointerStart);
+    this._element.removeEventListener("mousedown", this._pointerStart);
+    this._element.removeEventListener("touchstart", this._touchStart);
+    this._element.removeEventListener("touchmove", this._move);
+    this._element.removeEventListener("touchend", this._touchEnd);
+    this._element.removeEventListener("touchcancel", this._touchEnd);
+    this._element.removeEventListener(this._rawUpdates ? "pointerrawupdate" : "pointermove", this._move);
+    this._element.removeEventListener("pointerup", this._pointerEnd);
+    this._element.removeEventListener("pointercancel", this._pointerEnd);
+    window.removeEventListener("mousemove", this._move);
+    window.removeEventListener("mouseup", this._pointerEnd);
+  }
+  _triggerPointerStart(pointer, event) {
+    if (!this._startCallback(pointer, event))
+      return false;
+    this.currentPointers.push(pointer);
+    this.startPointers.push(pointer);
+    return true;
+  }
+}
+var Menu_svelte_svelte_type_style_lang = "";
+function create_fragment$8(ctx) {
+  let div1;
+  let t0;
+  let t1;
+  let t2;
+  let div0;
+  let t3;
+  let mounted;
+  let dispose;
+  return {
+    c() {
+      div1 = element("div");
+      t0 = text("Scale ");
+      t1 = text(ctx[0]);
+      t2 = space();
+      div0 = element("div");
+      t3 = text("+ Drag Me");
+      this.h();
+    },
+    l(nodes) {
+      div1 = claim_element(nodes, "DIV", { class: true });
+      var div1_nodes = children(div1);
+      t0 = claim_text(div1_nodes, "Scale ");
+      t1 = claim_text(div1_nodes, ctx[0]);
+      t2 = claim_space(div1_nodes);
+      div0 = claim_element(div1_nodes, "DIV", { class: true });
+      var div0_nodes = children(div0);
+      t3 = claim_text(div0_nodes, "+ Drag Me");
+      div0_nodes.forEach(detach);
+      div1_nodes.forEach(detach);
+      this.h();
+    },
+    h() {
+      attr(div0, "class", "yellow svelte-woukud");
+      attr(div1, "class", "pallette svelte-woukud");
+    },
+    m(target, anchor) {
+      insert_hydration(target, div1, anchor);
+      append_hydration(div1, t0);
+      append_hydration(div1, t1);
+      append_hydration(div1, t2);
+      append_hydration(div1, div0);
+      append_hydration(div0, t3);
+      ctx[4](div1);
+      if (!mounted) {
+        dispose = action_destroyer(asDroppable.call(null, div0, {
+          Extras: { newContainer: ctx[2] },
+          Operations: "copy",
+          DataToOffer: { "item/plain": "" }
+        }));
+        mounted = true;
+      }
+    },
+    p(ctx2, [dirty]) {
+      if (dirty & 1)
+        set_data(t1, ctx2[0]);
+    },
+    i: noop$2,
+    o: noop$2,
+    d(detaching) {
+      if (detaching)
+        detach(div1);
+      ctx[4](null);
+      mounted = false;
+      dispose();
+    }
+  };
+}
+function instance$8($$self, $$props, $$invalidate) {
+  let { children: children2 } = $$props;
+  let { scale: scale2 = 1 } = $$props;
+  let pallette;
+  onMount(async () => {
+    new PointerTracker$1(pallette, {
+      start: (pointer, event) => {
+        return false;
+      }
+    });
+  });
+  let newContainer = createNewNode();
+  function div1_binding($$value) {
+    binding_callbacks[$$value ? "unshift" : "push"](() => {
+      pallette = $$value;
+      $$invalidate(1, pallette);
+    });
+  }
+  $$self.$$set = ($$props2) => {
+    if ("children" in $$props2)
+      $$invalidate(3, children2 = $$props2.children);
+    if ("scale" in $$props2)
+      $$invalidate(0, scale2 = $$props2.scale);
+  };
+  return [scale2, pallette, newContainer, children2, div1_binding];
+}
+class Menu extends SvelteComponent {
+  constructor(options) {
+    super();
+    init(this, options, instance$8, create_fragment$8, safe_not_equal, { children: 3, scale: 0 });
+  }
+}
+var Gripper_svelte_svelte_type_style_lang = "";
+var Nodes_svelte_svelte_type_style_lang = "";
+var Wrapper_svelte_svelte_type_style_lang = "";
 class Pointer {
   constructor(nativePointer) {
     this.id = -1;
@@ -1083,110 +1335,6 @@ class PointerTracker {
     return true;
   }
 }
-var Menu_svelte_svelte_type_style_lang = "";
-function create_fragment$8(ctx) {
-  let div1;
-  let t0;
-  let t1;
-  let t2;
-  let div0;
-  let t3;
-  let mounted;
-  let dispose;
-  return {
-    c() {
-      div1 = element("div");
-      t0 = text("Scale ");
-      t1 = text(ctx[0]);
-      t2 = space();
-      div0 = element("div");
-      t3 = text("+ Drag Me");
-      this.h();
-    },
-    l(nodes) {
-      div1 = claim_element(nodes, "DIV", { class: true });
-      var div1_nodes = children(div1);
-      t0 = claim_text(div1_nodes, "Scale ");
-      t1 = claim_text(div1_nodes, ctx[0]);
-      t2 = claim_space(div1_nodes);
-      div0 = claim_element(div1_nodes, "DIV", { class: true });
-      var div0_nodes = children(div0);
-      t3 = claim_text(div0_nodes, "+ Drag Me");
-      div0_nodes.forEach(detach);
-      div1_nodes.forEach(detach);
-      this.h();
-    },
-    h() {
-      attr(div0, "class", "yellow svelte-woukud");
-      attr(div1, "class", "pallette svelte-woukud");
-    },
-    m(target, anchor) {
-      insert_hydration(target, div1, anchor);
-      append_hydration(div1, t0);
-      append_hydration(div1, t1);
-      append_hydration(div1, t2);
-      append_hydration(div1, div0);
-      append_hydration(div0, t3);
-      ctx[4](div1);
-      if (!mounted) {
-        dispose = action_destroyer(asDroppable.call(null, div0, {
-          Extras: { newContainer: ctx[2] },
-          Operations: "copy",
-          DataToOffer: { "item/plain": "" }
-        }));
-        mounted = true;
-      }
-    },
-    p(ctx2, [dirty]) {
-      if (dirty & 1)
-        set_data(t1, ctx2[0]);
-    },
-    i: noop$1,
-    o: noop$1,
-    d(detaching) {
-      if (detaching)
-        detach(div1);
-      ctx[4](null);
-      mounted = false;
-      dispose();
-    }
-  };
-}
-function instance$8($$self, $$props, $$invalidate) {
-  let { children: children2 } = $$props;
-  let { scale: scale2 = 1 } = $$props;
-  let pallette;
-  onMount(async () => {
-    new PointerTracker(pallette, {
-      start: (pointer, event) => {
-        return false;
-      }
-    });
-  });
-  let newContainer = createNewNode();
-  function div1_binding($$value) {
-    binding_callbacks[$$value ? "unshift" : "push"](() => {
-      pallette = $$value;
-      $$invalidate(1, pallette);
-    });
-  }
-  $$self.$$set = ($$props2) => {
-    if ("children" in $$props2)
-      $$invalidate(3, children2 = $$props2.children);
-    if ("scale" in $$props2)
-      $$invalidate(0, scale2 = $$props2.scale);
-  };
-  return [scale2, pallette, newContainer, children2, div1_binding];
-}
-class Menu extends SvelteComponent {
-  constructor(options) {
-    super();
-    init(this, options, instance$8, create_fragment$8, safe_not_equal, { children: 3, scale: 0 });
-  }
-}
-var Gripper_svelte_svelte_type_style_lang = "";
-var Nodes_svelte_svelte_type_style_lang = "";
-var Wrapper_svelte_svelte_type_style_lang = "";
 var styles = "";
 const minScaleAttr = "min-scale";
 function getDistance(a, b) {
@@ -1220,13 +1368,12 @@ const MIN_SCALE = 0.01;
 class PinchZoom {
   constructor(node) {
     this._transform = createMatrix();
-    this.node = node;
-    this._parentEl = this.node.parentElement || document.body;
-    new MutationObserver(() => this._stageElChange()).observe(this.node, { childList: true });
+    this._node = node;
+    this._parentEl = this._node.parentElement || document.body;
+    new MutationObserver(() => this._stageElChange()).observe(this._node, { childList: true });
     this._pointerTracker = new PointerTracker(this._parentEl, {
       eventListenerOptions: { capture: true },
       start: (pointer, event) => {
-        console.log("PanZoom Start", { pointer }, this._pointerTracker.currentPointers.length);
         if (this._pointerTracker.currentPointers.length === 2 || !this._parentEl)
           return false;
         event.preventDefault();
@@ -1234,16 +1381,19 @@ class PinchZoom {
           event.stopPropagation();
           return true;
         }
-        if (this._pointerTracker.currentPointers.length === 0 && (event.target == this._parentEl || event.target == node)) {
+        if (this._pointerTracker.currentPointers.length === 0) {
           return true;
         }
       },
       move: (previousPointers, changedPointers, event) => {
+        if (this._pointerTracker.currentPointers.length === 0)
+          return;
+        if (this._pointerTracker.currentPointers.length === 1 && !(event.target == this._parentEl || event.target == node))
+          return;
         event.stopPropagation();
         this._onPointerMove(previousPointers, this._pointerTracker.currentPointers);
       },
       end: (pointer, event, cancelled) => {
-        console.log("PanZoom End", { pointer, event, cancelled }, this._pointerTracker.currentPointers.length);
       }
     });
     this._parentEl.addEventListener("wheel", (event) => this._onWheel(event));
@@ -1259,7 +1409,7 @@ class PinchZoom {
     }
   }
   get minScale() {
-    const attrValue = this.node.getAttribute(minScaleAttr);
+    const attrValue = this._node.getAttribute(minScaleAttr);
     if (!attrValue)
       return MIN_SCALE;
     const value = parseFloat(attrValue);
@@ -1268,7 +1418,7 @@ class PinchZoom {
     return MIN_SCALE;
   }
   set minScale(value) {
-    this.node.setAttribute(minScaleAttr, String(value));
+    this._node.setAttribute(minScaleAttr, String(value));
   }
   connectedCallback() {
     this._stageElChange();
@@ -1285,7 +1435,7 @@ class PinchZoom {
   scaleTo(scale2, opts = {}) {
     let { originX = 0, originY = 0 } = opts;
     const { relativeTo = "content", allowChangeEvent = false } = opts;
-    const relativeToEl = relativeTo === "content" ? this._parentEl : this.node;
+    const relativeToEl = relativeTo === "content" ? this._parentEl : this._node;
     if (!relativeToEl || !this._parentEl) {
       this.setTransform({ scale: scale2, allowChangeEvent });
       return;
@@ -1315,7 +1465,7 @@ class PinchZoom {
       this._updateTransform(scale2, x, y, allowChangeEvent);
       return;
     }
-    const thisBounds = this.node.getBoundingClientRect();
+    const thisBounds = this._node.getBoundingClientRect();
     const parentElBounds = this._parentEl.getBoundingClientRect();
     if (!thisBounds.width || !thisBounds.height) {
       this._updateTransform(scale2, x, y, allowChangeEvent);
@@ -1340,14 +1490,14 @@ class PinchZoom {
     this._transform.e = x;
     this._transform.f = y;
     this._transform.d = this._transform.a = scale2;
-    this.node.style.transform = `translate(${x}px,${y}px) scale(${scale2})`;
+    this._node.style.transform = `translate(${x}px,${y}px) scale(${scale2})`;
     if (allowChangeEvent) {
       const event = new Event("change", { bubbles: true });
-      this.node.dispatchEvent(event);
+      this._node.dispatchEvent(event);
     }
   }
   _stageElChange() {
-    this._parentEl = this.node.parentElement || document.body;
+    this._parentEl = this._node.parentElement || document.body;
     this.setTransform({ allowChangeEvent: true });
   }
   _onWheel(event) {
@@ -1390,7 +1540,14 @@ class PinchZoom {
     });
   }
   _applyChange(opts = {}) {
-    const { panX = 0, panY = 0, originX = 0, originY = 0, scaleDiff = 1, allowChangeEvent = false } = opts;
+    const {
+      panX = 0,
+      panY = 0,
+      originX = 0,
+      originY = 0,
+      scaleDiff = 1,
+      allowChangeEvent = false
+    } = opts;
     const matrix = createMatrix().translate(panX, panY).translate(originX, originY).scale(scaleDiff).translate(-originX, -originY).multiply(this._transform);
     this.setTransform({
       allowChangeEvent,
@@ -1449,8 +1606,8 @@ function create_fragment$7(ctx) {
         set_style(div, "top", ctx2[2] + "px");
       }
     },
-    i: noop$1,
-    o: noop$1,
+    i: noop$2,
+    o: noop$2,
     d(detaching) {
       if (detaching)
         detach(div);
@@ -1484,7 +1641,7 @@ function instance$7($$self, $$props, $$invalidate) {
   onMount(() => {
     handleWidth = handleEl ? parseFloat(getComputedStyle(handleEl).width.replace("px", "")) : 8;
     handleHeight = handleEl ? parseFloat(getComputedStyle(handleEl).height.replace("px", "")) : 8;
-    const pointerTracker = new PointerTracker(handleEl, {
+    const pointerTracker = new PointerTracker$1(handleEl, {
       start: (pointer, event) => {
         if (pointerTracker.currentPointers.length === 2)
           return false;
@@ -1655,7 +1812,9 @@ class ResizeHandle extends SvelteComponent {
 }
 function clickOutside(node, { enabled: initialEnabled, handleUnselect }) {
   const handleOutsideClick = ({ target }) => {
+    console.log("Clicked outside");
     if (node !== target && node.parentElement != target.parentElement && !node.contains(target)) {
+      console.log("Unselect");
       handleUnselect();
     }
   };
@@ -1701,7 +1860,7 @@ function create_else_block(ctx) {
       if (!mounted) {
         dispose = [
           listen(div, "input", ctx[5]),
-          listen(div, "dblclick", ctx[5])
+          listen(div, "click", ctx[5])
         ];
         mounted = true;
       }
@@ -1825,8 +1984,8 @@ function create_fragment$6(ctx) {
         }
       }
     },
-    i: noop$1,
-    o: noop$1,
+    i: noop$2,
+    o: noop$2,
     d(detaching) {
       if (detaching)
         detach(div);
@@ -1847,8 +2006,8 @@ function instance$6($$self, $$props, $$invalidate) {
   const dispatch = createEventDispatcher();
   async function toggle(event) {
     $$invalidate(2, editing = !editing);
+    console.log(`editing toggled to ${editing}`);
     if (editing) {
-      console.log("toggle editing");
       await tick();
       inputEl.focus();
       let range = document.createRange();
@@ -1859,22 +2018,35 @@ function instance$6($$self, $$props, $$invalidate) {
       sel.removeAllRanges();
       sel.addRange(range);
     } else {
-      $$invalidate(8, value = label);
-      dispatch("doneEditing");
+      stopEditing();
     }
   }
+  function stopEditing() {
+    $$invalidate(2, editing = false);
+    $$invalidate(8, value = label);
+    dispatch("doneEditing");
+  }
   const handleEnter = (e) => {
-    console.log("checking keyup");
     if (e.keyCode === 13) {
       e.preventDefault();
       inputEl.blur();
     }
   };
   const handleBlur = (_) => {
+    console.log("blur occurred");
     if (value != "" && value != null)
       toggle();
     else
       $$invalidate(8, value = "Enter Value");
+    if (window.getSelection) {
+      if (window.getSelection().empty) {
+        window.getSelection().empty();
+      } else if (window.getSelection().removeAllRanges) {
+        window.getSelection().removeAllRanges();
+      }
+    } else if (document.selection) {
+      document.selection.empty();
+    }
   };
   function span_binding($$value) {
     binding_callbacks[$$value ? "unshift" : "push"](() => {
@@ -2089,8 +2261,8 @@ function create_fragment$5(ctx) {
         if_block = null;
       }
     },
-    i: noop$1,
-    o: noop$1,
+    i: noop$2,
+    o: noop$2,
     d(detaching) {
       if (detaching)
         detach(main);
@@ -3092,9 +3264,8 @@ function instance$3($$self, $$props, $$invalidate) {
   let directions = ["nw", "w", "sw", "ne", "e", "se", "n", "s"];
   let pointerTracker;
   onMount(async () => {
-    pointerTracker = new PointerTracker(container, {
+    pointerTracker = new PointerTracker$1(container, {
       start: (pointer, event) => {
-        console.log("Container click", node.name);
         if (pointerTracker.currentPointers.length === 1)
           return false;
         event.stopPropagation();
@@ -3868,4 +4039,4 @@ class Routes extends SvelteComponent {
   }
 }
 export { Routes as default };
-//# sourceMappingURL=index.svelte-a1274762.js.map
+//# sourceMappingURL=index.svelte-c31e68bd.js.map
