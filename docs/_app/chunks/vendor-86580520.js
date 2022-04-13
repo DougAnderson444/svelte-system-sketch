@@ -2125,7 +2125,7 @@ const isTouchEvent = (event) => "changedTouches" in event;
 const noop = () => {
 };
 class PointerTracker {
-  constructor(_element, { start = () => true, move = noop, end = noop, rawUpdates = false, avoidPointerEvents = false } = {}) {
+  constructor(_element, { start = () => true, move = noop, end = noop, rawUpdates = false, avoidPointerEvents = false, eventListenerOptions = { capture: false, passive: false, once: false } } = {}) {
     this._element = _element;
     this.startPointers = [];
     this.currentPointers = [];
@@ -2144,9 +2144,9 @@ class PointerTracker {
       if (isPointerEvent(event)) {
         const capturingElement = event.target && "setPointerCapture" in event.target ? event.target : this._element;
         capturingElement.setPointerCapture(event.pointerId);
-        this._element.addEventListener(this._rawUpdates ? "pointerrawupdate" : "pointermove", this._move);
-        this._element.addEventListener("pointerup", this._pointerEnd);
-        this._element.addEventListener("pointercancel", this._pointerEnd);
+        this._element.addEventListener(this._rawUpdates ? "pointerrawupdate" : "pointermove", this._move, this._eventListenerOptions);
+        this._element.addEventListener("pointerup", this._pointerEnd, this._eventListenerOptions);
+        this._element.addEventListener("pointercancel", this._pointerEnd, this._eventListenerOptions);
       } else {
         window.addEventListener("mousemove", this._move);
         window.addEventListener("mouseup", this._pointerEnd);
@@ -2213,14 +2213,15 @@ class PointerTracker {
     this._moveCallback = move;
     this._endCallback = end;
     this._rawUpdates = rawUpdates && "onpointerrawupdate" in window;
+    this._eventListenerOptions = eventListenerOptions;
     if (self.PointerEvent && !avoidPointerEvents) {
-      this._element.addEventListener("pointerdown", this._pointerStart);
+      this._element.addEventListener("pointerdown", this._pointerStart, this._eventListenerOptions);
     } else {
-      this._element.addEventListener("mousedown", this._pointerStart);
-      this._element.addEventListener("touchstart", this._touchStart);
-      this._element.addEventListener("touchmove", this._move);
-      this._element.addEventListener("touchend", this._touchEnd);
-      this._element.addEventListener("touchcancel", this._touchEnd);
+      this._element.addEventListener("mousedown", this._pointerStart, this._eventListenerOptions);
+      this._element.addEventListener("touchstart", this._touchStart, this._eventListenerOptions);
+      this._element.addEventListener("touchmove", this._move, this._eventListenerOptions);
+      this._element.addEventListener("touchend", this._touchEnd, this._eventListenerOptions);
+      this._element.addEventListener("touchcancel", this._touchEnd, this._eventListenerOptions);
     }
   }
   stop() {
@@ -2245,4 +2246,4 @@ class PointerTracker {
   }
 }
 export { PointerTracker$1 as PointerTracker, PointerTracker as PointerTracker$1, SvelteComponent, action_destroyer, add_flush_callback, add_render_callback, add_resize_listener, afterUpdate, append_hydration, asDropZone, asDroppable, assign, attr, bind, binding_callbacks, check_outros, children, claim_component, claim_element, claim_space, claim_text, component_subscribe, createEventDispatcher, create_component, create_slot, customAlphabet, destroy_component, destroy_each, detach, element, empty, get_all_dirty_from_scope, get_slot_changes, get_spread_object, get_spread_update, globals, group_outros, init, insert_hydration, is_function, listen, mount_component, noop$2 as noop, null_to_empty, onMount, run_all, safe_not_equal, setContext, set_data, set_store_value, set_style, space, stop_propagation, text, tick, transition_in, transition_out, update_slot_base, writable };
-//# sourceMappingURL=vendor-9e1d934b.js.map
+//# sourceMappingURL=vendor-86580520.js.map

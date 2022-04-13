@@ -17,7 +17,7 @@ var __spreadValues = (a, b) => {
   return a;
 };
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-import { customAlphabet, SvelteComponent, init, safe_not_equal, element, text, space, claim_element, children, claim_text, claim_space, detach, attr, insert_hydration, append_hydration, action_destroyer, asDroppable, set_data, noop, onMount, PointerTracker, binding_callbacks, PointerTracker$1, writable, set_style, component_subscribe, add_render_callback, add_resize_listener, createEventDispatcher, tick, null_to_empty, listen, run_all, empty, destroy_each, create_component, claim_component, mount_component, add_flush_callback, transition_in, transition_out, destroy_component, stop_propagation, group_outros, check_outros, bind, asDropZone, is_function, set_store_value, globals } from "../chunks/vendor-9e1d934b.js";
+import { customAlphabet, SvelteComponent, init, safe_not_equal, element, text, space, claim_element, children, claim_text, claim_space, detach, attr, insert_hydration, append_hydration, action_destroyer, asDroppable, set_data, noop, onMount, PointerTracker, binding_callbacks, PointerTracker$1, writable, set_style, component_subscribe, add_render_callback, add_resize_listener, createEventDispatcher, tick, null_to_empty, listen, run_all, empty, destroy_each, create_component, claim_component, mount_component, add_flush_callback, transition_in, transition_out, destroy_component, stop_propagation, group_outros, check_outros, bind, asDropZone, is_function, set_store_value, globals } from "../chunks/vendor-86580520.js";
 import { __vitePreload } from "../chunks/preload-helper-f45aa6d1.js";
 var Canvas_svelte_svelte_type_style_lang = "";
 function safeid(n = 16) {
@@ -116,7 +116,7 @@ function instance$8($$self, $$props, $$invalidate) {
   let pallette;
   onMount(async () => {
     new PointerTracker(pallette, {
-      start: (pointer, event) => {
+      start: (pointer, event2) => {
         return false;
       }
     });
@@ -182,17 +182,20 @@ class PinchZoom {
     this._parentEl = this.node.parentElement || document.body;
     new MutationObserver(() => this._stageElChange()).observe(this.node, { childList: true });
     const pointerTracker = new PointerTracker$1(this._parentEl, {
-      start: (pointer, event) => {
+      eventListenerOptions: { capture: true },
+      start: (pointer, event2) => {
         if (pointerTracker.currentPointers.length === 2 || !this._parentEl)
           return false;
-        event.preventDefault();
+        event2.preventDefault();
+        event2.stopPropagation();
         return true;
       },
       move: (previousPointers) => {
+        event.stopPropagation();
         this._onPointerMove(previousPointers, pointerTracker.currentPointers);
       }
     });
-    this._parentEl.addEventListener("wheel", (event) => this._onWheel(event));
+    this._parentEl.addEventListener("wheel", (event2) => this._onWheel(event2));
   }
   static get observedAttributes() {
     return [minScaleAttr];
@@ -288,21 +291,21 @@ class PinchZoom {
     this._transform.d = this._transform.a = scale2;
     this.node.style.transform = `translate(${x}px,${y}px) scale(${scale2})`;
     if (allowChangeEvent) {
-      const event = new Event("change", { bubbles: true });
-      this.node.dispatchEvent(event);
+      const event2 = new Event("change", { bubbles: true });
+      this.node.dispatchEvent(event2);
     }
   }
   _stageElChange() {
     this._parentEl = this.node.parentElement || document.body;
     this.setTransform({ allowChangeEvent: true });
   }
-  _onWheel(event) {
+  _onWheel(event2) {
     if (!this._parentEl)
       return;
-    event.preventDefault();
+    event2.preventDefault();
     this._parentEl.getBoundingClientRect();
-    let { deltaY } = event;
-    const { ctrlKey, deltaMode } = event;
+    let { deltaY } = event2;
+    const { ctrlKey, deltaMode } = event2;
     if (deltaMode === 1) {
       deltaY *= 15;
     }
@@ -310,8 +313,8 @@ class PinchZoom {
     const scaleDiff = 1 - deltaY / divisor;
     this._applyChange({
       scaleDiff,
-      originX: event.pageX - this._parentEl.offsetLeft - this._parentEl.clientWidth / 2,
-      originY: event.pageY - this._parentEl.offsetTop - this._parentEl.clientHeight / 2,
+      originX: event2.pageX - this._parentEl.offsetLeft - this._parentEl.clientWidth / 2,
+      originY: event2.pageY - this._parentEl.offsetTop - this._parentEl.clientHeight / 2,
       allowChangeEvent: true
     });
   }
@@ -321,8 +324,8 @@ class PinchZoom {
     const currentRect = this._parentEl.getBoundingClientRect();
     const prevMidpoint = getMidpoint(previousPointers[0], previousPointers[1]);
     const newMidpoint = getMidpoint(currentPointers[0], currentPointers[1]);
-    const originX = prevMidpoint.clientX - currentRect.left;
-    const originY = prevMidpoint.clientY - currentRect.top;
+    const originX = prevMidpoint.clientX - currentRect.left - currentRect.width / 2;
+    const originY = prevMidpoint.clientY - currentRect.top - currentRect.height / 2;
     const prevDistance = getDistance(previousPointers[0], previousPointers[1]);
     const newDistance = getDistance(currentPointers[0], currentPointers[1]);
     const scaleDiff = prevDistance ? newDistance / prevDistance : 1;
@@ -430,7 +433,7 @@ function instance$7($$self, $$props, $$invalidate) {
   let { direction } = $$props;
   let { isDragging = false } = $$props;
   let { grid: grid2 } = $$props;
-  const isPointerEvent = (event) => "pointerId" in event;
+  const isPointerEvent = (event2) => "pointerId" in event2;
   let handleEl;
   let handleWidth = 8;
   let handleHeight = 8;
@@ -438,21 +441,21 @@ function instance$7($$self, $$props, $$invalidate) {
     handleWidth = handleEl ? parseFloat(getComputedStyle(handleEl).width.replace("px", "")) : 8;
     handleHeight = handleEl ? parseFloat(getComputedStyle(handleEl).height.replace("px", "")) : 8;
     const pointerTracker = new PointerTracker(handleEl, {
-      start: (pointer, event) => {
+      start: (pointer, event2) => {
         if (pointerTracker.currentPointers.length === 2)
           return false;
-        event.stopPropagation();
-        event.preventDefault();
+        event2.stopPropagation();
+        event2.preventDefault();
         return true;
       },
-      move: (previousPointers, changedPointers, event) => {
-        if (!isPointerEvent(event))
+      move: (previousPointers, changedPointers, event2) => {
+        if (!isPointerEvent(event2))
           return;
-        let dx = event.clientX - previousPointers[0].clientX;
-        let dy = event.clientY - previousPointers[0].clientY;
-        dragHandle(event.clientX, event.clientY, dx, dy);
+        let dx = event2.clientX - previousPointers[0].clientX;
+        let dy = event2.clientY - previousPointers[0].clientY;
+        dragHandle(event2.clientX, event2.clientY, dx, dy);
       },
-      end: (pointer, event, cancelled) => {
+      end: (pointer, event2, cancelled) => {
         onDragEnd();
       }
     });
@@ -798,7 +801,7 @@ function instance$6($$self, $$props, $$invalidate) {
   let inputEl;
   let label = value;
   const dispatch = createEventDispatcher();
-  async function toggle(event) {
+  async function toggle(event2) {
     $$invalidate(2, editing = !editing);
     if (editing) {
       console.log("toggle editing");
@@ -959,6 +962,7 @@ function create_if_block$5(ctx) {
 }
 function create_each_block$1(ctx) {
   let div;
+  let t;
   let mounted;
   let dispose;
   function click_handler(...args) {
@@ -967,11 +971,14 @@ function create_each_block$1(ctx) {
   return {
     c() {
       div = element("div");
+      t = text("\xA0 \xA0\r\n			");
       this.h();
     },
     l(nodes) {
       div = claim_element(nodes, "DIV", { class: true, style: true });
-      children(div).forEach(detach);
+      var div_nodes = children(div);
+      t = claim_text(div_nodes, "\xA0 \xA0\r\n			");
+      div_nodes.forEach(detach);
       this.h();
     },
     h() {
@@ -980,6 +987,7 @@ function create_each_block$1(ctx) {
     },
     m(target, anchor) {
       insert_hydration(target, div, anchor);
+      append_hydration(div, t);
       if (!mounted) {
         dispose = listen(div, "click", click_handler);
         mounted = true;
@@ -1161,7 +1169,7 @@ function create_fragment$4(ctx) {
       attr(span0, "class", "connect svelte-1fxjj2n");
       attr(span1, "class", "svelte-1fxjj2n");
       attr(div, "class", "context-menu svelte-1fxjj2n");
-      set_style(div, "right", "-" + ctx[1] * 1.5 + "px");
+      set_style(div, "right", "-" + ctx[1] * 2.25 + "px");
       set_style(div, "top", "0");
       add_render_callback(() => ctx[4].call(div));
     },
@@ -1206,7 +1214,7 @@ function create_fragment$4(ctx) {
         check_outros();
       }
       if (!current || dirty & 2) {
-        set_style(div, "right", "-" + ctx2[1] * 1.5 + "px");
+        set_style(div, "right", "-" + ctx2[1] * 2.25 + "px");
       }
     },
     i(local) {
@@ -2052,19 +2060,19 @@ function instance$3($$self, $$props, $$invalidate) {
   onMount(async () => {
     __vitePreload(() => import("../chunks/svelte-drag-drop-touch.esm-bd0b41cd.js"), true ? [] : void 0);
     const pointerTracker = new PointerTracker(container, {
-      start: (pointer, event) => {
+      start: (pointer, event2) => {
         if (pointerTracker.currentPointers.length === 2)
           return false;
-        event.stopPropagation();
-        event.preventDefault();
+        event2.stopPropagation();
+        event2.preventDefault();
         return true;
       },
-      move: (previousPointers, changedPointers, event) => {
-        let dx = event.clientX - previousPointers[0].clientX;
-        let dy = event.clientY - previousPointers[0].clientY;
-        dragFrame(event.clientX, event.clientY, dx, dy);
+      move: (previousPointers, changedPointers, event2) => {
+        let dx = event2.clientX - previousPointers[0].clientX;
+        let dy = event2.clientY - previousPointers[0].clientY;
+        dragFrame(event2.clientX, event2.clientY, dx, dy);
       },
-      end: (pointer, event, cancelled) => {
+      end: (pointer, event2, cancelled) => {
         onDragEnd();
         handleFocus();
       }
@@ -2878,4 +2886,4 @@ class Routes extends SvelteComponent {
   }
 }
 export { Routes as default };
-//# sourceMappingURL=index.svelte-a5330fd4.js.map
+//# sourceMappingURL=index.svelte-4e25ec8c.js.map
