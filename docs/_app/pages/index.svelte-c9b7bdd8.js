@@ -3091,7 +3091,7 @@ function instance$3($$self, $$props, $$invalidate) {
     const pointerTracker = new PointerTracker(container, {
       start: (pointer, event2) => {
         console.log("Container click", node.name);
-        if (pointerTracker.currentPointers.length === 1 || !this._parentEl)
+        if (pointerTracker.currentPointers.length === 1)
           return false;
         event2.stopPropagation();
         event2.preventDefault();
@@ -3864,4 +3864,4 @@ class Routes extends SvelteComponent {
   }
 }
 export { Routes as default };
-//# sourceMappingURL=index.svelte-35a6e0cb.js.map
+//# sourceMappingURL=index.svelte-c9b7bdd8.js.map
