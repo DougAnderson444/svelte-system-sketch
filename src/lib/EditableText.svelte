@@ -1,6 +1,8 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 	import { tick } from 'svelte';
+	import { clickOutside } from './directives';
+
 	// Props
 	export let value = '';
 	export let type = 'text';
@@ -25,9 +27,8 @@
 
 	async function toggle(event) {
 		editing = !editing;
+		console.log(`editing toggled to ${editing}`);
 		if (editing) {
-			console.log('toggle editing');
-
 			await tick();
 			inputEl.focus();
 			// inputEl.setSelectionRange(0, label.length);
@@ -40,13 +41,17 @@
 			sel.removeAllRanges();
 			sel.addRange(range);
 		} else {
-			value = label; // finalize, save to db
-			dispatch('doneEditing');
+			stopEditing();
 		}
 	}
 
+	function stopEditing() {
+		editing = false;
+		value = label; // finalize, save to db
+		dispatch('doneEditing');
+	}
+
 	const handleEnter = (e) => {
-		console.log('checking keyup');
 		if (e.keyCode === 13) {
 			e.preventDefault();
 			inputEl.blur();
@@ -54,8 +59,23 @@
 	};
 
 	const handleBlur = (_) => {
+		console.log('blur occurred');
+
 		if (value != '' && value != null) toggle();
 		else value = 'Enter Value';
+
+		if (window.getSelection) {
+			if (window.getSelection().empty) {
+				// Chrome
+				window.getSelection().empty();
+			} else if (window.getSelection().removeAllRanges) {
+				// Firefox
+				window.getSelection().removeAllRanges();
+			}
+		} else if (document.selection) {
+			// IE?
+			document.selection.empty();
+		}
 	};
 </script>
 
@@ -72,7 +92,7 @@
 			{label}
 		</span>
 	{:else}
-		<div class={labelClasses} on:input={toggle} on:dblclick={toggle} bind:this={inputEl}>
+		<div class={labelClasses} on:input={toggle} on:click={toggle} bind:this={inputEl}>
 			{@html label}
 		</div>
 	{/if}
