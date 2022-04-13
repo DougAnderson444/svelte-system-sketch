@@ -39,7 +39,7 @@
 
 				// We only want to track 1 pointers at most (zooming is handled by pzoom for us)
 				// if there already exists 1 pointer, and now this would have been the 2nd pointer, stop here
-				if (pointerTracker.currentPointers.length === 1 || !this._parentEl) return false;
+				if (pointerTracker.currentPointers.length === 1) return false;
 
 				event.stopPropagation();
 				event.preventDefault();
