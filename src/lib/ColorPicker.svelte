@@ -1,21 +1,17 @@
 <script>
 	import { colors } from '$lib/config';
 	export let backgroundColor = '#fee9004b';
-
-	function handleClick(color) {
-		backgroundColor = color;
-	}
 </script>
 
 <main>
 	{#if backgroundColor && colors}
-		{#each colors as color}
+		{#each colors as color, c}
 			<div
 				class="colorOption"
-				on:click={(e) => handleClick(color)}
+				on:click={(e) => (backgroundColor = color)}
 				style="background-color: {color};"
 			>
-			<!-- I get thisstrange error when using <div/> instead of <div> </div> -->
+				<!-- I get thisstrange error when using <div/> instead of <div> </div> -->
 				&nbsp; &NonBreakingSpace;
 			</div>
 		{/each}

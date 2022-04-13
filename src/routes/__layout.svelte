@@ -1,10 +1,5 @@
 <script>
 	import '../app.css';
-	import { onMount } from 'svelte';
-
-	onMount(async () => {
-		import('svelte-drag-drop-touch');
-	});
 </script>
 
 <main>

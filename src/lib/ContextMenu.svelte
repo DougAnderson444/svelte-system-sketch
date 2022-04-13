@@ -4,18 +4,18 @@
 	export let node;
 
 	let offsetWidth;
-	let backgroundColor = node?.style?.backgroundColor || '#fee9004b';
+	// let backgroundColor = node?.style?.backgroundColor || '#fee9004b';
 
-	console.log({ backgroundColor, node });
+	// console.log({ backgroundColor, node });
 
-	$: if (node && backgroundColor)
-		node = {
-			...node,
-			style: {
-				...node.style,
-				backgroundColor
-			}
-		};
+	// $: if (node && backgroundColor)
+	// 	node = {
+	// 		...node,
+	// 		style: {
+	// 			...node.style,
+	// 			backgroundColor
+	// 		}
+	// 	};
 
 	function handleDelete(e) {
 		// TODO: tentatively delete it, with an undo snackbar
@@ -27,8 +27,9 @@
 </script>
 
 <div class="context-menu" style="right: -{offsetWidth * 2.25}px; top: 0;" bind:offsetWidth>
-	{#if backgroundColor}
-		<ColorPicker bind:backgroundColor />
+	{#if node && node?.style?.backgroundColor && ColorPicker}
+		<!-- <ColorPicker bind:backgroundColor /> -->
+		<ColorPicker bind:backgroundColor={node.style.backgroundColor} />
 	{/if}
 	<span on:click|stopPropagation={handleConnect} class="connect">↪</span>
 	<span on:click|stopPropagation={handleDelete}>🗑️</span>

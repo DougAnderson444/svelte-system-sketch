@@ -1,5 +1,4 @@
-import { __vitePreload } from "../chunks/preload-helper-f45aa6d1.js";
-import { SvelteComponent, init, safe_not_equal, create_slot, element, claim_element, children, detach, attr, insert_hydration, update_slot_base, get_all_dirty_from_scope, get_slot_changes, transition_in, transition_out, onMount } from "../chunks/vendor-86580520.js";
+import { SvelteComponent, init, safe_not_equal, create_slot, element, claim_element, children, detach, attr, insert_hydration, update_slot_base, get_all_dirty_from_scope, get_slot_changes, transition_in, transition_out } from "../chunks/index-182dfd00.js";
 var app = "";
 var __layout_svelte_svelte_type_style_lang = "";
 function create_fragment(ctx) {
@@ -59,9 +58,6 @@ function create_fragment(ctx) {
 }
 function instance($$self, $$props, $$invalidate) {
   let { $$slots: slots = {}, $$scope } = $$props;
-  onMount(async () => {
-    __vitePreload(() => import("../chunks/svelte-drag-drop-touch.esm-bd0b41cd.js"), true ? [] : void 0);
-  });
   $$self.$$set = ($$props2) => {
     if ("$$scope" in $$props2)
       $$invalidate(0, $$scope = $$props2.$$scope);
@@ -75,4 +71,4 @@ class _layout extends SvelteComponent {
   }
 }
 export { _layout as default };
-//# sourceMappingURL=__layout.svelte-5736d7b7.js.map
+//# sourceMappingURL=__layout.svelte-e7140035.js.map

@@ -29,13 +29,13 @@ var __objRest = (source, exclude) => {
     }
   return target;
 };
-import { SvelteComponent, init, safe_not_equal, element, claim_element, children, detach, attr, set_style, insert_hydration, text, claim_text, set_data, space, empty, claim_space, group_outros, transition_out, check_outros, transition_in, setContext, afterUpdate, onMount, create_component, claim_component, mount_component, get_spread_update, get_spread_object, destroy_component, assign, writable, tick } from "./chunks/vendor-86580520.js";
-import { __vitePreload } from "./chunks/preload-helper-f45aa6d1.js";
-let base = "";
+import { SvelteComponent, init, safe_not_equal, element, claim_element, children, detach, attr, set_style, insert_hydration, text, claim_text, set_data, space, empty, claim_space, group_outros, transition_out, check_outros, transition_in, setContext, afterUpdate, onMount, create_component, claim_component, mount_component, get_spread_update, get_spread_object, destroy_component, assign, tick } from "./chunks/index-182dfd00.js";
+import { writable } from "./chunks/index-dca0cab6.js";
+let base$1 = "";
 let assets = "";
 function set_paths(paths) {
-  base = paths.base;
-  assets = paths.assets || base;
+  base$1 = paths.base;
+  assets = paths.assets || base$1;
 }
 function create_else_block_1(ctx) {
   let switch_instance;
@@ -684,7 +684,7 @@ function create_fragment(ctx) {
 function instance($$self, $$props, $$invalidate) {
   let { stores } = $$props;
   let { page } = $$props;
-  let { components } = $$props;
+  let { components: components2 } = $$props;
   let { props_0 = null } = $$props;
   let { props_1 = null } = $$props;
   let { props_2 = null } = $$props;
@@ -709,7 +709,7 @@ function instance($$self, $$props, $$invalidate) {
     if ("page" in $$props2)
       $$invalidate(8, page = $$props2.page);
     if ("components" in $$props2)
-      $$invalidate(0, components = $$props2.components);
+      $$invalidate(0, components2 = $$props2.components);
     if ("props_0" in $$props2)
       $$invalidate(1, props_0 = $$props2.props_0);
     if ("props_1" in $$props2)
@@ -722,7 +722,7 @@ function instance($$self, $$props, $$invalidate) {
       stores.page.set(page);
     }
   };
-  return [components, props_0, props_1, props_2, mounted, navigated, title, stores, page];
+  return [components2, props_0, props_1, props_2, mounted, navigated, title, stores, page];
 }
 class Root extends SvelteComponent {
   constructor(options) {
@@ -737,15 +737,48 @@ class Root extends SvelteComponent {
     });
   }
 }
-const c = [
-  () => __vitePreload(() => import("./pages/__layout.svelte-5736d7b7.js"), true ? ["pages/__layout.svelte-5736d7b7.js","assets/pages/__layout.svelte-98621338.css","chunks/preload-helper-f45aa6d1.js","chunks/vendor-86580520.js","assets/vendor-51225f93.css"] : void 0),
-  () => __vitePreload(() => import("./error.svelte-9cf6f7c4.js"), true ? ["error.svelte-9cf6f7c4.js","chunks/vendor-86580520.js","assets/vendor-51225f93.css"] : void 0),
-  () => __vitePreload(() => import("./pages/index.svelte-4e25ec8c.js"), true ? ["pages/index.svelte-4e25ec8c.js","assets/pages/index.svelte-42e8cf96.css","chunks/vendor-86580520.js","assets/vendor-51225f93.css","chunks/preload-helper-f45aa6d1.js"] : void 0)
+const scriptRel = "modulepreload";
+const seen = {};
+const base = "/svelte-system-sketch/_app/";
+const __vitePreload = function preload(baseModule, deps) {
+  if (!deps || deps.length === 0) {
+    return baseModule();
+  }
+  return Promise.all(deps.map((dep) => {
+    dep = `${base}${dep}`;
+    if (dep in seen)
+      return;
+    seen[dep] = true;
+    const isCss = dep.endsWith(".css");
+    const cssSelector = isCss ? '[rel="stylesheet"]' : "";
+    if (document.querySelector(`link[href="${dep}"]${cssSelector}`)) {
+      return;
+    }
+    const link = document.createElement("link");
+    link.rel = isCss ? "stylesheet" : scriptRel;
+    if (!isCss) {
+      link.as = "script";
+      link.crossOrigin = "";
+    }
+    link.href = dep;
+    document.head.appendChild(link);
+    if (isCss) {
+      return new Promise((res, rej) => {
+        link.addEventListener("load", res);
+        link.addEventListener("error", () => rej(new Error(`Unable to preload CSS for ${dep}`)));
+      });
+    }
+  })).then(() => baseModule());
+};
+const matchers = {};
+const components = [
+  () => __vitePreload(() => import("./pages/__layout.svelte-e7140035.js"), true ? ["pages/__layout.svelte-e7140035.js","assets/pages/__layout.svelte-98621338.css","chunks/index-182dfd00.js"] : void 0),
+  () => __vitePreload(() => import("./error.svelte-9375b7c6.js"), true ? ["error.svelte-9375b7c6.js","chunks/index-182dfd00.js"] : void 0),
+  () => __vitePreload(() => import("./pages/index.svelte-3ee05107.js"), true ? ["pages/index.svelte-3ee05107.js","assets/pages/index.svelte-691caf9e.css","chunks/index-182dfd00.js","chunks/index-dca0cab6.js"] : void 0)
 ];
-const routes = [
-  [/^\/$/, [c[0], c[2]], [c[1]]]
-];
-const fallback = [c[0](), c[1]()];
+const dictionary = {
+  "": [[0, 2], [1]]
+};
 function coalesce_to_error(err) {
   return err instanceof Error || err && err.name && err.message ? err : new Error(JSON.stringify(err));
 }
@@ -857,7 +890,7 @@ function notifiable_store(value) {
 }
 function create_updated_store() {
   const { set, subscribe } = writable(false);
-  const initial = "1649845594809";
+  const initial = "1649853354255";
   let timeout;
   async function check() {
     clearTimeout(timeout);
@@ -898,8 +931,72 @@ function initial_fetch(resource, opts) {
   }
   return fetch(resource, opts);
 }
+const param_pattern = /^(\.\.\.)?(\w+)(?:=(\w+))?$/;
+function parse_route_id(id) {
+  const names = [];
+  const types = [];
+  let add_trailing_slash = true;
+  const pattern = id === "" ? /^\/$/ : new RegExp(`^${decodeURIComponent(id).split(/(?:@[a-zA-Z0-9_-]+)?(?:\/|$)/).map((segment, i, segments) => {
+    const match = /^\[\.\.\.(\w+)(?:=(\w+))?\]$/.exec(segment);
+    if (match) {
+      names.push(match[1]);
+      types.push(match[2]);
+      return "(?:/(.*))?";
+    }
+    const is_last = i === segments.length - 1;
+    return segment && "/" + segment.split(/\[(.+?)\]/).map((content, i2) => {
+      if (i2 % 2) {
+        const [, rest, name, type] = param_pattern.exec(content);
+        names.push(name);
+        types.push(type);
+        return rest ? "(.*?)" : "([^/]+?)";
+      }
+      if (is_last && content.includes("."))
+        add_trailing_slash = false;
+      return content.normalize().replace(/%5[Bb]/g, "[").replace(/%5[Dd]/g, "]").replace(/#/g, "%23").replace(/\?/g, "%3F").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }).join("");
+  }).join("")}${add_trailing_slash ? "/?" : ""}$`);
+  return { pattern, names, types };
+}
+function exec(match, names, types, matchers2) {
+  const params = {};
+  for (let i = 0; i < names.length; i += 1) {
+    const name = names[i];
+    const type = types[i];
+    const value = match[i + 1] || "";
+    if (type) {
+      const matcher = matchers2[type];
+      if (!matcher)
+        throw new Error(`Missing "${type}" param matcher`);
+      if (!matcher(value))
+        return;
+    }
+    params[name] = value;
+  }
+  return params;
+}
+function parse(components2, dictionary2, matchers2) {
+  const routes2 = Object.entries(dictionary2).map(([id, [a, b, has_shadow]]) => {
+    const { pattern, names, types } = parse_route_id(id);
+    return {
+      id,
+      exec: (path) => {
+        const match = pattern.exec(path);
+        if (match)
+          return exec(match, names, types, matchers2);
+      },
+      a: a.map((n) => components2[n]),
+      b: b.map((n) => components2[n]),
+      has_shadow: !!has_shadow
+    };
+  });
+  return routes2;
+}
 const SCROLL_KEY = "sveltekit:scroll";
 const INDEX_KEY = "sveltekit:index";
+const routes = parse(components, dictionary, matchers);
+const default_layout = components[0]();
+const default_error = components[1]();
 let scroll_positions = {};
 try {
   scroll_positions = JSON.parse(sessionStorage[SCROLL_KEY]);
@@ -945,8 +1042,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     if (!ready)
       return;
     session_id += 1;
-    const intent = get_navigation_intent(new URL(location.href));
-    update(intent, [], true);
+    update(new URL(location.href), [], true);
   });
   ready = true;
   let navigating = 0;
@@ -983,44 +1079,47 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     await native_navigation(url);
   }
   async function prefetch(url) {
-    if (!owns(url)) {
+    const intent = get_navigation_intent(url);
+    if (!intent) {
       throw new Error("Attempted to prefetch a URL that does not belong to this app");
     }
-    const intent = get_navigation_intent(url);
-    load_cache.promise = get_navigation_result(intent, false);
+    load_cache.promise = load_route(intent, false);
     load_cache.id = intent.id;
     return load_cache.promise;
   }
-  async function update(intent, redirect_chain, no_cache, opts) {
+  async function update(url, redirect_chain, no_cache, opts) {
     var _a2, _b2, _c;
+    const intent = get_navigation_intent(url);
     const current_token = token = {};
-    let navigation_result = await get_navigation_result(intent, no_cache);
-    if (!navigation_result && intent.url.pathname === location.pathname) {
+    let navigation_result = intent && await load_route(intent, no_cache);
+    if (!navigation_result && url.origin === location.origin && url.pathname === location.pathname) {
       navigation_result = await load_root_error_page({
         status: 404,
-        error: new Error(`Not found: ${intent.url.pathname}`),
-        url: intent.url
+        error: new Error(`Not found: ${url.pathname}`),
+        url,
+        routeId: null
       });
     }
     if (!navigation_result) {
-      await native_navigation(intent.url);
+      await native_navigation(url);
       return;
     }
     if (token !== current_token)
       return;
     invalidated.clear();
     if (navigation_result.redirect) {
-      if (redirect_chain.length > 10 || redirect_chain.includes(intent.url.pathname)) {
+      if (redirect_chain.length > 10 || redirect_chain.includes(url.pathname)) {
         navigation_result = await load_root_error_page({
           status: 500,
           error: new Error("Redirect loop"),
-          url: intent.url
+          url,
+          routeId: null
         });
       } else {
         if (router_enabled) {
-          goto(new URL(navigation_result.redirect, intent.url).href, {}, [
+          goto(new URL(navigation_result.redirect, url).href, {}, [
             ...redirect_chain,
-            intent.url.pathname
+            url.pathname
           ]);
         } else {
           await native_navigation(new URL(navigation_result.redirect, location.href));
@@ -1030,7 +1129,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     } else if (((_b2 = (_a2 = navigation_result.props) == null ? void 0 : _a2.page) == null ? void 0 : _b2.status) >= 400) {
       const updated = await stores.updated.check();
       if (updated) {
-        await native_navigation(intent.url);
+        await native_navigation(url);
       }
     }
     updating = true;
@@ -1038,7 +1137,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
       const { details } = opts;
       const change = details.replaceState ? 0 : 1;
       details.state[INDEX_KEY] = current_history_index += change;
-      history[details.replaceState ? "replaceState" : "pushState"](details.state, "", intent.url);
+      history[details.replaceState ? "replaceState" : "pushState"](details.state, "", url);
     }
     if (started) {
       current = navigation_result.state;
@@ -1062,7 +1161,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
       }
       await tick();
       if (autoscroll) {
-        const deep_linked = intent.url.hash && document.getElementById(intent.url.hash.slice(1));
+        const deep_linked = url.hash && document.getElementById(url.hash.slice(1));
         if (scroll2) {
           scrollTo(scroll2.x, scroll2.y);
         } else if (deep_linked) {
@@ -1101,28 +1200,15 @@ function create_client({ target, session, base: base2, trailing_slash }) {
       callbacks.after_navigate.forEach((fn) => fn(navigation));
     }
   }
-  async function get_navigation_result(intent, no_cache) {
-    if (load_cache.id === intent.id && load_cache.promise) {
-      return load_cache.promise;
-    }
-    for (let i = 0; i < intent.routes.length; i += 1) {
-      const route = intent.routes[i];
-      let j = i + 1;
-      while (j < intent.routes.length) {
-        const next = intent.routes[j];
-        if (next[0].toString() === route[0].toString()) {
-          next[1].forEach((loader) => loader());
-          j += 1;
-        } else {
-          break;
-        }
-      }
-      const result = await load_route(route, intent, no_cache);
-      if (result)
-        return result;
-    }
-  }
-  async function get_navigation_result_from_branch({ url, params, stuff, branch, status, error }) {
+  async function get_navigation_result_from_branch({
+    url,
+    params,
+    stuff,
+    branch,
+    status,
+    error,
+    routeId
+  }) {
     var _a2;
     const filtered = branch.filter(Boolean);
     const redirect = filtered.find((f) => {
@@ -1146,7 +1232,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
       result.props[`props_${i}`] = loaded ? await loaded.props : null;
     }
     if (!current.url || url.href !== current.url.href) {
-      result.props.page = { url, params, status, error, stuff };
+      result.props.page = { error, params, routeId, status, stuff, url };
       const print_error = (property, replacement) => {
         Object.defineProperty(result.props.page, property, {
           get: () => {
@@ -1180,7 +1266,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     }
     return result;
   }
-  async function load_node({ status, error, module, url, params, stuff, props }) {
+  async function load_node({ status, error, module, url, params, stuff, props, routeId }) {
     const node = {
       module,
       uses: {
@@ -1209,6 +1295,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     const session2 = $session;
     if (module.load) {
       const load_input = {
+        routeId,
         params: uses_params,
         props: props || {},
         get url() {
@@ -1246,15 +1333,17 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     }
     return node;
   }
-  async function load_route(route, { id, url, path, routes: routes2 }, no_cache) {
+  async function load_route({ id, url, params, route }, no_cache) {
     var _a2, _b2, _c;
+    if (load_cache.id === id && load_cache.promise) {
+      return load_cache.promise;
+    }
     if (!no_cache) {
       const cached = cache.get(id);
       if (cached)
         return cached;
     }
-    const [pattern, a, b, get_params, shadow_key] = route;
-    const params = get_params ? get_params(pattern.exec(path)) : {};
+    const { a, b, has_shadow } = route;
     const changed = current.url && {
       url: id !== current.url.pathname + current.url.search,
       params: Object.keys(params).filter((key) => current.params[key] !== params[key]),
@@ -1277,11 +1366,11 @@ function create_client({ target, session, base: base2, trailing_slash }) {
           const changed_since_last_render = !previous || module !== previous.module || changed.url && previous.uses.url || changed.params.some((param) => previous.uses.params.has(param)) || changed.session && previous.uses.session || Array.from(previous.uses.dependencies).some((dep) => invalidated.has(dep)) || stuff_changed && previous.uses.stuff;
           if (changed_since_last_render) {
             let props = {};
-            const is_shadow_page = shadow_key !== void 0 && i === a.length - 1;
+            const is_shadow_page = has_shadow && i === a.length - 1;
             if (is_shadow_page) {
               const res = await fetch(`${url.pathname}${url.pathname.endsWith("/") ? "" : "/"}__data.json${url.search}`, {
                 headers: {
-                  "x-sveltekit-load": shadow_key
+                  "x-sveltekit-load": "true"
                 }
               });
               if (res.ok) {
@@ -1293,14 +1382,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
                     state: current
                   };
                 }
-                if (res.status === 204) {
-                  if (route !== routes2[routes2.length - 1]) {
-                    return;
-                  }
-                  props = {};
-                } else {
-                  props = await res.json();
-                }
+                props = res.status === 204 ? {} : await res.json();
               } else {
                 status = res.status;
                 error = new Error("Failed to load data");
@@ -1312,7 +1394,8 @@ function create_client({ target, session, base: base2, trailing_slash }) {
                 url,
                 params,
                 props,
-                stuff
+                stuff,
+                routeId: route.id
               });
             }
             if (node) {
@@ -1321,7 +1404,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
               }
               if (node.loaded) {
                 if (node.loaded.fallthrough) {
-                  return;
+                  throw new Error("fallthrough is no longer supported. Use matchers instead: https://kit.svelte.dev/docs/routing#advanced-routing-matching");
                 }
                 if (node.loaded.error) {
                   status = node.loaded.status;
@@ -1362,7 +1445,8 @@ function create_client({ target, session, base: base2, trailing_slash }) {
                   module: await b[i](),
                   url,
                   params,
-                  stuff: node_loaded.stuff
+                  stuff: node_loaded.stuff,
+                  routeId: route.id
                 });
                 if ((_a2 = error_loaded == null ? void 0 : error_loaded.loaded) == null ? void 0 : _a2.error) {
                   continue;
@@ -1380,7 +1464,8 @@ function create_client({ target, session, base: base2, trailing_slash }) {
           return await load_root_error_page({
             status,
             error,
-            url
+            url,
+            routeId: route.id
           });
         } else {
           if ((_c = node == null ? void 0 : node.loaded) == null ? void 0 : _c.stuff) {
@@ -1395,25 +1480,28 @@ function create_client({ target, session, base: base2, trailing_slash }) {
       stuff,
       branch,
       status,
-      error
+      error,
+      routeId: route.id
     });
   }
-  async function load_root_error_page({ status, error, url }) {
+  async function load_root_error_page({ status, error, url, routeId }) {
     var _a2, _b2;
     const params = {};
     const root_layout = await load_node({
-      module: await fallback[0],
+      module: await default_layout,
       url,
       params,
-      stuff: {}
+      stuff: {},
+      routeId
     });
     const root_error = await load_node({
       status,
       error,
-      module: await fallback[1],
+      module: await default_error,
       url,
       params,
-      stuff: root_layout && root_layout.loaded && root_layout.loaded.stuff || {}
+      stuff: root_layout && root_layout.loaded && root_layout.loaded.stuff || {},
+      routeId
     });
     return await get_navigation_result_from_branch({
       url,
@@ -1421,21 +1509,26 @@ function create_client({ target, session, base: base2, trailing_slash }) {
       stuff: __spreadValues(__spreadValues({}, (_a2 = root_layout == null ? void 0 : root_layout.loaded) == null ? void 0 : _a2.stuff), (_b2 = root_error == null ? void 0 : root_error.loaded) == null ? void 0 : _b2.stuff),
       branch: [root_layout, root_error],
       status,
-      error
+      error,
+      routeId
     });
   }
-  function owns(url) {
-    return url.origin === location.origin && url.pathname.startsWith(base2);
-  }
   function get_navigation_intent(url) {
+    if (url.origin !== location.origin || !url.pathname.startsWith(base2))
+      return;
     const path = decodeURI(url.pathname.slice(base2.length) || "/");
-    const intent = {
-      id: url.pathname + url.search,
-      routes: routes.filter(([pattern]) => pattern.test(path)),
-      url,
-      path
-    };
-    return intent;
+    for (const route of routes) {
+      const params = route.exec(path);
+      if (params) {
+        const intent = {
+          id: url.pathname + url.search,
+          route,
+          params,
+          url
+        };
+        return intent;
+      }
+    }
   }
   async function navigate({ url, scroll: scroll2, keepfocus, redirect_chain, details, accepted, blocked }) {
     const from = current.url;
@@ -1450,12 +1543,8 @@ function create_client({ target, session, base: base2, trailing_slash }) {
       blocked();
       return;
     }
-    if (!owns(url)) {
-      await native_navigation(url);
-    }
     const pathname = normalize_path(url.pathname, trailing_slash);
-    url = new URL(url.origin + pathname + url.search + url.hash);
-    const intent = get_navigation_intent(url);
+    const normalized = new URL(url.origin + pathname + url.search + url.hash);
     update_scroll_positions(current_history_index);
     accepted();
     navigating++;
@@ -1463,10 +1552,10 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     if (started) {
       stores.navigating.set({
         from: current.url,
-        to: intent.url
+        to: normalized
       });
     }
-    await update(intent, redirect_chain, false, {
+    await update(normalized, redirect_chain, false, {
       scroll: scroll2,
       keepfocus,
       details
@@ -1475,7 +1564,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     if (navigating_token !== current_navigating_token)
       return;
     if (!navigating) {
-      const navigation2 = { from, to: url };
+      const navigation2 = { from, to: normalized };
       callbacks.after_navigate.forEach((fn) => fn(navigation2));
       stores.navigating.set(null);
     }
@@ -1515,8 +1604,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
       invalidated.add(href);
       if (!invalidating) {
         invalidating = Promise.resolve().then(async () => {
-          const intent = get_navigation_intent(new URL(location.href));
-          await update(intent, [], true);
+          await update(new URL(location.href), [], true);
           invalidating = null;
         });
       }
@@ -1527,8 +1615,8 @@ function create_client({ target, session, base: base2, trailing_slash }) {
       await prefetch(url);
     },
     prefetch_routes: async (pathnames) => {
-      const matching = pathnames ? routes.filter((route) => pathnames.some((pathname) => route[0].test(pathname))) : routes;
-      const promises = matching.map((r) => Promise.all(r[1].map((load) => load())));
+      const matching = pathnames ? routes.filter((route) => pathnames.some((pathname) => route.exec(pathname))) : routes;
+      const promises = matching.map((r) => Promise.all(r.a.map((load) => load())));
       await Promise.all(promises);
     },
     _start_router: () => {
@@ -1593,7 +1681,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
         if (!is_svg_a_element && url.origin === "null")
           return;
         const rel = (a.getAttribute("rel") || "").split(/\s+/);
-        if (a.hasAttribute("download") || rel.includes("external")) {
+        if (a.hasAttribute("download") || rel.includes("external") || a.hasAttribute("sveltekit:reload")) {
           return;
         }
         if (is_svg_a_element ? a.target.baseVal : a.target)
@@ -1651,7 +1739,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
         }
       });
     },
-    _hydrate: async ({ status, error, nodes, params }) => {
+    _hydrate: async ({ status, error, nodes, params, routeId }) => {
       const url = new URL(location.href);
       const branch = [];
       let stuff = {};
@@ -1674,7 +1762,8 @@ function create_client({ target, session, base: base2, trailing_slash }) {
             stuff,
             status: is_leaf ? status : void 0,
             error: is_leaf ? error : void 0,
-            props
+            props,
+            routeId
           });
           if (props) {
             node.uses.dependencies.add(url.href);
@@ -1688,7 +1777,8 @@ function create_client({ target, session, base: base2, trailing_slash }) {
               error_args = {
                 status: node.loaded.status,
                 error: node.loaded.error,
-                url
+                url,
+                routeId
               };
             } else if (node.loaded.stuff) {
               stuff = __spreadValues(__spreadValues({}, stuff), node.loaded.stuff);
@@ -1701,7 +1791,8 @@ function create_client({ target, session, base: base2, trailing_slash }) {
           stuff,
           branch,
           status,
-          error
+          error,
+          routeId
         });
       } catch (e) {
         if (error)
@@ -1709,7 +1800,8 @@ function create_client({ target, session, base: base2, trailing_slash }) {
         result = await load_root_error_page({
           status: 500,
           error: coalesce_to_error(e),
-          url
+          url,
+          routeId
         });
       }
       if (result.redirect) {
@@ -1738,4 +1830,4 @@ async function start({ paths, target, session, route, spa, trailing_slash, hydra
   dispatchEvent(new CustomEvent("sveltekit:start"));
 }
 export { start };
-//# sourceMappingURL=start-43d6f56d.js.map
+//# sourceMappingURL=start-5b09290b.js.map

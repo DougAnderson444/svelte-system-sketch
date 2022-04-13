@@ -1,25 +1,18 @@
-var __defProp = Object.defineProperty;
-var __defProps = Object.defineProperties;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols = Object.getOwnPropertySymbols;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues = (a, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp.call(b, prop))
-      __defNormalProp(a, prop, b[prop]);
-  if (__getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
-    }
-  return a;
-};
-var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-import { customAlphabet, SvelteComponent, init, safe_not_equal, element, text, space, claim_element, children, claim_text, claim_space, detach, attr, insert_hydration, append_hydration, action_destroyer, asDroppable, set_data, noop, onMount, PointerTracker, binding_callbacks, PointerTracker$1, writable, set_style, component_subscribe, add_render_callback, add_resize_listener, createEventDispatcher, tick, null_to_empty, listen, run_all, empty, destroy_each, create_component, claim_component, mount_component, add_flush_callback, transition_in, transition_out, destroy_component, stop_propagation, group_outros, check_outros, bind, asDropZone, is_function, set_store_value, globals } from "../chunks/vendor-86580520.js";
-import { __vitePreload } from "../chunks/preload-helper-f45aa6d1.js";
+import { SvelteComponent, init, safe_not_equal, element, text, space, claim_element, children, claim_text, claim_space, detach, attr, insert_hydration, append_hydration, action_destroyer, set_data, noop as noop$1, onMount, binding_callbacks, set_style, component_subscribe, add_render_callback, add_resize_listener, createEventDispatcher, tick, null_to_empty, listen, run_all, empty, destroy_each, create_component, claim_component, mount_component, add_flush_callback, transition_in, transition_out, destroy_component, stop_propagation, group_outros, check_outros, bind, is_function, set_store_value, globals } from "../chunks/index-182dfd00.js";
+import { writable } from "../chunks/index-dca0cab6.js";
 var Canvas_svelte_svelte_type_style_lang = "";
+var RangePips_svelte_svelte_type_style_lang = "";
+var RangeSlider_svelte_svelte_type_style_lang = "";
+let customAlphabet = (alphabet, defaultSize = 21) => {
+  return (size2 = defaultSize) => {
+    let id = "";
+    let i = size2;
+    while (i--) {
+      id += alphabet[Math.random() * alphabet.length | 0];
+    }
+    return id;
+  };
+};
 function safeid(n = 16) {
   return customAlphabet("abcdefghijklmnopqrztuvwxyz1234567890", n)();
 }
@@ -40,6 +33,1055 @@ function createNewNode(params) {
     children: []
   };
   return newNode;
+}
+var global = /* @__PURE__ */ Function("return this")();
+function Object_hasOwnProperty(Value, PropertyName) {
+  return Value == null || "hasOwnProperty" in Value && typeof Value.hasOwnProperty === "function" ? Value.hasOwnProperty(PropertyName) : Object.prototype.hasOwnProperty.call(Value, PropertyName);
+}
+function throwError(Message) {
+  var Match = /^([$a-zA-Z][$a-zA-Z0-9]*):\s*(\S.+)\s*$/.exec(Message);
+  if (Match == null) {
+    throw new Error(Message);
+  } else {
+    var namedError = new Error(Match[2]);
+    namedError.name = Match[1];
+    throw namedError;
+  }
+}
+function ValueIsFiniteNumber(Value) {
+  return (typeof Value === "number" || Value instanceof Number) && isFinite(Value.valueOf());
+}
+function ValueIsOrdinal(Value) {
+  if (typeof Value !== "number" && !(Value instanceof Number)) {
+    return false;
+  }
+  Value = Value.valueOf();
+  return isFinite(Value) && Math.round(Value) === Value && Value >= 0;
+}
+function ValueIsString(Value) {
+  return typeof Value === "string" || Value instanceof String;
+}
+var emptyStringPattern = /^\s*$/;
+function ValueIsNonEmptyString(Value) {
+  return (typeof Value === "string" || Value instanceof String) && !emptyStringPattern.test(Value.valueOf());
+}
+function ValueIsFunction(Value) {
+  return typeof Value === "function";
+}
+function ValueIsObject(Value) {
+  return Value != null && typeof Value === "object";
+}
+function ValueIsPlainObject(Value) {
+  return Value != null && typeof Value === "object" && Object.getPrototypeOf(Value) === Object.prototype;
+}
+var ValueIsArray = Array.isArray;
+function ValueIsListSatisfying(Value, Validator, minLength, maxLength) {
+  if (ValueIsArray(Value)) {
+    try {
+      for (var i = 0, l = Value.length; i < l; i++) {
+        if (Validator(Value[i]) == false) {
+          return false;
+        }
+      }
+      if (minLength != null) {
+        if (Value.length < minLength) {
+          return false;
+        }
+      }
+      if (maxLength != null) {
+        if (Value.length > maxLength) {
+          return false;
+        }
+      }
+      return true;
+    } catch (Signal) {
+    }
+  }
+  return false;
+}
+function ValueIsOneOf(Value, ValueList) {
+  return ValueList.indexOf(Value) >= 0;
+}
+var rejectNil = false;
+var acceptNil = true;
+function validatedArgument(Description, Argument, ValueIsValid, NilIsAcceptable, Expectation) {
+  if (Argument == null) {
+    if (NilIsAcceptable) {
+      return Argument;
+    } else {
+      throwError("MissingArgument: no " + escaped(Description) + " given");
+    }
+  } else {
+    if (ValueIsValid(Argument)) {
+      switch (true) {
+        case Argument instanceof Boolean:
+        case Argument instanceof Number:
+        case Argument instanceof String:
+          return Argument.valueOf();
+        default:
+          return Argument;
+      }
+    } else {
+      throwError("InvalidArgument: the given " + escaped(Description) + " is no valid " + escaped(Expectation));
+    }
+  }
+}
+function ValidatorForClassifier(Classifier, NilIsAcceptable, Expectation) {
+  var Validator = function(Description, Argument) {
+    return validatedArgument(Description, Argument, Classifier, NilIsAcceptable, Expectation);
+  };
+  var ClassifierName = Classifier.name;
+  if (ClassifierName != null && /^ValueIs/.test(ClassifierName)) {
+    var ValidatorName = ClassifierName.replace(/^ValueIs/, NilIsAcceptable ? "allow" : "expect");
+    return FunctionWithName(Validator, ValidatorName);
+  } else {
+    return Validator;
+  }
+}
+function FunctionWithName(originalFunction, desiredName) {
+  if (originalFunction == null) {
+    throwError("MissingArgument: no function given");
+  }
+  if (typeof originalFunction !== "function") {
+    throwError("InvalidArgument: the given 1st Argument is not a JavaScript function");
+  }
+  if (desiredName == null) {
+    throwError("MissingArgument: no desired name given");
+  }
+  if (typeof desiredName !== "string" && !(desiredName instanceof String)) {
+    throwError("InvalidArgument: the given desired name is not a string");
+  }
+  if (originalFunction.name === desiredName) {
+    return originalFunction;
+  }
+  try {
+    Object.defineProperty(originalFunction, "name", { value: desiredName });
+    if (originalFunction.name === desiredName) {
+      return originalFunction;
+    }
+  } catch (signal) {
+  }
+  var renamed = new Function("originalFunction", "return function " + desiredName + " () {return originalFunction.apply(this,Array.prototype.slice.apply(arguments))}");
+  return renamed(originalFunction);
+}
+var allowFiniteNumber = /* @__PURE__ */ ValidatorForClassifier(ValueIsFiniteNumber, acceptNil, "finite numeric value"), allowedFiniteNumber = allowFiniteNumber;
+var allowOrdinal = /* @__PURE__ */ ValidatorForClassifier(ValueIsOrdinal, acceptNil, "ordinal number"), allowedOrdinal = allowOrdinal;
+var allowString = /* @__PURE__ */ ValidatorForClassifier(ValueIsString, acceptNil, "literal string"), allowedString = allowString;
+var allowNonEmptyString = /* @__PURE__ */ ValidatorForClassifier(ValueIsNonEmptyString, acceptNil, "non-empty literal string"), allowedNonEmptyString = allowNonEmptyString;
+var allowFunction = /* @__PURE__ */ ValidatorForClassifier(ValueIsFunction, acceptNil, "JavaScript function"), allowedFunction = allowFunction;
+var expectObject = /* @__PURE__ */ ValidatorForClassifier(ValueIsObject, rejectNil, "JavaScript object");
+var allowPlainObject = /* @__PURE__ */ ValidatorForClassifier(ValueIsPlainObject, acceptNil, '"plain" JavaScript object'), allowedPlainObject = allowPlainObject;
+function allowListSatisfying(Description, Argument, Validator, Expectation, minLength, maxLength) {
+  return Argument == null ? Argument : expectedListSatisfying(Description, Argument, Validator, Expectation, minLength, maxLength);
+}
+function expectListSatisfying(Description, Argument, Validator, Expectation, minLength, maxLength) {
+  if (Argument == null) {
+    throwError("MissingArgument: no " + escaped(Description) + " given");
+  }
+  if (ValueIsListSatisfying(Argument, Validator, minLength, maxLength)) {
+    return Argument;
+  } else {
+    throwError("InvalidArgument: the given " + escaped(Description) + " is " + (Expectation == null ? "either not a list or contains invalid elements" : "no " + escaped(Expectation)));
+  }
+}
+var expectedListSatisfying = expectListSatisfying;
+function escaped(Text) {
+  var EscapeSequencePattern = /\\x[0-9a-zA-Z]{2}|\\u[0-9a-zA-Z]{4}|\\[0bfnrtv'"\\\/]?/g;
+  var CtrlCharCodePattern = /[\x00-\x1f\x7f-\x9f]/g;
+  return Text.replace(EscapeSequencePattern, function(Match) {
+    return Match === "\\" ? "\\\\" : Match;
+  }).replace(CtrlCharCodePattern, function(Match) {
+    switch (Match) {
+      case "\0":
+        return "\\0";
+      case "\b":
+        return "\\b";
+      case "\f":
+        return "\\f";
+      case "\n":
+        return "\\n";
+      case "\r":
+        return "\\r";
+      case "	":
+        return "\\t";
+      case "\v":
+        return "\\v";
+      default: {
+        var HexCode = Match.charCodeAt(0).toString(16);
+        return "\\x" + "00".slice(HexCode.length) + HexCode;
+      }
+    }
+  });
+}
+function quotable(Text, Quote) {
+  if (Quote === void 0) {
+    Quote = '"';
+  }
+  var EscSeqOrSglQuotePattern = /\\x[0-9a-zA-Z]{2}|\\u[0-9a-zA-Z]{4}|\\[0bfnrtv'"\\\/]?|'/g;
+  var EscSeqOrDblQuotePattern = /\\x[0-9a-zA-Z]{2}|\\u[0-9a-zA-Z]{4}|\\[0bfnrtv'"\\\/]?|"/g;
+  var CtrlCharCodePattern = /[\x00-\x1f\x7f-\x9f]/g;
+  return Text.replace(Quote === "'" ? EscSeqOrSglQuotePattern : EscSeqOrDblQuotePattern, function(Match) {
+    switch (Match) {
+      case "'":
+        return "\\'";
+      case '"':
+        return '\\"';
+      case "\\":
+        return "\\\\";
+      default:
+        return Match;
+    }
+  }).replace(CtrlCharCodePattern, function(Match) {
+    switch (Match) {
+      case "\0":
+        return "\\0";
+      case "\b":
+        return "\\b";
+      case "\f":
+        return "\\f";
+      case "\n":
+        return "\\n";
+      case "\r":
+        return "\\r";
+      case "	":
+        return "\\t";
+      case "\v":
+        return "\\v";
+      default: {
+        var HexCode = Match.charCodeAt(0).toString(16);
+        return "\\x" + "00".slice(HexCode.length) + HexCode;
+      }
+    }
+  });
+}
+function quoted(Text, Quote) {
+  if (Quote === void 0) {
+    Quote = '"';
+  }
+  return Quote + quotable(Text, Quote) + Quote;
+}
+function ObjectIsEmpty(Candidate) {
+  expectObject("candidate", Candidate);
+  for (var Key in Candidate) {
+    if (Object_hasOwnProperty(Candidate, Key)) {
+      return false;
+    }
+  }
+  return true;
+}
+function ObjectIsNotEmpty(Candidate) {
+  return !ObjectIsEmpty(Candidate);
+}
+function constrained(Value, Minimum, Maximum) {
+  if (Minimum === void 0) {
+    Minimum = -Infinity;
+  }
+  if (Maximum === void 0) {
+    Maximum = Infinity;
+  }
+  return Math.max(Minimum, Math.min(Value, Maximum));
+}
+function fromViewportTo(System, originalPosition, Target) {
+  switch (true) {
+    case originalPosition == null:
+      throw new Error('no "Position" given');
+    case (typeof originalPosition.left !== "number" && !(originalPosition.left instanceof Number)):
+    case (typeof originalPosition.top !== "number" && !(originalPosition.top instanceof Number)):
+      throw new Error('invalid "Position" given');
+  }
+  switch (System) {
+    case null:
+    case void 0:
+      throw new Error("no coordinate system given");
+    case "viewport":
+      return { left: originalPosition.left, top: originalPosition.top };
+    case "document":
+      return {
+        left: originalPosition.left + window.scrollX,
+        top: originalPosition.top + window.scrollY
+      };
+    case "local":
+      switch (true) {
+        case Target == null:
+          throw new Error("no target element given");
+        case Target instanceof Element:
+          var computedStyle = window.getComputedStyle(Target);
+          var leftOffset = parseFloat(computedStyle.borderLeftWidth);
+          var topOffset = parseFloat(computedStyle.borderTopWidth);
+          var TargetPositionInViewport = Target.getBoundingClientRect();
+          return {
+            left: originalPosition.left - TargetPositionInViewport.left - leftOffset,
+            top: originalPosition.top - TargetPositionInViewport.top - topOffset
+          };
+        default:
+          throw new Error("invalid target element given");
+      }
+    default:
+      throw new Error("invalid coordinate system given");
+  }
+}
+function fromDocumentTo(System, originalPosition, Target) {
+  switch (true) {
+    case originalPosition == null:
+      throw new Error('no "Position" given');
+    case (typeof originalPosition.left !== "number" && !(originalPosition.left instanceof Number)):
+    case (typeof originalPosition.top !== "number" && !(originalPosition.top instanceof Number)):
+      throw new Error('invalid "Position" given');
+  }
+  switch (System) {
+    case null:
+    case void 0:
+      throw new Error("no coordinate system given");
+    case "viewport":
+      return {
+        left: originalPosition.left - window.scrollX,
+        top: originalPosition.top - window.scrollY
+      };
+    case "document":
+      return { left: originalPosition.left, top: originalPosition.top };
+    case "local":
+      switch (true) {
+        case Target == null:
+          throw new Error("no target element given");
+        case Target instanceof Element:
+          var computedStyle = window.getComputedStyle(Target);
+          var leftOffset = parseFloat(computedStyle.borderLeftWidth);
+          var topOffset = parseFloat(computedStyle.borderTopWidth);
+          var TargetPositionInViewport = Target.getBoundingClientRect();
+          return {
+            left: originalPosition.left + window.scrollX - TargetPositionInViewport.left - leftOffset,
+            top: originalPosition.top + window.scrollY - TargetPositionInViewport.top - topOffset
+          };
+        default:
+          throw new Error("invalid target element given");
+      }
+    default:
+      throw new Error("invalid coordinate system given");
+  }
+}
+function fromLocalTo(System, originalPosition, Source) {
+  switch (true) {
+    case originalPosition == null:
+      throw new Error('no "Position" given');
+    case (typeof originalPosition.left !== "number" && !(originalPosition.left instanceof Number)):
+    case (typeof originalPosition.top !== "number" && !(originalPosition.top instanceof Number)):
+      throw new Error('invalid "Position" given');
+  }
+  var SourcePositionInViewport, leftPosition, topPosition;
+  switch (true) {
+    case Source == null:
+      throw new Error("no source element given");
+    case Source instanceof Element:
+      var computedStyle = window.getComputedStyle(Source);
+      var leftOffset = parseFloat(computedStyle.borderLeftWidth);
+      var topOffset = parseFloat(computedStyle.borderTopWidth);
+      SourcePositionInViewport = Source.getBoundingClientRect();
+      leftPosition = SourcePositionInViewport.left + leftOffset;
+      topPosition = SourcePositionInViewport.top + topOffset;
+      break;
+    default:
+      throw new Error("invalid source element given");
+  }
+  switch (System) {
+    case null:
+    case void 0:
+      throw new Error("no coordinate system given");
+    case "viewport":
+      return {
+        left: originalPosition.left + leftPosition,
+        top: originalPosition.top + topPosition
+      };
+    case "document":
+      return {
+        left: originalPosition.left + leftPosition + window.scrollX,
+        top: originalPosition.top + topPosition + window.scrollY
+      };
+    case "local":
+      return { left: originalPosition.left, top: originalPosition.top };
+    default:
+      throw new Error("invalid coordinate system given");
+  }
+}
+var svelteCoordinateConversion = {
+  fromViewportTo,
+  fromDocumentTo,
+  fromLocalTo
+};
+var Context = "__DragAndDropActions" in global ? global.__DragAndDropActions : global.__DragAndDropActions = {};
+function parsedDraggableOptions(Options) {
+  Options = allowedPlainObject("drag options", Options) || {};
+  var Extras, relativeTo;
+  var onlyFrom, neverFrom;
+  var Dummy, DummyOffsetX, DummyOffsetY;
+  var minX, minY, maxX, maxY;
+  var Pannable;
+  var PanSensorWidth, PanSensorHeight, PanSpeed;
+  var onDragStart, onDragMove, onDragEnd, onDragCancel;
+  Extras = Options.Extras;
+  switch (true) {
+    case Options.relativeTo == null:
+      relativeTo = "parent";
+      break;
+    case Options.relativeTo === "parent":
+    case Options.relativeTo === "body":
+    case ValueIsNonEmptyString(Options.relativeTo):
+    case Options.relativeTo instanceof HTMLElement:
+    case Options.relativeTo instanceof SVGElement:
+      relativeTo = Options.relativeTo;
+      break;
+    default:
+      throwError("InvalidArgument: invalid position reference given");
+  }
+  onlyFrom = allowedNonEmptyString('"onlyFrom" CSS selector', Options.onlyFrom);
+  neverFrom = allowedNonEmptyString('"neverFrom" CSS selector', Options.neverFrom);
+  switch (true) {
+    case Options.Dummy == null:
+      Dummy = void 0;
+      break;
+    case Options.Dummy === "standard":
+    case Options.Dummy === "none":
+    case ValueIsNonEmptyString(Options.Dummy):
+    case Options.Dummy instanceof HTMLElement:
+    case Options.Dummy instanceof SVGElement:
+    case ValueIsFunction(Options.Dummy):
+      Dummy = Options.Dummy;
+      break;
+    default:
+      throwError("InvalidArgument: invalid drag dummy specification given");
+  }
+  DummyOffsetX = allowedFiniteNumber("dummy x offset", Options.DummyOffsetX);
+  DummyOffsetY = allowedFiniteNumber("dummy y offset", Options.DummyOffsetY);
+  minX = allowedFiniteNumber("min. x position", Options.minX);
+  if (minX == null) {
+    minX = -Infinity;
+  }
+  minY = allowedFiniteNumber("min. y position", Options.minY);
+  if (minY == null) {
+    minY = -Infinity;
+  }
+  maxX = allowedFiniteNumber("max. x position", Options.maxX);
+  if (maxX == null) {
+    maxX = Infinity;
+  }
+  maxY = allowedFiniteNumber("max. y position", Options.maxY);
+  if (maxY == null) {
+    maxY = Infinity;
+  }
+  switch (true) {
+    case Options.Pannable == null:
+      Pannable = void 0;
+      break;
+    case ValueIsNonEmptyString(Options.Pannable):
+    case Options.Pannable instanceof HTMLElement:
+    case Options.Pannable instanceof SVGElement:
+      Pannable = Options.Pannable;
+      break;
+    default:
+      throwError('InvalidArgument: invalid "Pannable" specification given');
+  }
+  PanSensorWidth = allowedOrdinal("panning sensor width", Options.PanSensorWidth);
+  if (PanSensorWidth == null) {
+    PanSensorWidth = 20;
+  }
+  PanSensorHeight = allowedOrdinal("panning sensor height", Options.PanSensorHeight);
+  if (PanSensorHeight == null) {
+    PanSensorHeight = 20;
+  }
+  PanSpeed = allowedOrdinal("panning speed", Options.PanSpeed);
+  if (PanSpeed == null) {
+    PanSpeed = 10;
+  }
+  if (ValueIsPosition(Options.onDragStart)) {
+    var _a = Options.onDragStart, x_1 = _a.x, y_1 = _a.y;
+    onDragStart = function() {
+      return { x: x_1, y: y_1 };
+    };
+  } else {
+    onDragStart = allowedFunction('"onDragStart" handler', Options.onDragStart);
+  }
+  onDragMove = allowedFunction('"onDragMove" handler', Options.onDragMove);
+  onDragEnd = allowedFunction('"onDragEnd" handler', Options.onDragEnd);
+  return {
+    Extras,
+    relativeTo,
+    onlyFrom,
+    neverFrom,
+    Dummy,
+    DummyOffsetX,
+    DummyOffsetY,
+    minX,
+    minY,
+    maxX,
+    maxY,
+    Pannable,
+    PanSensorWidth,
+    PanSensorHeight,
+    PanSpeed,
+    onDragStart,
+    onDragMove,
+    onDragEnd,
+    onDragCancel
+  };
+}
+function fromForbiddenElement(Element2, Options, originalEvent) {
+  if (Options.onlyFrom != null || Options.neverFrom != null) {
+    var x = originalEvent.clientX;
+    var y = originalEvent.clientY;
+    var touchedElement = document.elementFromPoint(x, y);
+    touchedElement = innerElementOf(touchedElement, x, y);
+    if (Options.onlyFrom != null) {
+      var fromElement = touchedElement.closest(Options.onlyFrom);
+      if (Element2 !== fromElement && !Element2.contains(fromElement)) {
+        return true;
+      }
+    }
+    if (Options.neverFrom != null) {
+      var fromElement = touchedElement.closest(Options.neverFrom);
+      if (Element2 === fromElement || Element2.contains(fromElement)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+function innerElementOf(Candidate, x, y) {
+  var innerElements = Candidate.children;
+  for (var i = 0, l = innerElements.length; i < l; i++) {
+    var innerElement = innerElements[i];
+    var Position = svelteCoordinateConversion.fromLocalTo("viewport", { left: 0, top: 0 }, innerElement);
+    if (x < Position.left || y < Position.top) {
+      continue;
+    }
+    if (x > Position.left + innerElement.offsetWidth - 1) {
+      continue;
+    }
+    if (y > Position.top + innerElement.offsetHeight - 1) {
+      continue;
+    }
+    return innerElementOf(innerElement, x, y);
+  }
+  return Candidate;
+}
+var DropOperations = ["copy", "move", "link"];
+function parsedDroppableOptions(Options) {
+  Options = allowedPlainObject("drop options", Options) || {};
+  var Operations, DataToOffer;
+  var onDropZoneEnter, onDropZoneHover, onDropZoneLeave;
+  var onDropped;
+  Operations = parsedOperations("list of allowed operations", Options.Operations, "copy");
+  DataToOffer = Object.assign({}, allowedPlainObject("data to be offered", Options.DataToOffer));
+  if ("none" in DataToOffer)
+    throwError('InvalidArgument: "none" is not a valid data type');
+  onDropZoneEnter = allowedFunction('"onDropZoneEnter" handler', Options.onDropZoneEnter);
+  onDropZoneHover = allowedFunction('"onDropZoneHover" handler', Options.onDropZoneHover);
+  onDropZoneLeave = allowedFunction('"onDropZoneLeave" handler', Options.onDropZoneLeave);
+  onDropped = allowedFunction('"onDropped" handler', Options.onDropped);
+  return {
+    Operations,
+    DataToOffer,
+    onDropZoneEnter,
+    onDropZoneHover,
+    onDropZoneLeave,
+    onDropped
+  };
+}
+function asDroppable(Element2, Options) {
+  var isDragged;
+  var currentDraggableOptions;
+  var currentDroppableOptions;
+  var PositionReference;
+  var ReferenceDeltaX, ReferenceDeltaY;
+  var PositioningWasDelayed;
+  var DragImage;
+  var initialPosition;
+  var lastPosition;
+  var lastDropZoneElement;
+  var lastDropZoneExtras;
+  isDragged = false;
+  currentDraggableOptions = parsedDraggableOptions(Options);
+  currentDroppableOptions = parsedDroppableOptions(Options);
+  function startDragging(originalEvent) {
+    var Options2 = Object.assign({}, currentDraggableOptions, currentDroppableOptions);
+    if (fromForbiddenElement(Element2, Options2, originalEvent)) {
+      originalEvent.stopPropagation();
+      originalEvent.preventDefault();
+      return false;
+    }
+    PositionReference = PositionReferenceFor(Element2, Options2);
+    var relativePosition = svelteCoordinateConversion.fromDocumentTo("local", { left: originalEvent.pageX, top: originalEvent.pageY }, PositionReference);
+    ReferenceDeltaX = ReferenceDeltaY = 0;
+    initialPosition = { x: 0, y: 0 };
+    if (Options2.onDragStart == null) {
+      initialPosition = { x: 0, y: 0 };
+    } else {
+      try {
+        var StartPosition = Options2.onDragStart(Options2.Extras);
+        if (ValueIsPlainObject(StartPosition)) {
+          var x = allowedFiniteNumber("x start position", StartPosition.x);
+          var y = allowedFiniteNumber("y start position", StartPosition.y);
+          ReferenceDeltaX = x - relativePosition.left;
+          ReferenceDeltaY = y - relativePosition.top;
+          x = constrained(x, Options2.minX, Options2.maxX);
+          y = constrained(y, Options2.minY, Options2.maxY);
+          initialPosition = { x, y };
+        }
+      } catch (Signal) {
+        console.error('"onDragStart" handler failed', Signal);
+      }
+    }
+    lastPosition = initialPosition;
+    lastDropZoneElement = void 0;
+    lastDropZoneExtras = void 0;
+    PositioningWasDelayed = false;
+    if (Options2.Dummy == null) {
+      Options2.Dummy = "standard";
+    }
+    DragImage = DragImageFor(Element2, Options2);
+    if (DragImage != null && originalEvent.dataTransfer != null) {
+      var OffsetX = Options2.DummyOffsetX;
+      var OffsetY = Options2.DummyOffsetY;
+      if (OffsetX == null || OffsetY == null) {
+        var PositionInDraggable = svelteCoordinateConversion.fromDocumentTo("local", { left: originalEvent.pageX, top: originalEvent.pageY }, Element2);
+        if (OffsetX == null) {
+          OffsetX = PositionInDraggable.left;
+        }
+        if (OffsetY == null) {
+          OffsetY = PositionInDraggable.top;
+        }
+      }
+      switch (true) {
+        case Options2.Dummy === "none":
+          originalEvent.dataTransfer.setDragImage(DragImage, 0, 0);
+          setTimeout(function() {
+            document.body.removeChild(DragImage);
+          }, 0);
+          break;
+        case ValueIsString(Options2.Dummy):
+          originalEvent.dataTransfer.setDragImage(DragImage, OffsetX, OffsetY);
+          setTimeout(function() {
+            document.body.removeChild(DragImage.parentElement);
+          }, 0);
+          break;
+        default:
+          originalEvent.dataTransfer.setDragImage(DragImage, OffsetX, OffsetY);
+      }
+    }
+    if (originalEvent.dataTransfer != null) {
+      var allowedEffects = allowedEffectsFrom(Options2.Operations);
+      originalEvent.dataTransfer.effectAllowed = allowedEffects;
+      if (ObjectIsNotEmpty(Options2.DataToOffer)) {
+        for (var Type in Options2.DataToOffer) {
+          if (Options2.DataToOffer.hasOwnProperty(Type)) {
+            originalEvent.dataTransfer.setData(Type, Options2.DataToOffer[Type]);
+          }
+        }
+      }
+    }
+    Context.currentDroppableExtras = Options2.Extras;
+    Context.currentDropZoneExtras = void 0;
+    Context.currentDropZonePosition = void 0;
+    Context.currentDropZoneElement = void 0;
+    Context.DroppableWasDropped = false;
+    Context.currentDropOperation = void 0;
+    Context.currentTypeTransferred = void 0;
+    Context.currentDataTransferred = void 0;
+    isDragged = true;
+    setTimeout(function() {
+      return Element2.classList.add("dragged");
+    }, 0);
+    originalEvent.stopPropagation();
+  }
+  function continueDragging(originalEvent) {
+    if (!isDragged) {
+      return false;
+    }
+    var Options2 = Object.assign({}, currentDraggableOptions, currentDroppableOptions);
+    if (originalEvent.screenX === 0 && originalEvent.screenY === 0 && !PositioningWasDelayed) {
+      PositioningWasDelayed = true;
+    } else {
+      PositioningWasDelayed = false;
+      performPanningFor("draggable", Element2, Options2, originalEvent.pageX, originalEvent.pageY);
+      var relativePosition = svelteCoordinateConversion.fromDocumentTo("local", { left: originalEvent.pageX, top: originalEvent.pageY }, PositionReference);
+      var x = relativePosition.left + ReferenceDeltaX;
+      var y = relativePosition.top + ReferenceDeltaY;
+      x = constrained(x, Options2.minX, Options2.maxX);
+      y = constrained(y, Options2.minY, Options2.maxY);
+      var dx = x - lastPosition.x;
+      var dy = y - lastPosition.y;
+      lastPosition = { x, y };
+      invokeHandler("onDragMove", Options2, x, y, dx, dy, Options2.Extras);
+    }
+    if (Context.currentDropZoneElement === lastDropZoneElement) {
+      if (Context.currentDropZoneElement != null) {
+        invokeHandler("onDropZoneHover", Options2, Context.currentDropZonePosition.x, Context.currentDropZonePosition.y, Context.currentDropZoneExtras, Options2.Extras);
+      }
+    } else {
+      if (Context.currentDropZoneElement == null) {
+        Element2.classList.remove("droppable");
+        invokeHandler("onDropZoneLeave", Options2, lastDropZoneExtras, Options2.Extras);
+      } else {
+        Element2.classList.add("droppable");
+        invokeHandler("onDropZoneEnter", Options2, Context.currentDropZonePosition.x, Context.currentDropZonePosition.y, lastDropZoneExtras, Options2.Extras);
+      }
+      lastDropZoneElement = Context.currentDropZoneElement;
+      lastDropZoneExtras = Context.currentDropZoneExtras;
+    }
+    originalEvent.stopPropagation();
+  }
+  function finishDragging(originalEvent) {
+    if (!isDragged) {
+      return false;
+    }
+    var Options2 = Object.assign({}, currentDraggableOptions, currentDroppableOptions);
+    if (Context.DroppableWasDropped) {
+      invokeHandler("onDropped", Options2, Context.currentDropZonePosition.x, Context.currentDropZonePosition.y, Context.currentDropOperation, Context.currentTypeTransferred, Context.currentDataTransferred, Context.currentDropZoneExtras, Options2.Extras);
+      Context.currentDropZoneExtras = void 0;
+      Context.currentDropZonePosition = void 0;
+      Context.currentDropZoneElement = void 0;
+      Context.DroppableWasDropped = false;
+      Context.currentDropOperation = void 0;
+      Context.currentTypeTransferred = void 0;
+      Context.currentDataTransferred = void 0;
+    }
+    if (Options2.onDragEnd != null) {
+      var x = constrained(lastPosition.x, Options2.minX, Options2.maxX);
+      var y = constrained(lastPosition.y, Options2.minY, Options2.maxY);
+      var dx = x - lastPosition.x;
+      var dy = y - lastPosition.y;
+      invokeHandler("onDragEnd", Options2, x, y, dx, dy, Options2.Extras);
+    }
+    Context.currentDroppableExtras = void 0;
+    isDragged = false;
+    Element2.classList.remove("dragged", "droppable");
+    originalEvent.stopPropagation();
+  }
+  function updateDraggableOptions(Options2) {
+    Options2 = parsedDraggableOptions(Options2);
+    if (currentDraggableOptions.Extras == null && Options2.Extras != null) {
+      currentDraggableOptions.Extras = Options2.Extras;
+    }
+    currentDraggableOptions.Dummy = Options2.Dummy || currentDraggableOptions.Dummy;
+    currentDraggableOptions.minX = Options2.minX;
+    currentDraggableOptions.minY = Options2.minY;
+    currentDraggableOptions.maxX = Options2.maxX;
+    currentDraggableOptions.maxY = Options2.maxY;
+    currentDraggableOptions.Pannable = Options2.Pannable;
+    currentDraggableOptions.PanSensorWidth = Options2.PanSensorWidth;
+    currentDraggableOptions.PanSensorHeight = Options2.PanSensorHeight;
+    currentDraggableOptions.PanSpeed = Options2.PanSpeed;
+    currentDraggableOptions.onDragStart = Options2.onDragStart || currentDraggableOptions.onDragStart;
+  }
+  function updateDroppableOptions(Options2) {
+    Options2 = parsedDroppableOptions(Options2);
+    currentDroppableOptions.Operations = Options2.Operations;
+    currentDroppableOptions.DataToOffer = Options2.DataToOffer;
+  }
+  Element2.setAttribute("draggable", "true");
+  Element2.addEventListener("dragstart", startDragging);
+  Element2.addEventListener("drag", continueDragging);
+  Element2.addEventListener("dragend", finishDragging);
+  return {
+    update: function(Options2) {
+      updateDraggableOptions(Options2);
+      updateDroppableOptions(Options2);
+    }
+  };
+}
+function ValueIsPosition(Candidate) {
+  return ValueIsPlainObject(Candidate) && ValueIsFiniteNumber(Candidate.x) && ValueIsFiniteNumber(Candidate.y);
+}
+function PositionReferenceFor(Element2, Options) {
+  var PositionReference;
+  switch (true) {
+    case Options.relativeTo === "parent":
+      PositionReference = Element2.parentElement;
+      break;
+    case Options.relativeTo === "body":
+      PositionReference = document.body;
+      break;
+    case Options.relativeTo instanceof HTMLElement:
+    case Options.relativeTo instanceof SVGElement:
+      PositionReference = Options.relativeTo;
+      if (PositionReference != document.body && !document.body.contains(PositionReference))
+        throwError('InvalidArgument: the HTML element given as "relativeTo" option is not part of this HTML document');
+      break;
+    default:
+      PositionReference = Element2.closest(Options.relativeTo);
+  }
+  return PositionReference == null ? document.body : PositionReference;
+}
+function DragImageFor(Element2, Options) {
+  switch (true) {
+    case Options.Dummy === "standard":
+      return void 0;
+    case Options.Dummy === "none":
+      var invisibleDragImage = document.createElement("div");
+      invisibleDragImage.setAttribute("style", "display:block; position:absolute; width:1px; height:1px; background:transparent; border:none; margin:0px; padding:0px; cursor:auto");
+      document.body.appendChild(invisibleDragImage);
+      return invisibleDragImage;
+    case ValueIsNonEmptyString(Options.Dummy):
+      var auxiliaryElement = document.createElement("div");
+      auxiliaryElement.style.display = "block";
+      auxiliaryElement.style.position = "absolute";
+      auxiliaryElement.style.left = document.body.scrollWidth + 100 + "px";
+      document.body.appendChild(auxiliaryElement);
+      auxiliaryElement.innerHTML = Options.Dummy;
+      return auxiliaryElement.children[0];
+    case Options.Dummy instanceof HTMLElement:
+    case Options.Dummy instanceof SVGElement:
+      return Options.Dummy;
+    case ValueIsFunction(Options.Dummy):
+      var Candidate = void 0;
+      try {
+        Candidate = Options.Dummy(Options.Extras, Element2);
+      } catch (Signal) {
+        console.error("RuntimeError: creating draggable dummy failed", Signal);
+      }
+      if (Candidate != null) {
+        if (Candidate instanceof HTMLElement || Candidate instanceof SVGElement) {
+          return Candidate;
+        } else {
+          console.error("InvalidArgument: the newly created draggable dummy is neither an HTML nor an SVG element");
+        }
+      }
+  }
+}
+function performPanningFor(Type, Element2, Options, xOnPage, yOnPage) {
+  if (Type === "draggable" && Context.DropZonePanning) {
+    return;
+  }
+  if (Options.Pannable == null || Options.PanSensorWidth === 0 && Options.PanSensorHeight === 0 || Options.PanSpeed === 0) {
+    Context.DropZonePanning = false;
+    return;
+  }
+  var pannableElement;
+  switch (true) {
+    case ValueIsNonEmptyString(Options.Pannable):
+      pannableElement = Element2.parentElement;
+      if (pannableElement != null) {
+        pannableElement = pannableElement.closest(Options.Pannable);
+      }
+      break;
+    case (Options.Pannable === "this" && Type === "dropzone"):
+      pannableElement = Element2;
+      break;
+    case Options.Pannable instanceof HTMLElement:
+    case Options.Pannable instanceof SVGElement:
+      pannableElement = Options.Pannable;
+  }
+  if (pannableElement == null) {
+    Context.DropZonePanning = false;
+    return;
+  }
+  var _a = svelteCoordinateConversion.fromDocumentTo("local", { left: xOnPage, top: yOnPage }, pannableElement), xInPannable = _a.left, yInPannable = _a.top;
+  if (xInPannable >= 0 && xInPannable < Options.PanSensorWidth) {
+    pannableElement.scrollLeft = Math.max(0, pannableElement.scrollLeft - Options.PanSpeed);
+  }
+  var PannableWidth = pannableElement.clientWidth;
+  if (xInPannable >= PannableWidth - Options.PanSensorWidth && xInPannable < PannableWidth) {
+    pannableElement.scrollLeft = Math.min(pannableElement.scrollLeft + Options.PanSpeed, pannableElement.scrollWidth - PannableWidth);
+  }
+  if (yInPannable >= 0 && yInPannable < Options.PanSensorHeight) {
+    pannableElement.scrollTop = Math.max(0, pannableElement.scrollTop - Options.PanSpeed);
+  }
+  var PannableHeight = pannableElement.clientHeight;
+  if (yInPannable >= PannableHeight - Options.PanSensorHeight && yInPannable < PannableHeight) {
+    pannableElement.scrollTop = Math.min(pannableElement.scrollTop + Options.PanSpeed, pannableElement.scrollHeight - PannableHeight);
+  }
+  Context.DropZonePanning = Type === "dropzone";
+}
+function parsedOperations(Description, Argument, Default) {
+  if (Default === void 0) {
+    Default = "copy move link";
+  }
+  var Operations = allowedString(Description, Argument) || Default;
+  switch (Operations.trim()) {
+    case "all":
+      return "copy move link";
+    case "none":
+      return "";
+  }
+  var OperationList = Operations.trim().replace(/\s+/g, " ").split(" ");
+  allowListSatisfying(Description, OperationList, function(Operation) {
+    return ValueIsOneOf(Operation, DropOperations);
+  });
+  return OperationList.reduce(function(Result, Operation) {
+    return Result.indexOf(Operation) < 0 ? Result + Operation + " " : Result;
+  }, " ");
+}
+function allowedEffectsFrom(Operations) {
+  var EffectIndex = ((Operations.indexOf("move") < 0 ? 0 : 1) * 2 + (Operations.indexOf("link") < 0 ? 0 : 1)) * 2 + (Operations.indexOf("copy") < 0 ? 0 : 1);
+  return [
+    "none",
+    "copy",
+    "link",
+    "copyLink",
+    "move",
+    "copyMove",
+    "linkMove",
+    "all"
+  ][EffectIndex];
+}
+function invokeHandler(Name, Options) {
+  var Arguments = [];
+  for (var _i = 2; _i < arguments.length; _i++) {
+    Arguments[_i - 2] = arguments[_i];
+  }
+  if (Options[Name] != null) {
+    try {
+      return Options[Name].apply(null, Arguments);
+    } catch (Signal) {
+      console.error(quoted(Name) + " handler failed", Signal);
+    }
+  }
+}
+class Pointer {
+  constructor(nativePointer) {
+    this.id = -1;
+    this.nativePointer = nativePointer;
+    this.pageX = nativePointer.pageX;
+    this.pageY = nativePointer.pageY;
+    this.clientX = nativePointer.clientX;
+    this.clientY = nativePointer.clientY;
+    if (self.Touch && nativePointer instanceof Touch) {
+      this.id = nativePointer.identifier;
+    } else if (isPointerEvent(nativePointer)) {
+      this.id = nativePointer.pointerId;
+    }
+  }
+  getCoalesced() {
+    if ("getCoalescedEvents" in this.nativePointer) {
+      const events = this.nativePointer.getCoalescedEvents().map((p) => new Pointer(p));
+      if (events.length > 0)
+        return events;
+    }
+    return [this];
+  }
+}
+const isPointerEvent = (event2) => "pointerId" in event2;
+const isTouchEvent = (event2) => "changedTouches" in event2;
+const noop = () => {
+};
+class PointerTracker {
+  constructor(_element, { start = () => true, move = noop, end = noop, rawUpdates = false, avoidPointerEvents = false, eventListenerOptions = { capture: false, passive: false, once: false } } = {}) {
+    this._element = _element;
+    this.startPointers = [];
+    this.currentPointers = [];
+    this._excludeFromButtonsCheck = /* @__PURE__ */ new Set();
+    this._pointerStart = (event2) => {
+      if (isPointerEvent(event2) && event2.buttons === 0) {
+        this._excludeFromButtonsCheck.add(event2.pointerId);
+      } else if (!(event2.buttons & 1)) {
+        return;
+      }
+      const pointer = new Pointer(event2);
+      if (this.currentPointers.some((p) => p.id === pointer.id))
+        return;
+      if (!this._triggerPointerStart(pointer, event2))
+        return;
+      if (isPointerEvent(event2)) {
+        const capturingElement = event2.target && "setPointerCapture" in event2.target ? event2.target : this._element;
+        capturingElement.setPointerCapture(event2.pointerId);
+        this._element.addEventListener(this._rawUpdates ? "pointerrawupdate" : "pointermove", this._move, this._eventListenerOptions);
+        this._element.addEventListener("pointerup", this._pointerEnd, this._eventListenerOptions);
+        this._element.addEventListener("pointercancel", this._pointerEnd, this._eventListenerOptions);
+      } else {
+        window.addEventListener("mousemove", this._move);
+        window.addEventListener("mouseup", this._pointerEnd);
+      }
+    };
+    this._touchStart = (event2) => {
+      for (const touch of Array.from(event2.changedTouches)) {
+        this._triggerPointerStart(new Pointer(touch), event2);
+      }
+    };
+    this._move = (event2) => {
+      if (!isTouchEvent(event2) && (!isPointerEvent(event2) || !this._excludeFromButtonsCheck.has(event2.pointerId)) && event2.buttons === 0) {
+        this._pointerEnd(event2);
+        return;
+      }
+      const previousPointers = this.currentPointers.slice();
+      const changedPointers = isTouchEvent(event2) ? Array.from(event2.changedTouches).map((t) => new Pointer(t)) : [new Pointer(event2)];
+      const trackedChangedPointers = [];
+      for (const pointer of changedPointers) {
+        const index = this.currentPointers.findIndex((p) => p.id === pointer.id);
+        if (index === -1)
+          continue;
+        trackedChangedPointers.push(pointer);
+        this.currentPointers[index] = pointer;
+      }
+      if (trackedChangedPointers.length === 0)
+        return;
+      this._moveCallback(previousPointers, trackedChangedPointers, event2);
+    };
+    this._triggerPointerEnd = (pointer, event2) => {
+      if (!isTouchEvent(event2) && event2.buttons & 1) {
+        return false;
+      }
+      const index = this.currentPointers.findIndex((p) => p.id === pointer.id);
+      if (index === -1)
+        return false;
+      this.currentPointers.splice(index, 1);
+      this.startPointers.splice(index, 1);
+      this._excludeFromButtonsCheck.delete(pointer.id);
+      const cancelled = !(event2.type === "mouseup" || event2.type === "touchend" || event2.type === "pointerup");
+      this._endCallback(pointer, event2, cancelled);
+      return true;
+    };
+    this._pointerEnd = (event2) => {
+      if (!this._triggerPointerEnd(new Pointer(event2), event2))
+        return;
+      if (isPointerEvent(event2)) {
+        if (this.currentPointers.length)
+          return;
+        this._element.removeEventListener(this._rawUpdates ? "pointerrawupdate" : "pointermove", this._move);
+        this._element.removeEventListener("pointerup", this._pointerEnd);
+        this._element.removeEventListener("pointercancel", this._pointerEnd);
+      } else {
+        window.removeEventListener("mousemove", this._move);
+        window.removeEventListener("mouseup", this._pointerEnd);
+      }
+    };
+    this._touchEnd = (event2) => {
+      for (const touch of Array.from(event2.changedTouches)) {
+        this._triggerPointerEnd(new Pointer(touch), event2);
+      }
+    };
+    this._startCallback = start;
+    this._moveCallback = move;
+    this._endCallback = end;
+    this._rawUpdates = rawUpdates && "onpointerrawupdate" in window;
+    this._eventListenerOptions = eventListenerOptions;
+    if (self.PointerEvent && !avoidPointerEvents) {
+      this._element.addEventListener("pointerdown", this._pointerStart, this._eventListenerOptions);
+    } else {
+      this._element.addEventListener("mousedown", this._pointerStart, this._eventListenerOptions);
+      this._element.addEventListener("touchstart", this._touchStart, this._eventListenerOptions);
+      this._element.addEventListener("touchmove", this._move, this._eventListenerOptions);
+      this._element.addEventListener("touchend", this._touchEnd, this._eventListenerOptions);
+      this._element.addEventListener("touchcancel", this._touchEnd, this._eventListenerOptions);
+    }
+  }
+  stop() {
+    this._element.removeEventListener("pointerdown", this._pointerStart);
+    this._element.removeEventListener("mousedown", this._pointerStart);
+    this._element.removeEventListener("touchstart", this._touchStart);
+    this._element.removeEventListener("touchmove", this._move);
+    this._element.removeEventListener("touchend", this._touchEnd);
+    this._element.removeEventListener("touchcancel", this._touchEnd);
+    this._element.removeEventListener(this._rawUpdates ? "pointerrawupdate" : "pointermove", this._move);
+    this._element.removeEventListener("pointerup", this._pointerEnd);
+    this._element.removeEventListener("pointercancel", this._pointerEnd);
+    window.removeEventListener("mousemove", this._move);
+    window.removeEventListener("mouseup", this._pointerEnd);
+  }
+  _triggerPointerStart(pointer, event2) {
+    if (!this._startCallback(pointer, event2))
+      return false;
+    this.currentPointers.push(pointer);
+    this.startPointers.push(pointer);
+    return true;
+  }
 }
 var Menu_svelte_svelte_type_style_lang = "";
 function create_fragment$8(ctx) {
@@ -99,8 +1141,8 @@ function create_fragment$8(ctx) {
       if (dirty & 1)
         set_data(t1, ctx2[0]);
     },
-    i: noop,
-    o: noop,
+    i: noop$1,
+    o: noop$1,
     d(detaching) {
       if (detaching)
         detach(div1);
@@ -181,14 +1223,19 @@ class PinchZoom {
     this.node = node;
     this._parentEl = this.node.parentElement || document.body;
     new MutationObserver(() => this._stageElChange()).observe(this.node, { childList: true });
-    const pointerTracker = new PointerTracker$1(this._parentEl, {
+    const pointerTracker = new PointerTracker(this._parentEl, {
       eventListenerOptions: { capture: true },
       start: (pointer, event2) => {
+        console.log("PanZoom Start", { pointer }, pointerTracker.currentPointers.length);
         if (pointerTracker.currentPointers.length === 2 || !this._parentEl)
           return false;
         event2.preventDefault();
-        event2.stopPropagation();
-        return true;
+        if (pointerTracker.currentPointers.length === 1) {
+          event2.stopPropagation();
+        }
+        if (pointerTracker.currentPointers.length === 0 && (event2.target == this._parentEl || event2.target == node)) {
+          return true;
+        }
       },
       move: (previousPointers) => {
         event.stopPropagation();
@@ -339,14 +1386,7 @@ class PinchZoom {
     });
   }
   _applyChange(opts = {}) {
-    const {
-      panX = 0,
-      panY = 0,
-      originX = 0,
-      originY = 0,
-      scaleDiff = 1,
-      allowChangeEvent = false
-    } = opts;
+    const { panX = 0, panY = 0, originX = 0, originY = 0, scaleDiff = 1, allowChangeEvent = false } = opts;
     const matrix = createMatrix().translate(panX, panY).translate(originX, originY).scale(scaleDiff).translate(-originX, -originY).multiply(this._transform);
     this.setTransform({
       allowChangeEvent,
@@ -405,8 +1445,8 @@ function create_fragment$7(ctx) {
         set_style(div, "top", ctx2[2] + "px");
       }
     },
-    i: noop,
-    o: noop,
+    i: noop$1,
+    o: noop$1,
     d(detaching) {
       if (detaching)
         detach(div);
@@ -433,7 +1473,7 @@ function instance$7($$self, $$props, $$invalidate) {
   let { direction } = $$props;
   let { isDragging = false } = $$props;
   let { grid: grid2 } = $$props;
-  const isPointerEvent = (event2) => "pointerId" in event2;
+  const isPointerEvent2 = (event2) => "pointerId" in event2;
   let handleEl;
   let handleWidth = 8;
   let handleHeight = 8;
@@ -449,7 +1489,7 @@ function instance$7($$self, $$props, $$invalidate) {
         return true;
       },
       move: (previousPointers, changedPointers, event2) => {
-        if (!isPointerEvent(event2))
+        if (!isPointerEvent2(event2))
           return;
         let dx = event2.clientX - previousPointers[0].clientX;
         let dy = event2.clientY - previousPointers[0].clientY;
@@ -781,8 +1821,8 @@ function create_fragment$6(ctx) {
         }
       }
     },
-    i: noop,
-    o: noop,
+    i: noop$1,
+    o: noop$1,
     d(detaching) {
       if (detaching)
         detach(div);
@@ -904,7 +1944,8 @@ const colors = [
 var ColorPicker_svelte_svelte_type_style_lang = "";
 function get_each_context$1(ctx, list, i) {
   const child_ctx = ctx.slice();
-  child_ctx[3] = list[i];
+  child_ctx[2] = list[i];
+  child_ctx[4] = i;
   return child_ctx;
 }
 function create_if_block$5(ctx) {
@@ -934,7 +1975,7 @@ function create_if_block$5(ctx) {
       insert_hydration(target, each_1_anchor, anchor);
     },
     p(ctx2, dirty) {
-      if (dirty & 2) {
+      if (dirty & 1) {
         each_value = colors;
         let i;
         for (i = 0; i < each_value.length; i += 1) {
@@ -966,7 +2007,7 @@ function create_each_block$1(ctx) {
   let mounted;
   let dispose;
   function click_handler(...args) {
-    return ctx[2](ctx[3], ...args);
+    return ctx[1](ctx[2], ...args);
   }
   return {
     c() {
@@ -983,7 +2024,7 @@ function create_each_block$1(ctx) {
     },
     h() {
       attr(div, "class", "colorOption svelte-10ineey");
-      set_style(div, "background-color", ctx[3]);
+      set_style(div, "background-color", ctx[2]);
     },
     m(target, anchor) {
       insert_hydration(target, div, anchor);
@@ -1044,8 +2085,8 @@ function create_fragment$5(ctx) {
         if_block = null;
       }
     },
-    i: noop,
-    o: noop,
+    i: noop$1,
+    o: noop$1,
     d(detaching) {
       if (detaching)
         detach(main);
@@ -1056,15 +2097,12 @@ function create_fragment$5(ctx) {
 }
 function instance$5($$self, $$props, $$invalidate) {
   let { backgroundColor = "#fee9004b" } = $$props;
-  function handleClick(color) {
-    $$invalidate(0, backgroundColor = color);
-  }
-  const click_handler = (color, e) => handleClick(color);
+  const click_handler = (color, e) => $$invalidate(0, backgroundColor = color);
   $$self.$$set = ($$props2) => {
     if ("backgroundColor" in $$props2)
       $$invalidate(0, backgroundColor = $$props2.backgroundColor);
   };
-  return [backgroundColor, handleClick, click_handler];
+  return [backgroundColor, click_handler];
 }
 class ColorPicker extends SvelteComponent {
   constructor(options) {
@@ -1078,11 +2116,11 @@ function create_if_block$4(ctx) {
   let updating_backgroundColor;
   let current;
   function colorpicker_backgroundColor_binding(value) {
-    ctx[3](value);
+    ctx[2](value);
   }
   let colorpicker_props = {};
-  if (ctx[0] !== void 0) {
-    colorpicker_props.backgroundColor = ctx[0];
+  if (ctx[0].style.backgroundColor !== void 0) {
+    colorpicker_props.backgroundColor = ctx[0].style.backgroundColor;
   }
   colorpicker = new ColorPicker({ props: colorpicker_props });
   binding_callbacks.push(() => bind(colorpicker, "backgroundColor", colorpicker_backgroundColor_binding));
@@ -1101,7 +2139,7 @@ function create_if_block$4(ctx) {
       const colorpicker_changes = {};
       if (!updating_backgroundColor && dirty & 1) {
         updating_backgroundColor = true;
-        colorpicker_changes.backgroundColor = ctx2[0];
+        colorpicker_changes.backgroundColor = ctx2[0].style.backgroundColor;
         add_flush_callback(() => updating_backgroundColor = false);
       }
       colorpicker.$set(colorpicker_changes);
@@ -1122,6 +2160,7 @@ function create_if_block$4(ctx) {
   };
 }
 function create_fragment$4(ctx) {
+  var _a, _b;
   let div;
   let t0;
   let span0;
@@ -1133,7 +2172,7 @@ function create_fragment$4(ctx) {
   let current;
   let mounted;
   let dispose;
-  let if_block = ctx[0] && create_if_block$4(ctx);
+  let if_block = ctx[0] && ((_b = (_a = ctx[0]) == null ? void 0 : _a.style) == null ? void 0 : _b.backgroundColor) && ColorPicker && create_if_block$4(ctx);
   return {
     c() {
       div = element("div");
@@ -1171,7 +2210,7 @@ function create_fragment$4(ctx) {
       attr(div, "class", "context-menu svelte-1fxjj2n");
       set_style(div, "right", "-" + ctx[1] * 2.25 + "px");
       set_style(div, "top", "0");
-      add_render_callback(() => ctx[4].call(div));
+      add_render_callback(() => ctx[3].call(div));
     },
     m(target, anchor) {
       insert_hydration(target, div, anchor);
@@ -1183,7 +2222,7 @@ function create_fragment$4(ctx) {
       append_hydration(div, t2);
       append_hydration(div, span1);
       append_hydration(span1, t3);
-      div_resize_listener = add_resize_listener(div, ctx[4].bind(div));
+      div_resize_listener = add_resize_listener(div, ctx[3].bind(div));
       current = true;
       if (!mounted) {
         dispose = [
@@ -1194,7 +2233,8 @@ function create_fragment$4(ctx) {
       }
     },
     p(ctx2, [dirty]) {
-      if (ctx2[0]) {
+      var _a2, _b2;
+      if (ctx2[0] && ((_b2 = (_a2 = ctx2[0]) == null ? void 0 : _a2.style) == null ? void 0 : _b2.backgroundColor) && ColorPicker) {
         if (if_block) {
           if_block.p(ctx2, dirty);
           if (dirty & 1) {
@@ -1243,14 +2283,13 @@ function handleDelete(e) {
 function handleConnect(e) {
 }
 function instance$4($$self, $$props, $$invalidate) {
-  var _a;
   let { node } = $$props;
   let offsetWidth;
-  let backgroundColor = ((_a = node == null ? void 0 : node.style) == null ? void 0 : _a.backgroundColor) || "#fee9004b";
-  console.log({ backgroundColor, node });
   function colorpicker_backgroundColor_binding(value) {
-    backgroundColor = value;
-    $$invalidate(0, backgroundColor);
+    if ($$self.$$.not_equal(node.style.backgroundColor, value)) {
+      node.style.backgroundColor = value;
+      $$invalidate(0, node);
+    }
   }
   function div_elementresize_handler() {
     offsetWidth = this.offsetWidth;
@@ -1258,20 +2297,11 @@ function instance$4($$self, $$props, $$invalidate) {
   }
   $$self.$$set = ($$props2) => {
     if ("node" in $$props2)
-      $$invalidate(2, node = $$props2.node);
-  };
-  $$self.$$.update = () => {
-    if ($$self.$$.dirty & 5) {
-      if (node && backgroundColor)
-        $$invalidate(2, node = __spreadProps(__spreadValues({}, node), {
-          style: __spreadProps(__spreadValues({}, node.style), { backgroundColor })
-        }));
-    }
+      $$invalidate(0, node = $$props2.node);
   };
   return [
-    backgroundColor,
-    offsetWidth,
     node,
+    offsetWidth,
     colorpicker_backgroundColor_binding,
     div_elementresize_handler
   ];
@@ -1279,7 +2309,7 @@ function instance$4($$self, $$props, $$invalidate) {
 class ContextMenu extends SvelteComponent {
   constructor(options) {
     super();
-    init(this, options, instance$4, create_fragment$4, safe_not_equal, { node: 2 });
+    init(this, options, instance$4, create_fragment$4, safe_not_equal, { node: 0 });
   }
 }
 var Container_svelte_svelte_type_style_lang = "";
@@ -1307,8 +2337,6 @@ function create_if_block$3(ctx) {
   let t1;
   let t2;
   let div1_resize_listener;
-  let asDroppable_action;
-  let asDropZone_action;
   let clickOutside_action;
   let t3;
   let if_block2_anchor;
@@ -1316,7 +2344,7 @@ function create_if_block$3(ctx) {
   let mounted;
   let dispose;
   function editabletext_value_binding(value) {
-    ctx[12](value);
+    ctx[11](value);
   }
   let editabletext_props = {};
   if (ctx[0].name !== void 0) {
@@ -1325,7 +2353,7 @@ function create_if_block$3(ctx) {
   editabletext = new EditableText({ props: editabletext_props });
   binding_callbacks.push(() => bind(editabletext, "value", editabletext_value_binding));
   function switch_instance_props_binding(value) {
-    ctx[13](value);
+    ctx[12](value);
   }
   var switch_value = ctx[0].component;
   function switch_props(ctx2) {
@@ -1387,15 +2415,15 @@ function create_if_block$3(ctx) {
     },
     h() {
       var _a2, _b2, _c, _d, _e, _f;
-      attr(div0, "class", "title svelte-jjqozt");
-      attr(div1, "class", "container svelte-jjqozt");
+      attr(div0, "class", "title svelte-190cqn8");
+      attr(div1, "class", "container svelte-190cqn8");
       set_style(div1, "position", "absolute");
       set_style(div1, "left", ctx[0].x + "px");
       set_style(div1, "top", ctx[0].y + "px");
       set_style(div1, "width", ((_b2 = (_a2 = ctx[0]) == null ? void 0 : _a2.style) == null ? void 0 : _b2.width) + "px");
       set_style(div1, "height", ((_d = (_c = ctx[0]) == null ? void 0 : _c.style) == null ? void 0 : _d.height) + "px");
       set_style(div1, "background-color", ((_f = (_e = ctx[0]) == null ? void 0 : _e.style) == null ? void 0 : _f.backgroundColor) || "#fee9004b");
-      add_render_callback(() => ctx[18].call(div1));
+      add_render_callback(() => ctx[17].call(div1));
     },
     m(target, anchor) {
       insert_hydration(target, div1, anchor);
@@ -1411,8 +2439,8 @@ function create_if_block$3(ctx) {
       append_hydration(div1, t2);
       if (if_block1)
         if_block1.m(div1, null);
-      ctx[17](div1);
-      div1_resize_listener = add_resize_listener(div1, ctx[18].bind(div1));
+      ctx[16](div1);
+      div1_resize_listener = add_resize_listener(div1, ctx[17].bind(div1));
       insert_hydration(target, t3, anchor);
       if (if_block2)
         if_block2.m(target, anchor);
@@ -1420,19 +2448,11 @@ function create_if_block$3(ctx) {
       current = true;
       if (!mounted) {
         dispose = [
-          action_destroyer(asDroppable_action = asDroppable.call(null, div1, {
-            Operations: "move",
-            DataToOffer: { "item/plain": "" }
-          })),
-          action_destroyer(asDropZone_action = asDropZone.call(null, div1, {
-            TypesToAccept: { "item/plain": "all" },
-            onDrop: ctx[9]
-          })),
           action_destroyer(clickOutside_action = clickOutside.call(null, div1, {
             enabled: ctx[7],
-            handleUnselect: ctx[10]
+            handleUnselect: ctx[9]
           })),
-          listen(div1, "focusout", ctx[10]),
+          listen(div1, "focusout", ctx[9]),
           listen(div1, "dragstart", handleDragStart)
         ];
         mounted = true;
@@ -1530,7 +2550,7 @@ function create_if_block$3(ctx) {
       if (clickOutside_action && is_function(clickOutside_action.update) && dirty[0] & 128)
         clickOutside_action.update.call(null, {
           enabled: ctx2[7],
-          handleUnselect: ctx2[10]
+          handleUnselect: ctx2[9]
         });
       if (ctx2[4] && ctx2[7]) {
         if (if_block2) {
@@ -1582,7 +2602,7 @@ function create_if_block$3(ctx) {
         if_block0.d();
       if (if_block1)
         if_block1.d();
-      ctx[17](null);
+      ctx[16](null);
       div1_resize_listener();
       if (detaching)
         detach(t3);
@@ -1677,10 +2697,10 @@ function create_each_block_1(ctx) {
   let updating_isDragging;
   let current;
   function container_1_node_binding(value) {
-    ctx[14](value, ctx[34], ctx[35], ctx[36]);
+    ctx[13](value, ctx[34], ctx[35], ctx[36]);
   }
   function container_1_isDragging_binding(value) {
-    ctx[15](value);
+    ctx[14](value);
   }
   let container_1_props = {
     arenaWidth: ctx[5],
@@ -1745,7 +2765,7 @@ function create_if_block_2(ctx) {
   let updating_node;
   let current;
   function contextmenu_node_binding(value) {
-    ctx[16](value);
+    ctx[15](value);
   }
   let contextmenu_props = {};
   if (ctx[0] !== void 0) {
@@ -1873,19 +2893,19 @@ function create_each_block(ctx) {
   let updating_isDragging;
   let current;
   function resizehandle_x_binding(value) {
-    ctx[19](value);
+    ctx[18](value);
   }
   function resizehandle_y_binding(value) {
-    ctx[20](value);
+    ctx[19](value);
   }
   function resizehandle_width_binding(value) {
-    ctx[21](value);
+    ctx[20](value);
   }
   function resizehandle_height_binding(value) {
-    ctx[22](value);
+    ctx[21](value);
   }
   function resizehandle_isDragging_binding(value) {
-    ctx[23](value);
+    ctx[22](value);
   }
   let resizehandle_props = {
     maxFrameWidth,
@@ -2055,14 +3075,21 @@ function handleDragStart(e) {
 function instance$3($$self, $$props, $$invalidate) {
   let $selected;
   let $scale;
-  component_subscribe($$self, selected, ($$value) => $$invalidate(11, $selected = $$value));
-  component_subscribe($$self, scale, ($$value) => $$invalidate(24, $scale = $$value));
+  component_subscribe($$self, selected, ($$value) => $$invalidate(10, $selected = $$value));
+  component_subscribe($$self, scale, ($$value) => $$invalidate(23, $scale = $$value));
+  let { node } = $$props;
+  let { arenaHeight } = $$props;
+  let { arenaWidth } = $$props;
+  let { isDragging = false } = $$props;
+  createEventDispatcher();
+  let container;
+  let clientWidth, clientHeight;
+  let isFocused;
+  let directions = ["nw", "w", "sw", "ne", "e", "se", "n", "s"];
   onMount(async () => {
-    __vitePreload(() => import("../chunks/svelte-drag-drop-touch.esm-bd0b41cd.js"), true ? [] : void 0);
-    const pointerTracker = new PointerTracker(container, {
+    new PointerTracker(container, {
       start: (pointer, event2) => {
-        if (pointerTracker.currentPointers.length === 2)
-          return false;
+        console.log("Container click", node.name);
         event2.stopPropagation();
         event2.preventDefault();
         return true;
@@ -2078,15 +3105,6 @@ function instance$3($$self, $$props, $$invalidate) {
       }
     });
   });
-  let { node } = $$props;
-  let { arenaHeight } = $$props;
-  let { arenaWidth } = $$props;
-  let { isDragging = false } = $$props;
-  createEventDispatcher();
-  let container;
-  let clientWidth, clientHeight;
-  let isFocused;
-  let directions = ["nw", "w", "sw", "ne", "e", "se", "n", "s"];
   function dragFrame(_x, _y, dx, dy) {
     $$invalidate(0, node.x = node.x + dx / $scale.value, node);
     $$invalidate(0, node.y = node.y + dy / $scale.value, node);
@@ -2098,28 +3116,6 @@ function instance$3($$self, $$props, $$invalidate) {
     $$invalidate(0, node.y = Math.round(node.y / grid) * grid, node);
     $$invalidate(0, node.style.width = Math.round(node.style.width / grid) * grid, node);
     $$invalidate(0, node.style.height = Math.round(node.style.height / grid) * grid, node);
-  }
-  function onDrop(x, y, Operation, DataOffered, DroppableExtras, DropZoneExtras) {
-    console.log(`DropZone.onDrop:
-		 x,y:            ${x}, ${y}
-		 Operation:      ', ${Operation}
-		 DataOffered:    ', ${JSON.stringify(DataOffered)}
-		 DroppableExtras:', ${JSON.stringify(DroppableExtras, null, 2)}
-		 DropZoneExtras: ', ${DropZoneExtras}`);
-    let TypeAccepted = void 0;
-    for (let Type in DataOffered) {
-      if (DataOffered.hasOwnProperty(Type)) {
-        TypeAccepted = Type;
-      }
-    }
-    $$invalidate(0, node.children = [
-      ...node.children,
-      __spreadProps(__spreadValues({}, DroppableExtras.newContainer), {
-        x: x / $scale.value,
-        y: y / $scale.value
-      })
-    ], node);
-    return TypeAccepted;
   }
   function assertArenaBounds() {
     if (node.x < 0) {
@@ -2222,7 +3218,7 @@ function instance$3($$self, $$props, $$invalidate) {
       if (arenaWidth || arenaHeight)
         assertArenaBounds();
     }
-    if ($$self.$$.dirty[0] & 2064) {
+    if ($$self.$$.dirty[0] & 1040) {
       if ($selected != container)
         handleUnselect();
     }
@@ -2237,7 +3233,6 @@ function instance$3($$self, $$props, $$invalidate) {
     clientHeight,
     isFocused,
     directions,
-    onDrop,
     handleUnselect,
     $selected,
     editabletext_value_binding,
@@ -2270,11 +3265,7 @@ function create_if_block$2(ctx) {
   let div1;
   let menu;
   let updating_scale;
-  let t0;
-  let t1;
-  let t2;
-  let t3;
-  let t4;
+  let t;
   let div0;
   let container;
   let updating_node;
@@ -2308,11 +3299,7 @@ function create_if_block$2(ctx) {
     c() {
       div1 = element("div");
       create_component(menu.$$.fragment);
-      t0 = space();
-      t1 = text(ctx[1]);
-      t2 = text("px x ");
-      t3 = text(ctx[2]);
-      t4 = text("px\r\n\r\n		");
+      t = space();
       div0 = element("div");
       create_component(container.$$.fragment);
       this.h();
@@ -2321,11 +3308,7 @@ function create_if_block$2(ctx) {
       div1 = claim_element(nodes, "DIV", { class: true, style: true });
       var div1_nodes = children(div1);
       claim_component(menu.$$.fragment, div1_nodes);
-      t0 = claim_space(div1_nodes);
-      t1 = claim_text(div1_nodes, ctx[1]);
-      t2 = claim_text(div1_nodes, "px x ");
-      t3 = claim_text(div1_nodes, ctx[2]);
-      t4 = claim_text(div1_nodes, "px\r\n\r\n		");
+      t = claim_space(div1_nodes);
       div0 = claim_element(div1_nodes, "DIV", { class: true });
       var div0_nodes = children(div0);
       claim_component(container.$$.fragment, div0_nodes);
@@ -2343,11 +3326,7 @@ function create_if_block$2(ctx) {
     m(target, anchor) {
       insert_hydration(target, div1, anchor);
       mount_component(menu, div1, null);
-      append_hydration(div1, t0);
-      append_hydration(div1, t1);
-      append_hydration(div1, t2);
-      append_hydration(div1, t3);
-      append_hydration(div1, t4);
+      append_hydration(div1, t);
       append_hydration(div1, div0);
       mount_component(container, div0, null);
       ctx[10](div0);
@@ -2369,10 +3348,6 @@ function create_if_block$2(ctx) {
         add_flush_callback(() => updating_scale = false);
       }
       menu.$set(menu_changes);
-      if (!current || dirty & 2)
-        set_data(t1, ctx2[1]);
-      if (!current || dirty & 4)
-        set_data(t3, ctx2[2]);
       const container_changes = {};
       if (dirty & 8)
         container_changes.arenaWidth = ctx2[3] * 100;
@@ -2886,4 +3861,4 @@ class Routes extends SvelteComponent {
   }
 }
 export { Routes as default };
-//# sourceMappingURL=index.svelte-4e25ec8c.js.map
+//# sourceMappingURL=index.svelte-3ee05107.js.map

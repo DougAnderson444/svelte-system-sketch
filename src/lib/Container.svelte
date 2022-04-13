@@ -1,6 +1,5 @@
 <script>
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { asDraggable, asDroppable, asDropZone } from 'svelte-drag-and-drop-actions';
 	import PointerTracker from 'pointer-tracker';
 
 	import ResizeHandle from './ResizeHandle.svelte';
@@ -8,30 +7,6 @@
 	import { clickOutside } from './directives';
 	import EditableText from './EditableText.svelte';
 	import ContextMenu from './ContextMenu.svelte';
-
-	onMount(async () => {
-		import('svelte-drag-drop-touch');
-
-		// Watch for pointers
-		const pointerTracker = new PointerTracker(container, {
-			start: (pointer, event) => {
-				// We only want to track 2 pointers at most
-				if (pointerTracker.currentPointers.length === 2) return false;
-				event.stopPropagation();
-				event.preventDefault();
-				return true;
-			},
-			move: (previousPointers, changedPointers, event) => {
-				let dx = event.clientX - previousPointers[0].clientX;
-				let dy = event.clientY - previousPointers[0].clientY;
-				dragFrame(event.clientX, event.clientY, dx, dy);
-			},
-			end: (pointer, event, cancelled) => {
-				onDragEnd();
-				handleFocus(event);
-			}
-		});
-	});
 
 	// export let data;
 	export let node;
@@ -55,6 +30,27 @@
 
 	let isFocused;
 	let directions = ['nw', 'w', 'sw', 'ne', 'e', 'se', 'n', 's'];
+
+	onMount(async () => {
+		// Watch for pointers
+		const pointerTracker = new PointerTracker(container, {
+			start: (pointer, event) => {
+				console.log('Container click', node.name);
+				event.stopPropagation();
+				event.preventDefault();
+				return true;
+			},
+			move: (previousPointers, changedPointers, event) => {
+				let dx = event.clientX - previousPointers[0].clientX;
+				let dy = event.clientY - previousPointers[0].clientY;
+				dragFrame(event.clientX, event.clientY, dx, dy);
+			},
+			end: (pointer, event, cancelled) => {
+				onDragEnd();
+				handleFocus(event);
+			}
+		});
+	});
 
 	/**** event handling ***/
 	function handleDragStart(e) {
@@ -143,11 +139,6 @@
 		style="position: absolute; left:{node.x}px; top:{node.y}px; width:{node?.style
 			?.width}px; height:{node?.style?.height}px; 
 		background-color: {node?.style?.backgroundColor || '#fee9004b'}"
-		use:asDroppable={{
-			Operations: 'move',
-			DataToOffer: { 'item/plain': '' }
-		}}
-		use:asDropZone={{ TypesToAccept: { 'item/plain': 'all' }, onDrop }}
 		use:clickOutside={{ enabled: isFocused, handleUnselect }}
 		on:focusout={handleUnselect}
 		on:dragstart={handleDragStart}
@@ -226,7 +217,7 @@
 		font-style: normal;
 		font-weight: 400;
 		font-display: swap;
-		src: url(./perm-marker.woff2) format('woff2');
+		src: url(./fonts/perm-marker.woff2) format('woff2');
 		unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
 			U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 	}

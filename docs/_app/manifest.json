@@ -1,11 +1,11 @@
 {
   ".svelte-kit/runtime/client/start.js": {
-    "file": "start-43d6f56d.js",
+    "file": "start-5b09290b.js",
     "src": ".svelte-kit/runtime/client/start.js",
     "isEntry": true,
     "imports": [
-      "_vendor-86580520.js",
-      "_preload-helper-f45aa6d1.js"
+      "_index-182dfd00.js",
+      "_index-dca0cab6.js"
     ],
     "dynamicImports": [
       "src/routes/__layout.svelte",
@@ -14,58 +14,49 @@
     ]
   },
   "src/routes/__layout.svelte": {
-    "file": "pages/__layout.svelte-5736d7b7.js",
+    "file": "pages/__layout.svelte-e7140035.js",
     "src": "src/routes/__layout.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_preload-helper-f45aa6d1.js",
-      "_vendor-86580520.js"
-    ],
-    "dynamicImports": [
-      "node_modules/svelte-drag-drop-touch/dist/svelte-drag-drop-touch.esm.js"
+      "_index-182dfd00.js"
     ],
     "css": [
       "assets/pages/__layout.svelte-98621338.css"
     ]
   },
   ".svelte-kit/runtime/components/error.svelte": {
-    "file": "error.svelte-9cf6f7c4.js",
+    "file": "error.svelte-9375b7c6.js",
     "src": ".svelte-kit/runtime/components/error.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-86580520.js"
+      "_index-182dfd00.js"
     ]
   },
   "src/routes/index.svelte": {
-    "file": "pages/index.svelte-4e25ec8c.js",
+    "file": "pages/index.svelte-3ee05107.js",
     "src": "src/routes/index.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-86580520.js",
-      "_preload-helper-f45aa6d1.js"
-    ],
-    "dynamicImports": [
-      "node_modules/svelte-drag-drop-touch/dist/svelte-drag-drop-touch.esm.js"
+      "_index-182dfd00.js",
+      "_index-dca0cab6.js"
     ],
     "css": [
-      "assets/pages/index.svelte-42e8cf96.css"
+      "assets/pages/index.svelte-691caf9e.css"
+    ],
+    "assets": [
+      "assets/perm-marker-4884fec2.woff2"
     ]
   },
-  "_vendor-86580520.js": {
-    "file": "chunks/vendor-86580520.js",
-    "css": [
-      "assets/vendor-51225f93.css"
+  "_index-182dfd00.js": {
+    "file": "chunks/index-182dfd00.js"
+  },
+  "_index-dca0cab6.js": {
+    "file": "chunks/index-dca0cab6.js",
+    "imports": [
+      "_index-182dfd00.js"
     ]
-  },
-  "_preload-helper-f45aa6d1.js": {
-    "file": "chunks/preload-helper-f45aa6d1.js"
-  },
-  "node_modules/svelte-drag-drop-touch/dist/svelte-drag-drop-touch.esm.js": {
-    "file": "chunks/svelte-drag-drop-touch.esm-bd0b41cd.js",
-    "src": "node_modules/svelte-drag-drop-touch/dist/svelte-drag-drop-touch.esm.js",
-    "isDynamicEntry": true
   }
 }
