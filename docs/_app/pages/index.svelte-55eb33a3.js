@@ -1540,14 +1540,7 @@ class PinchZoom {
     });
   }
   _applyChange(opts = {}) {
-    const {
-      panX = 0,
-      panY = 0,
-      originX = 0,
-      originY = 0,
-      scaleDiff = 1,
-      allowChangeEvent = false
-    } = opts;
+    const { panX = 0, panY = 0, originX = 0, originY = 0, scaleDiff = 1, allowChangeEvent = false } = opts;
     const matrix = createMatrix().translate(panX, panY).translate(originX, originY).scale(scaleDiff).translate(-originX, -originY).multiply(this._transform);
     this.setTransform({
       allowChangeEvent,
@@ -4039,8 +4032,4 @@ class Routes extends SvelteComponent {
   }
 }
 export { Routes as default };
-<<<<<<<< HEAD:docs/_app/pages/index.svelte-32273a90.js
-//# sourceMappingURL=index.svelte-32273a90.js.map
-========
-//# sourceMappingURL=index.svelte-c31e68bd.js.map
->>>>>>>> 8a6512a383fbe94f69b46f0de764d1f63fe03337:docs/_app/pages/index.svelte-c31e68bd.js
+//# sourceMappingURL=index.svelte-55eb33a3.js.map
