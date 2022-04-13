@@ -1232,6 +1232,7 @@ class PinchZoom {
         event2.preventDefault();
         if (pointerTracker.currentPointers.length === 1) {
           event2.stopPropagation();
+          return true;
         }
         if (pointerTracker.currentPointers.length === 0 && (event2.target == this._parentEl || event2.target == node)) {
           return true;
@@ -1371,8 +1372,8 @@ class PinchZoom {
     const currentRect = this._parentEl.getBoundingClientRect();
     const prevMidpoint = getMidpoint(previousPointers[0], previousPointers[1]);
     const newMidpoint = getMidpoint(currentPointers[0], currentPointers[1]);
-    const originX = prevMidpoint.clientX - currentRect.left - currentRect.width / 2;
-    const originY = prevMidpoint.clientY - currentRect.top - currentRect.height / 2;
+    const originX = prevMidpoint.clientX - currentRect.left;
+    const originY = prevMidpoint.clientY - currentRect.top;
     const prevDistance = getDistance(previousPointers[0], previousPointers[1]);
     const newDistance = getDistance(currentPointers[0], currentPointers[1]);
     const scaleDiff = prevDistance ? newDistance / prevDistance : 1;
@@ -3861,4 +3862,4 @@ class Routes extends SvelteComponent {
   }
 }
 export { Routes as default };
-//# sourceMappingURL=index.svelte-3ee05107.js.map
+//# sourceMappingURL=index.svelte-307427a2.js.map
