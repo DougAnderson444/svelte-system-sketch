@@ -26,7 +26,7 @@
 	}
 </script>
 
-<div class="context-menu" style="right: -{offsetWidth * 1.5}px; top: 0;" bind:offsetWidth>
+<div class="context-menu" style="right: -{offsetWidth * 2.25}px; top: 0;" bind:offsetWidth>
 	{#if backgroundColor}
 		<ColorPicker bind:backgroundColor />
 	{/if}
