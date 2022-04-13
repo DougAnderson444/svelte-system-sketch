@@ -1372,8 +1372,8 @@ class PinchZoom {
     const currentRect = this._parentEl.getBoundingClientRect();
     const prevMidpoint = getMidpoint(previousPointers[0], previousPointers[1]);
     const newMidpoint = getMidpoint(currentPointers[0], currentPointers[1]);
-    const originX = prevMidpoint.clientX - currentRect.left;
-    const originY = prevMidpoint.clientY - currentRect.top;
+    const originX = prevMidpoint.clientX - currentRect.left - currentRect.width / 2;
+    const originY = prevMidpoint.clientY - currentRect.top - currentRect.height / 2;
     const prevDistance = getDistance(previousPointers[0], previousPointers[1]);
     const newDistance = getDistance(currentPointers[0], currentPointers[1]);
     const scaleDiff = prevDistance ? newDistance / prevDistance : 1;
@@ -3088,9 +3088,11 @@ function instance$3($$self, $$props, $$invalidate) {
   let isFocused;
   let directions = ["nw", "w", "sw", "ne", "e", "se", "n", "s"];
   onMount(async () => {
-    new PointerTracker(container, {
+    const pointerTracker = new PointerTracker(container, {
       start: (pointer, event2) => {
         console.log("Container click", node.name);
+        if (pointerTracker.currentPointers.length === 1 || !this._parentEl)
+          return false;
         event2.stopPropagation();
         event2.preventDefault();
         return true;
@@ -3862,4 +3864,4 @@ class Routes extends SvelteComponent {
   }
 }
 export { Routes as default };
-//# sourceMappingURL=index.svelte-307427a2.js.map
+//# sourceMappingURL=index.svelte-35a6e0cb.js.map
