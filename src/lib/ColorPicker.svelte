@@ -14,7 +14,10 @@
 				class="colorOption"
 				on:click={(e) => handleClick(color)}
 				style="background-color: {color};"
-			/>
+			>
+			<!-- I get thisstrange error when using <div/> instead of <div> </div> -->
+				&nbsp; &NonBreakingSpace;
+			</div>
 		{/each}
 	{/if}
 </main>
