@@ -1,7 +1,6 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 	import { tick } from 'svelte';
-	import { clickOutside } from './directives';
 
 	// Props
 	export let value = '';

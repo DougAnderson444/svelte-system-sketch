@@ -26,7 +26,7 @@
 	}
 </script>
 
-<div class="context-menu" style="right: -{offsetWidth * 2.25}px; top: 0;" bind:offsetWidth>
+<div class="context-menu" style="right: -{offsetWidth * 3.25}px; top: 0;" bind:offsetWidth>
 	{#if node && node?.style?.backgroundColor && ColorPicker}
 		<!-- <ColorPicker bind:backgroundColor /> -->
 		<ColorPicker bind:backgroundColor={node.style.backgroundColor} />

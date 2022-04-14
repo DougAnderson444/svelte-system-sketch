@@ -47,8 +47,11 @@
 				return true;
 			},
 			move: (previousPointers, changedPointers, event) => {
+				// @ts-ignore
 				let dx = event.clientX - previousPointers[0].clientX;
+				// @ts-ignore
 				let dy = event.clientY - previousPointers[0].clientY;
+				// @ts-ignore
 				dragFrame(event.clientX, event.clientY, dx, dy);
 			},
 			end: (pointer, event, cancelled) => {
@@ -152,7 +155,9 @@
 		<div class="title"><EditableText bind:value={node.name} /></div>
 		<!-- x: {node.x?.toFixed(1)}px; y: {node.y.toFixed(1)}px; <br />
 		width: {node.style.width?.toFixed(1)}px; height: {node.style.height.toFixed(1)}px; -->
-
+		Container font-size: {container
+			? window.getComputedStyle(container)['font-size']
+			: 'Calculating size...'}
 		<svelte:component this={node.component} bind:props={node.props} />
 
 		{#if node?.children?.length > 0}
@@ -201,9 +206,12 @@
 	.title {
 		width: 80%;
 		height: auto;
-		font-size: 1.5em;
+		font-size: 1em;
 		/* font-family: 'Luckiest Guy', cursive; */
 		font-family: 'Permanent Marker', cursive;
+	}
+	div {
+		/* font-size: 0.8em; */
 	}
 	.container {
 		/* background-color: #fee9004b; */
@@ -215,7 +223,7 @@
 		margin: 0.5em;
 		width: min-content;
 		height: 100%;
-		font-size: 0.9em;
+		font-size: 0.8em;
 	}
 
 	@font-face {
