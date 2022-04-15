@@ -28,6 +28,9 @@
 	let minFrameHeight = 20;
 	let maxFrameHeight = 2500;
 
+	// how much smaller are nested containers from the parent?
+	let fontSize = '0.8em';
+
 	let isFocused;
 	let directions = ['nw', 'w', 'sw', 'ne', 'e', 'se', 'n', 's'];
 	let pointerTracker;
@@ -134,11 +137,6 @@
 	}
 </script>
 
-<svelte:head>
-	<!-- <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Luckiest+Guy" /> -->
-</svelte:head>
-
-<!-- {node?.style}   background-color: {node?.backgroundColor}; -->
 {#if node && document && clickOutside}
 	<div
 		class="container"
@@ -146,7 +144,7 @@
 		bind:clientWidth
 		bind:clientHeight
 		style="position: absolute; left:{node.x}px; top:{node.y}px; width:{node?.style
-			?.width}px; height:{node?.style?.height}px; 
+			?.width}px; height:{node?.style?.height}px; font-size: {fontSize};
 		background-color: {node?.style?.backgroundColor || '#fee9004b'}"
 		use:clickOutside={{ enabled: isFocused, handleUnselect }}
 		on:focusout={handleUnselect}
@@ -210,20 +208,14 @@
 		/* font-family: 'Luckiest Guy', cursive; */
 		font-family: 'Permanent Marker', cursive;
 	}
-	div {
-		/* font-size: 0.8em; */
-	}
 	.container {
-		/* background-color: #fee9004b; */
 		box-shadow: 0.1em 0.1em 0.5em 0em rgba(183, 183, 183, 0.5);
-		/* box-shadow: 0.1em 0.1em 0.5em 0.1em hwb(0 83% 17% / 0.5); */
 		border-radius: 0.2em;
 		position: absolute;
 		padding: 1em;
 		margin: 0.5em;
 		width: min-content;
 		height: 100%;
-		font-size: 0.8em;
 	}
 
 	@font-face {
