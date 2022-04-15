@@ -2613,13 +2613,14 @@ function create_if_block$3(ctx) {
     },
     h() {
       var _a2, _b2, _c, _d, _e, _f;
-      attr(div0, "class", "title svelte-17vkfzx");
-      attr(div1, "class", "container svelte-17vkfzx");
+      attr(div0, "class", "title svelte-1zt0np");
+      attr(div1, "class", "container svelte-1zt0np");
       set_style(div1, "position", "absolute");
       set_style(div1, "left", ctx[0].x + "px");
       set_style(div1, "top", ctx[0].y + "px");
       set_style(div1, "width", ((_b2 = (_a2 = ctx[0]) == null ? void 0 : _a2.style) == null ? void 0 : _b2.width) + "px");
       set_style(div1, "height", ((_d = (_c = ctx[0]) == null ? void 0 : _c.style) == null ? void 0 : _d.height) + "px");
+      set_style(div1, "font-size", fontSize);
       set_style(div1, "background-color", ((_f = (_e = ctx[0]) == null ? void 0 : _e.style) == null ? void 0 : _f.backgroundColor) || "#fee9004b");
       add_render_callback(() => ctx[17].call(div1));
     },
@@ -3200,25 +3201,21 @@ function create_each_block(ctx) {
   };
 }
 function create_fragment$3(ctx) {
-  let t;
   let if_block_anchor;
   let current;
   let if_block = ctx[0] && document && clickOutside && create_if_block$3(ctx);
   return {
     c() {
-      t = space();
       if (if_block)
         if_block.c();
       if_block_anchor = empty();
     },
     l(nodes) {
-      t = claim_space(nodes);
       if (if_block)
         if_block.l(nodes);
       if_block_anchor = empty();
     },
     m(target, anchor) {
-      insert_hydration(target, t, anchor);
       if (if_block)
         if_block.m(target, anchor);
       insert_hydration(target, if_block_anchor, anchor);
@@ -3256,8 +3253,6 @@ function create_fragment$3(ctx) {
       current = false;
     },
     d(detaching) {
-      if (detaching)
-        detach(t);
       if (if_block)
         if_block.d(detaching);
       if (detaching)
@@ -3270,6 +3265,7 @@ let minFrameWidth = 40;
 let maxFrameWidth = 2500;
 let minFrameHeight = 20;
 let maxFrameHeight = 2500;
+let fontSize = "0.8em";
 function handleDragStart(e) {
   console.log("Drag started");
   e.preventDefault();
@@ -4065,4 +4061,4 @@ class Routes extends SvelteComponent {
   }
 }
 export { Routes as default };
-//# sourceMappingURL=index.svelte-5bf9ed7b.js.map
+//# sourceMappingURL=index.svelte-85d24e7f.js.map
