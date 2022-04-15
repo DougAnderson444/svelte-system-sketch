@@ -1540,7 +1540,14 @@ class PinchZoom {
     });
   }
   _applyChange(opts = {}) {
-    const { panX = 0, panY = 0, originX = 0, originY = 0, scaleDiff = 1, allowChangeEvent = false } = opts;
+    const {
+      panX = 0,
+      panY = 0,
+      originX = 0,
+      originY = 0,
+      scaleDiff = 1,
+      allowChangeEvent = false
+    } = opts;
     const matrix = createMatrix().translate(panX, panY).translate(originX, originY).scale(scaleDiff).translate(-originX, -originY).multiply(this._transform);
     this.setTransform({
       allowChangeEvent,
@@ -2499,14 +2506,14 @@ class ContextMenu extends SvelteComponent {
 var Container_svelte_svelte_type_style_lang = "";
 function get_each_context(ctx, list, i) {
   const child_ctx = ctx.slice();
-  child_ctx[34] = list[i];
+  child_ctx[32] = list[i];
   return child_ctx;
 }
 function get_each_context_1(ctx, list, i) {
   const child_ctx = ctx.slice();
-  child_ctx[37] = list[i];
-  child_ctx[38] = list;
-  child_ctx[39] = i;
+  child_ctx[35] = list[i];
+  child_ctx[36] = list;
+  child_ctx[37] = i;
   return child_ctx;
 }
 function create_if_block$3(ctx) {
@@ -2531,7 +2538,7 @@ function create_if_block$3(ctx) {
   let mounted;
   let dispose;
   function editabletext_value_binding(value) {
-    ctx[12](value);
+    ctx[11](value);
   }
   let editabletext_props = {};
   if (ctx[0].name !== void 0) {
@@ -2540,7 +2547,7 @@ function create_if_block$3(ctx) {
   editabletext = new EditableText({ props: editabletext_props });
   binding_callbacks.push(() => bind(editabletext, "value", editabletext_value_binding));
   function switch_instance_props_binding(value) {
-    ctx[13](value);
+    ctx[12](value);
   }
   var switch_value = ctx[0].component;
   function switch_props(ctx2) {
@@ -2562,7 +2569,7 @@ function create_if_block$3(ctx) {
       div1 = element("div");
       div0 = element("div");
       create_component(editabletext.$$.fragment);
-      t0 = text("\r\n			\r\n			Container font-size: ");
+      t0 = text("\r\n		\r\n		Container font-size: ");
       t1 = text(t1_value);
       t2 = space();
       if (switch_instance)
@@ -2586,7 +2593,7 @@ function create_if_block$3(ctx) {
       var div0_nodes = children(div0);
       claim_component(editabletext.$$.fragment, div0_nodes);
       div0_nodes.forEach(detach);
-      t0 = claim_text(div1_nodes, "\r\n			\r\n			Container font-size: ");
+      t0 = claim_text(div1_nodes, "\r\n		\r\n		Container font-size: ");
       t1 = claim_text(div1_nodes, t1_value);
       t2 = claim_space(div1_nodes);
       if (switch_instance)
@@ -2606,15 +2613,15 @@ function create_if_block$3(ctx) {
     },
     h() {
       var _a2, _b2, _c, _d, _e, _f;
-      attr(div0, "class", "title svelte-strd7q");
-      attr(div1, "class", "container svelte-strd7q");
+      attr(div0, "class", "title svelte-17vkfzx");
+      attr(div1, "class", "container svelte-17vkfzx");
       set_style(div1, "position", "absolute");
       set_style(div1, "left", ctx[0].x + "px");
       set_style(div1, "top", ctx[0].y + "px");
       set_style(div1, "width", ((_b2 = (_a2 = ctx[0]) == null ? void 0 : _a2.style) == null ? void 0 : _b2.width) + "px");
       set_style(div1, "height", ((_d = (_c = ctx[0]) == null ? void 0 : _c.style) == null ? void 0 : _d.height) + "px");
       set_style(div1, "background-color", ((_f = (_e = ctx[0]) == null ? void 0 : _e.style) == null ? void 0 : _f.backgroundColor) || "#fee9004b");
-      add_render_callback(() => ctx[18].call(div1));
+      add_render_callback(() => ctx[17].call(div1));
     },
     m(target, anchor) {
       insert_hydration(target, div1, anchor);
@@ -2632,8 +2639,8 @@ function create_if_block$3(ctx) {
       append_hydration(div1, t4);
       if (if_block1)
         if_block1.m(div1, null);
-      ctx[17](div1);
-      div1_resize_listener = add_resize_listener(div1, ctx[18].bind(div1));
+      ctx[16](div1);
+      div1_resize_listener = add_resize_listener(div1, ctx[17].bind(div1));
       insert_hydration(target, t5, anchor);
       if (if_block2)
         if_block2.m(target, anchor);
@@ -2643,9 +2650,9 @@ function create_if_block$3(ctx) {
         dispose = [
           action_destroyer(clickOutside_action = clickOutside.call(null, div1, {
             enabled: ctx[7],
-            handleUnselect: ctx[10]
+            handleUnselect: ctx[9]
           })),
-          listen(div1, "focusout", ctx[10]),
+          listen(div1, "focusout", ctx[9]),
           listen(div1, "dragstart", handleDragStart)
         ];
         mounted = true;
@@ -2745,7 +2752,7 @@ function create_if_block$3(ctx) {
       if (clickOutside_action && is_function(clickOutside_action.update) && dirty[0] & 128)
         clickOutside_action.update.call(null, {
           enabled: ctx2[7],
-          handleUnselect: ctx2[10]
+          handleUnselect: ctx2[9]
         });
       if (ctx2[4] && ctx2[7]) {
         if (if_block2) {
@@ -2797,7 +2804,7 @@ function create_if_block$3(ctx) {
         if_block0.d();
       if (if_block1)
         if_block1.d();
-      ctx[17](null);
+      ctx[16](null);
       div1_resize_listener();
       if (detaching)
         detach(t5);
@@ -2892,17 +2899,17 @@ function create_each_block_1(ctx) {
   let updating_isDragging;
   let current;
   function container_1_node_binding(value) {
-    ctx[14](value, ctx[37], ctx[38], ctx[39]);
+    ctx[13](value, ctx[35], ctx[36], ctx[37]);
   }
   function container_1_isDragging_binding(value) {
-    ctx[15](value);
+    ctx[14](value);
   }
   let container_1_props = {
     arenaWidth: ctx[5],
     arenaHeight: ctx[6]
   };
-  if (ctx[37] !== void 0) {
-    container_1_props.node = ctx[37];
+  if (ctx[35] !== void 0) {
+    container_1_props.node = ctx[35];
   }
   if (ctx[1] !== void 0) {
     container_1_props.isDragging = ctx[1];
@@ -2930,7 +2937,7 @@ function create_each_block_1(ctx) {
         container_1_changes.arenaHeight = ctx[6];
       if (!updating_node && dirty[0] & 1) {
         updating_node = true;
-        container_1_changes.node = ctx[37];
+        container_1_changes.node = ctx[35];
         add_flush_callback(() => updating_node = false);
       }
       if (!updating_isDragging && dirty[0] & 2) {
@@ -2960,7 +2967,7 @@ function create_if_block_2(ctx) {
   let updating_node;
   let current;
   function contextmenu_node_binding(value) {
-    ctx[16](value);
+    ctx[15](value);
   }
   let contextmenu_props = {};
   if (ctx[0] !== void 0) {
@@ -3006,7 +3013,7 @@ function create_if_block_2(ctx) {
 function create_if_block_1(ctx) {
   let each_1_anchor;
   let current;
-  let each_value = ctx[9];
+  let each_value = ctx[8];
   let each_blocks = [];
   for (let i = 0; i < each_value.length; i += 1) {
     each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
@@ -3035,8 +3042,8 @@ function create_if_block_1(ctx) {
       current = true;
     },
     p(ctx2, dirty) {
-      if (dirty[0] & 527) {
-        each_value = ctx2[9];
+      if (dirty[0] & 271) {
+        each_value = ctx2[8];
         let i;
         for (i = 0; i < each_value.length; i += 1) {
           const child_ctx = get_each_context(ctx2, each_value, i);
@@ -3088,19 +3095,19 @@ function create_each_block(ctx) {
   let updating_isDragging;
   let current;
   function resizehandle_x_binding(value) {
-    ctx[19](value);
+    ctx[18](value);
   }
   function resizehandle_y_binding(value) {
-    ctx[20](value);
+    ctx[19](value);
   }
   function resizehandle_width_binding(value) {
-    ctx[21](value);
+    ctx[20](value);
   }
   function resizehandle_height_binding(value) {
-    ctx[22](value);
+    ctx[21](value);
   }
   function resizehandle_isDragging_binding(value) {
-    ctx[23](value);
+    ctx[22](value);
   }
   let resizehandle_props = {
     maxFrameWidth,
@@ -3109,7 +3116,7 @@ function create_each_block(ctx) {
     arenaHeight: ctx[2],
     maxFrameHeight,
     minFrameHeight,
-    direction: ctx[34],
+    direction: ctx[32],
     grid
   };
   if (ctx[0].x !== void 0) {
@@ -3193,54 +3200,31 @@ function create_each_block(ctx) {
   };
 }
 function create_fragment$3(ctx) {
-  let t0;
-  let section_1;
-  let t1;
-  let t2_value = (ctx[8] ? window.getComputedStyle(ctx[8])["font-size"] : "Calculating section size...") + "";
-  let t2;
-  let t3;
+  let t;
+  let if_block_anchor;
   let current;
   let if_block = ctx[0] && document && clickOutside && create_if_block$3(ctx);
   return {
     c() {
-      t0 = space();
-      section_1 = element("section");
-      t1 = text("Section font size ");
-      t2 = text(t2_value);
-      t3 = space();
+      t = space();
       if (if_block)
         if_block.c();
-      this.h();
+      if_block_anchor = empty();
     },
     l(nodes) {
-      t0 = claim_space(nodes);
-      section_1 = claim_element(nodes, "SECTION", { class: true });
-      var section_1_nodes = children(section_1);
-      t1 = claim_text(section_1_nodes, "Section font size ");
-      t2 = claim_text(section_1_nodes, t2_value);
-      t3 = claim_space(section_1_nodes);
+      t = claim_space(nodes);
       if (if_block)
-        if_block.l(section_1_nodes);
-      section_1_nodes.forEach(detach);
-      this.h();
-    },
-    h() {
-      attr(section_1, "class", "svelte-strd7q");
+        if_block.l(nodes);
+      if_block_anchor = empty();
     },
     m(target, anchor) {
-      insert_hydration(target, t0, anchor);
-      insert_hydration(target, section_1, anchor);
-      append_hydration(section_1, t1);
-      append_hydration(section_1, t2);
-      append_hydration(section_1, t3);
+      insert_hydration(target, t, anchor);
       if (if_block)
-        if_block.m(section_1, null);
-      ctx[24](section_1);
+        if_block.m(target, anchor);
+      insert_hydration(target, if_block_anchor, anchor);
       current = true;
     },
     p(ctx2, dirty) {
-      if ((!current || dirty[0] & 256) && t2_value !== (t2_value = (ctx2[8] ? window.getComputedStyle(ctx2[8])["font-size"] : "Calculating section size...") + ""))
-        set_data(t2, t2_value);
       if (ctx2[0] && document && clickOutside) {
         if (if_block) {
           if_block.p(ctx2, dirty);
@@ -3251,7 +3235,7 @@ function create_fragment$3(ctx) {
           if_block = create_if_block$3(ctx2);
           if_block.c();
           transition_in(if_block, 1);
-          if_block.m(section_1, null);
+          if_block.m(if_block_anchor.parentNode, if_block_anchor);
         }
       } else if (if_block) {
         group_outros();
@@ -3273,12 +3257,11 @@ function create_fragment$3(ctx) {
     },
     d(detaching) {
       if (detaching)
-        detach(t0);
-      if (detaching)
-        detach(section_1);
+        detach(t);
       if (if_block)
-        if_block.d();
-      ctx[24](null);
+        if_block.d(detaching);
+      if (detaching)
+        detach(if_block_anchor);
     }
   };
 }
@@ -3294,8 +3277,8 @@ function handleDragStart(e) {
 function instance$3($$self, $$props, $$invalidate) {
   let $selected;
   let $scale;
-  component_subscribe($$self, selected, ($$value) => $$invalidate(11, $selected = $$value));
-  component_subscribe($$self, scale, ($$value) => $$invalidate(26, $scale = $$value));
+  component_subscribe($$self, selected, ($$value) => $$invalidate(10, $selected = $$value));
+  component_subscribe($$self, scale, ($$value) => $$invalidate(24, $scale = $$value));
   let { node } = $$props;
   let { arenaHeight } = $$props;
   let { arenaWidth } = $$props;
@@ -3360,7 +3343,6 @@ function instance$3($$self, $$props, $$invalidate) {
     set_store_value(selected, $selected = container, $selected);
     $$invalidate(7, isFocused = true);
   }
-  let section;
   function editabletext_value_binding(value) {
     if ($$self.$$.not_equal(node.name, value)) {
       node.name = value;
@@ -3425,12 +3407,6 @@ function instance$3($$self, $$props, $$invalidate) {
     isDragging = value;
     $$invalidate(1, isDragging);
   }
-  function section_1_binding($$value) {
-    binding_callbacks[$$value ? "unshift" : "push"](() => {
-      section = $$value;
-      $$invalidate(8, section);
-    });
-  }
   $$self.$$set = ($$props2) => {
     if ("node" in $$props2)
       $$invalidate(0, node = $$props2.node);
@@ -3446,7 +3422,7 @@ function instance$3($$self, $$props, $$invalidate) {
       if (arenaWidth || arenaHeight)
         assertArenaBounds();
     }
-    if ($$self.$$.dirty[0] & 2064) {
+    if ($$self.$$.dirty[0] & 1040) {
       if ($selected != container)
         handleUnselect();
     }
@@ -3460,7 +3436,6 @@ function instance$3($$self, $$props, $$invalidate) {
     clientWidth,
     clientHeight,
     isFocused,
-    section,
     directions,
     handleUnselect,
     $selected,
@@ -3475,8 +3450,7 @@ function instance$3($$self, $$props, $$invalidate) {
     resizehandle_y_binding,
     resizehandle_width_binding,
     resizehandle_height_binding,
-    resizehandle_isDragging_binding,
-    section_1_binding
+    resizehandle_isDragging_binding
   ];
 }
 class Container extends SvelteComponent {
@@ -3547,8 +3521,8 @@ function create_if_block$2(ctx) {
       this.h();
     },
     h() {
-      attr(div0, "class", "zoomable flexbox svelte-1pyhlou");
-      attr(div1, "class", "canvas svelte-1pyhlou");
+      attr(div0, "class", "zoomable flexbox svelte-1gksd2v");
+      attr(div1, "class", "canvas svelte-1gksd2v");
       set_style(div1, "height", ctx[2] + "px");
       set_style(div1, "width", ctx[1] + "px");
       add_render_callback(() => ctx[11].call(div1));
@@ -4091,4 +4065,4 @@ class Routes extends SvelteComponent {
   }
 }
 export { Routes as default };
-//# sourceMappingURL=index.svelte-b66b29e2.js.map
+//# sourceMappingURL=index.svelte-5bf9ed7b.js.map
