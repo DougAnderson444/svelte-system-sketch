@@ -1,4 +1,4 @@
-import { SvelteComponent, init, safe_not_equal, element, text, space, claim_element, children, claim_text, claim_space, detach, attr, insert_hydration, append_hydration, action_destroyer, set_data, noop as noop$2, onMount, binding_callbacks, set_style, component_subscribe, add_render_callback, add_resize_listener, createEventDispatcher, tick, null_to_empty, listen, run_all, empty, destroy_each, create_component, claim_component, mount_component, add_flush_callback, transition_in, transition_out, destroy_component, stop_propagation, group_outros, check_outros, bind, is_function, set_store_value, globals } from "../chunks/index-182dfd00.js";
+import { SvelteComponent, init, safe_not_equal, element, text, space, claim_element, children, claim_text, claim_space, detach, attr, insert_hydration, append_hydration, action_destroyer, set_data, noop as noop$2, onMount, binding_callbacks, set_style, component_subscribe, null_to_empty, add_render_callback, listen, is_function, run_all, createEventDispatcher, tick, empty, destroy_each, create_component, claim_component, mount_component, add_flush_callback, transition_in, transition_out, destroy_component, add_resize_listener, stop_propagation, group_outros, check_outros, bind, set_store_value, globals } from "../chunks/index-182dfd00.js";
 import { writable } from "../chunks/index-dca0cab6.js";
 var Canvas_svelte_svelte_type_style_lang = "";
 var RangePips_svelte_svelte_type_style_lang = "";
@@ -1374,6 +1374,9 @@ class PinchZoom {
     this._pointerTracker = new PointerTracker(this._parentEl, {
       eventListenerOptions: { capture: true },
       start: (pointer, event) => {
+        if (this._pointerTracker.currentPointers.length === 0 && (event.target instanceof HTMLInputElement || event.target.isContentEditable)) {
+          return false;
+        }
         if (this._pointerTracker.currentPointers.length === 2 || !this._parentEl)
           return false;
         event.preventDefault();
@@ -1540,14 +1543,7 @@ class PinchZoom {
     });
   }
   _applyChange(opts = {}) {
-    const {
-      panX = 0,
-      panY = 0,
-      originX = 0,
-      originY = 0,
-      scaleDiff = 1,
-      allowChangeEvent = false
-    } = opts;
+    const { panX = 0, panY = 0, originX = 0, originY = 0, scaleDiff = 1, allowChangeEvent = false } = opts;
     const matrix = createMatrix().translate(panX, panY).translate(originX, originY).scale(scaleDiff).translate(-originX, -originY).multiply(this._transform);
     this.setTransform({
       allowChangeEvent,
@@ -1849,9 +1845,10 @@ function clickOutside(node, { enabled: initialEnabled, handleUnselect }) {
   };
 }
 var EditableText_svelte_svelte_type_style_lang = "";
-function create_else_block(ctx) {
+function create_fragment$6(ctx) {
   let div;
   let div_class_value;
+  let clickOutside_action;
   let mounted;
   let dispose;
   return {
@@ -1860,152 +1857,57 @@ function create_else_block(ctx) {
       this.h();
     },
     l(nodes) {
-      div = claim_element(nodes, "DIV", { class: true });
-      var div_nodes = children(div);
-      div_nodes.forEach(detach);
+      div = claim_element(nodes, "DIV", { contenteditable: true, class: true });
+      children(div).forEach(detach);
       this.h();
     },
     h() {
+      attr(div, "contenteditable", "");
       attr(div, "class", div_class_value = null_to_empty(ctx[0]) + " svelte-1708iua");
+      if (ctx[3] === void 0)
+        add_render_callback(() => ctx[12].call(div));
     },
     m(target, anchor) {
       insert_hydration(target, div, anchor);
-      div.innerHTML = ctx[4];
-      ctx[13](div);
+      ctx[11](div);
+      if (ctx[3] !== void 0) {
+        div.innerHTML = ctx[3];
+      }
       if (!mounted) {
         dispose = [
-          listen(div, "input", ctx[5]),
-          listen(div, "click", ctx[5])
+          listen(div, "keydown", ctx[5]),
+          listen(div, "blur", ctx[6]),
+          listen(div, "input", ctx[12]),
+          listen(div, "click", ctx[4]),
+          action_destroyer(clickOutside_action = clickOutside.call(null, div, {
+            enabled: ctx[1],
+            handleUnselect: ctx[7]
+          }))
         ];
         mounted = true;
       }
     },
-    p(ctx2, dirty) {
-      if (dirty & 16)
-        div.innerHTML = ctx2[4];
+    p(ctx2, [dirty]) {
       if (dirty & 1 && div_class_value !== (div_class_value = null_to_empty(ctx2[0]) + " svelte-1708iua")) {
         attr(div, "class", div_class_value);
       }
-    },
-    d(detaching) {
-      if (detaching)
-        detach(div);
-      ctx[13](null);
-      mounted = false;
-      run_all(dispose);
-    }
-  };
-}
-function create_if_block$6(ctx) {
-  let span;
-  let t;
-  let mounted;
-  let dispose;
-  return {
-    c() {
-      span = element("span");
-      t = text(ctx[4]);
-      this.h();
-    },
-    l(nodes) {
-      span = claim_element(nodes, "SPAN", { contenteditable: true, class: true });
-      var span_nodes = children(span);
-      t = claim_text(span_nodes, ctx[4]);
-      span_nodes.forEach(detach);
-      this.h();
-    },
-    h() {
-      attr(span, "contenteditable", "");
-      attr(span, "class", ctx[0]);
-      if (ctx[4] === void 0)
-        add_render_callback(() => ctx[12].call(span));
-    },
-    m(target, anchor) {
-      insert_hydration(target, span, anchor);
-      append_hydration(span, t);
-      ctx[11](span);
-      if (ctx[4] !== void 0) {
-        span.innerHTML = ctx[4];
+      if (dirty & 8 && ctx2[3] !== div.innerHTML) {
+        div.innerHTML = ctx2[3];
       }
-      if (!mounted) {
-        dispose = [
-          listen(span, "keydown", ctx[6]),
-          listen(span, "blur", ctx[7]),
-          listen(span, "input", ctx[12])
-        ];
-        mounted = true;
-      }
-    },
-    p(ctx2, dirty) {
-      if (dirty & 16)
-        set_data(t, ctx2[4]);
-      if (dirty & 1) {
-        attr(span, "class", ctx2[0]);
-      }
-      if (dirty & 16 && ctx2[4] !== span.innerHTML) {
-        span.innerHTML = ctx2[4];
-      }
-    },
-    d(detaching) {
-      if (detaching)
-        detach(span);
-      ctx[11](null);
-      mounted = false;
-      run_all(dispose);
-    }
-  };
-}
-function create_fragment$6(ctx) {
-  let div;
-  let div_resize_listener;
-  function select_block_type(ctx2, dirty) {
-    if (ctx2[2])
-      return create_if_block$6;
-    return create_else_block;
-  }
-  let current_block_type = select_block_type(ctx);
-  let if_block = current_block_type(ctx);
-  return {
-    c() {
-      div = element("div");
-      if_block.c();
-      this.h();
-    },
-    l(nodes) {
-      div = claim_element(nodes, "DIV", { class: true });
-      var div_nodes = children(div);
-      if_block.l(div_nodes);
-      div_nodes.forEach(detach);
-      this.h();
-    },
-    h() {
-      attr(div, "class", "svelte-1708iua");
-      add_render_callback(() => ctx[14].call(div));
-    },
-    m(target, anchor) {
-      insert_hydration(target, div, anchor);
-      if_block.m(div, null);
-      div_resize_listener = add_resize_listener(div, ctx[14].bind(div));
-    },
-    p(ctx2, [dirty]) {
-      if (current_block_type === (current_block_type = select_block_type(ctx2)) && if_block) {
-        if_block.p(ctx2, dirty);
-      } else {
-        if_block.d(1);
-        if_block = current_block_type(ctx2);
-        if (if_block) {
-          if_block.c();
-          if_block.m(div, null);
-        }
-      }
+      if (clickOutside_action && is_function(clickOutside_action.update) && dirty & 2)
+        clickOutside_action.update.call(null, {
+          enabled: ctx2[1],
+          handleUnselect: ctx2[7]
+        });
     },
     i: noop$2,
     o: noop$2,
     d(detaching) {
       if (detaching)
         detach(div);
-      if_block.d();
-      div_resize_listener();
+      ctx[11](null);
+      mounted = false;
+      run_all(dispose);
     }
   };
 }
@@ -2014,30 +1916,22 @@ function instance$6($$self, $$props, $$invalidate) {
   let { type = "text" } = $$props;
   let { placeholder = "" } = $$props;
   let { labelClasses = "" } = $$props;
-  let offsetWidth;
   let editing = false;
   let inputEl;
   let label = value;
   const dispatch = createEventDispatcher();
   async function toggle(event) {
-    $$invalidate(2, editing = !editing);
+    $$invalidate(1, editing = !editing);
     console.log(`editing toggled to ${editing}`);
     if (editing) {
       await tick();
       inputEl.focus();
-      let range = document.createRange();
-      console.log({ inputEl });
-      range.setStart(inputEl.firstChild, 0);
-      range.setEnd(inputEl.firstChild, inputEl.firstChild.length);
-      var sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
     } else {
       stopEditing();
     }
   }
   function stopEditing() {
-    $$invalidate(2, editing = false);
+    $$invalidate(1, editing = false);
     $$invalidate(8, value = label);
     dispatch("doneEditing");
   }
@@ -2048,7 +1942,6 @@ function instance$6($$self, $$props, $$invalidate) {
     }
   };
   const handleBlur = (_) => {
-    console.log("blur occurred");
     if (value != "" && value != null)
       toggle();
     else
@@ -2063,25 +1956,19 @@ function instance$6($$self, $$props, $$invalidate) {
       document.selection.empty();
     }
   };
-  function span_binding($$value) {
-    binding_callbacks[$$value ? "unshift" : "push"](() => {
-      inputEl = $$value;
-      $$invalidate(3, inputEl);
-    });
-  }
-  function span_input_handler() {
-    label = this.innerHTML;
-    $$invalidate(4, label);
+  function handleUnselect(e) {
+    if (document.activeElement === inputEl)
+      inputEl.blur();
   }
   function div_binding($$value) {
     binding_callbacks[$$value ? "unshift" : "push"](() => {
       inputEl = $$value;
-      $$invalidate(3, inputEl);
+      $$invalidate(2, inputEl);
     });
   }
-  function div_elementresize_handler() {
-    offsetWidth = this.offsetWidth;
-    $$invalidate(1, offsetWidth);
+  function div_input_handler() {
+    label = this.innerHTML;
+    $$invalidate(3, label);
   }
   $$self.$$set = ($$props2) => {
     if ("value" in $$props2)
@@ -2095,20 +1982,18 @@ function instance$6($$self, $$props, $$invalidate) {
   };
   return [
     labelClasses,
-    offsetWidth,
     editing,
     inputEl,
     label,
     toggle,
     handleEnter,
     handleBlur,
+    handleUnselect,
     value,
     type,
     placeholder,
-    span_binding,
-    span_input_handler,
     div_binding,
-    div_elementresize_handler
+    div_input_handler
   ];
 }
 class EditableText extends SvelteComponent {
@@ -3288,6 +3173,10 @@ function instance$3($$self, $$props, $$invalidate) {
   onMount(async () => {
     pointerTracker = new PointerTracker$1(container, {
       start: (pointer, event) => {
+        if (pointerTracker.currentPointers.length === 0 && (event.target instanceof HTMLInputElement || event.target.isContentEditable)) {
+          console.log("single pointers on input / editable element");
+          return false;
+        }
         if (pointerTracker.currentPointers.length === 1)
           return false;
         event.stopPropagation();
@@ -4061,4 +3950,4 @@ class Routes extends SvelteComponent {
   }
 }
 export { Routes as default };
-//# sourceMappingURL=index.svelte-85d24e7f.js.map
+//# sourceMappingURL=index.svelte-9d0192a9.js.map

@@ -772,9 +772,9 @@ const __vitePreload = function preload(baseModule, deps) {
 };
 const matchers = {};
 const components = [
-  () => __vitePreload(() => import("./pages/__layout.svelte-06bdc317.js"), true ? ["pages/__layout.svelte-06bdc317.js","assets/pages/__layout.svelte-98621338.css","chunks/index-182dfd00.js"] : void 0),
-  () => __vitePreload(() => import("./error.svelte-b47f6f42.js"), true ? ["error.svelte-b47f6f42.js","chunks/index-182dfd00.js"] : void 0),
-  () => __vitePreload(() => import("./pages/index.svelte-85d24e7f.js"), true ? ["pages/index.svelte-85d24e7f.js","assets/pages/index.svelte-9710b203.css","chunks/index-182dfd00.js","chunks/index-dca0cab6.js"] : void 0)
+  () => __vitePreload(() => import("./pages/__layout.svelte-e7140035.js"), true ? ["pages/__layout.svelte-e7140035.js","assets/pages/__layout.svelte-98621338.css","chunks/index-182dfd00.js"] : void 0),
+  () => __vitePreload(() => import("./error.svelte-9375b7c6.js"), true ? ["error.svelte-9375b7c6.js","chunks/index-182dfd00.js"] : void 0),
+  () => __vitePreload(() => import("./pages/index.svelte-9d0192a9.js"), true ? ["pages/index.svelte-9d0192a9.js","assets/pages/index.svelte-9710b203.css","chunks/index-182dfd00.js","chunks/index-dca0cab6.js"] : void 0)
 ];
 const dictionary = {
   "": [[0, 2], [1]]
@@ -783,14 +783,17 @@ function coalesce_to_error(err) {
   return err instanceof Error || err && err.name && err.message ? err : new Error(JSON.stringify(err));
 }
 function normalize(loaded) {
+  if (loaded.fallthrough) {
+    throw new Error("fallthrough is no longer supported. Use matchers instead: https://kit.svelte.dev/docs/routing#advanced-routing-matching");
+  }
+  if ("maxage" in loaded) {
+    throw new Error("maxage should be replaced with cache: { maxage }");
+  }
   const has_error_status = loaded.status && loaded.status >= 400 && loaded.status <= 599 && !loaded.redirect;
   if (loaded.error || has_error_status) {
     const status = loaded.status;
     if (!loaded.error && has_error_status) {
-      return {
-        status: status || 500,
-        error: new Error()
-      };
+      return { status: status || 500, error: new Error() };
     }
     const error = typeof loaded.error === "string" ? new Error(loaded.error) : loaded.error;
     if (!(error instanceof Error)) {
@@ -819,6 +822,14 @@ function normalize(loaded) {
       };
     }
   }
+  if (loaded.dependencies) {
+    if (!Array.isArray(loaded.dependencies) || loaded.dependencies.some((dep) => typeof dep !== "string")) {
+      return {
+        status: 500,
+        error: new Error('"dependencies" property returned from load() must be of type string[]')
+      };
+    }
+  }
   if (loaded.context) {
     throw new Error('You are returning "context" from a load function. "context" was renamed to "stuff", please adjust your code accordingly.');
   }
@@ -829,7 +840,7 @@ function normalize_path(path, trailing_slash) {
     return path;
   if (trailing_slash === "never") {
     return path.endsWith("/") ? path.slice(0, -1) : path;
-  } else if (trailing_slash === "always" && /\/[^./]+$/.test(path)) {
+  } else if (trailing_slash === "always" && !path.endsWith("/")) {
     return path + "/";
   }
   return path;
@@ -890,7 +901,7 @@ function notifiable_store(value) {
 }
 function create_updated_store() {
   const { set, subscribe } = writable(false);
-  const initial = "1650053275519";
+  const initial = "1651319368969";
   let timeout;
   async function check() {
     clearTimeout(timeout);
@@ -997,6 +1008,7 @@ const INDEX_KEY = "sveltekit:index";
 const routes = parse(components, dictionary, matchers);
 const default_layout = components[0]();
 const default_error = components[1]();
+const root_stuff = {};
 let scroll_positions = {};
 try {
   scroll_positions = JSON.parse(sessionStorage[SCROLL_KEY]);
@@ -1006,9 +1018,9 @@ function update_scroll_positions(index) {
   scroll_positions[index] = scroll_state();
 }
 function create_client({ target, session, base: base2, trailing_slash }) {
-  var _a, _b;
+  var _a;
   const cache = /* @__PURE__ */ new Map();
-  const invalidated = /* @__PURE__ */ new Set();
+  const invalidated = [];
   const stores = {
     url: notifiable_store({}),
     page: notifiable_store({}),
@@ -1025,9 +1037,11 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     after_navigate: []
   };
   let current = {
-    url: null,
+    branch: [],
+    error: null,
     session_id: 0,
-    branch: []
+    stuff: root_stuff,
+    url: null
   };
   let started = false;
   let autoscroll = true;
@@ -1045,19 +1059,20 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     update(new URL(location.href), [], true);
   });
   ready = true;
-  let navigating = 0;
   let router_enabled = true;
-  let current_history_index = (_b = (_a = history.state) == null ? void 0 : _a[INDEX_KEY]) != null ? _b : 0;
-  if (current_history_index === 0) {
-    history.replaceState(__spreadProps(__spreadValues({}, history.state), { [INDEX_KEY]: 0 }), "", location.href);
+  let current_history_index = (_a = history.state) == null ? void 0 : _a[INDEX_KEY];
+  if (!current_history_index) {
+    current_history_index = Date.now();
+    history.replaceState(__spreadProps(__spreadValues({}, history.state), { [INDEX_KEY]: current_history_index }), "", location.href);
   }
   const scroll = scroll_positions[current_history_index];
-  if (scroll)
+  if (scroll) {
+    history.scrollRestoration = "manual";
     scrollTo(scroll.x, scroll.y);
+  }
   let hash_navigating = false;
   let page;
   let token;
-  let navigating_token;
   async function goto(href, { noscroll = false, replaceState = false, keepfocus = false, state = {} }, redirect_chain) {
     const url = new URL(href, get_base_uri(document));
     if (router_enabled) {
@@ -1088,7 +1103,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     return load_cache.promise;
   }
   async function update(url, redirect_chain, no_cache, opts) {
-    var _a2, _b2, _c;
+    var _a2, _b, _c;
     const intent = get_navigation_intent(url);
     const current_token = token = {};
     let navigation_result = intent && await load_route(intent, no_cache);
@@ -1102,11 +1117,11 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     }
     if (!navigation_result) {
       await native_navigation(url);
-      return;
+      return false;
     }
     if (token !== current_token)
-      return;
-    invalidated.clear();
+      return false;
+    invalidated.length = 0;
     if (navigation_result.redirect) {
       if (redirect_chain.length > 10 || redirect_chain.includes(url.pathname)) {
         navigation_result = await load_root_error_page({
@@ -1124,9 +1139,9 @@ function create_client({ target, session, base: base2, trailing_slash }) {
         } else {
           await native_navigation(new URL(navigation_result.redirect, location.href));
         }
-        return;
+        return false;
       }
-    } else if (((_b2 = (_a2 = navigation_result.props) == null ? void 0 : _a2.page) == null ? void 0 : _b2.status) >= 400) {
+    } else if (((_b = (_a2 = navigation_result.props) == null ? void 0 : _a2.page) == null ? void 0 : _b.status) >= 400) {
       const updated = await stores.updated.check();
       if (updated) {
         await native_navigation(url);
@@ -1182,10 +1197,11 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     }
     const leaf_node = navigation_result.state.branch[navigation_result.state.branch.length - 1];
     router_enabled = (leaf_node == null ? void 0 : leaf_node.module.router) !== false;
+    return true;
   }
   function initialize(result) {
     current = result.state;
-    const style = document.querySelector("style[data-svelte]");
+    const style = document.querySelector("style[data-sveltekit]");
     if (style)
       style.remove();
     page = result.props.page;
@@ -1209,7 +1225,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     error,
     routeId
   }) {
-    var _a2;
+    var _a2, _b;
     const filtered = branch.filter(Boolean);
     const redirect = filtered.find((f) => {
       var _a3;
@@ -1221,6 +1237,8 @@ function create_client({ target, session, base: base2, trailing_slash }) {
         url,
         params,
         branch,
+        error,
+        stuff,
         session_id
       },
       props: {
@@ -1231,7 +1249,8 @@ function create_client({ target, session, base: base2, trailing_slash }) {
       const loaded = filtered[i].loaded;
       result.props[`props_${i}`] = loaded ? await loaded.props : null;
     }
-    if (!current.url || url.href !== current.url.href) {
+    const page_changed = !current.url || url.href !== current.url.href || current.error !== error || current.stuff !== stuff;
+    if (page_changed) {
       result.props.page = { error, params, routeId, status, stuff, url };
       const print_error = (property, replacement) => {
         Object.defineProperty(result.props.page, property, {
@@ -1245,8 +1264,8 @@ function create_client({ target, session, base: base2, trailing_slash }) {
       print_error("query", "searchParams");
     }
     const leaf = filtered[filtered.length - 1];
-    const maxage = leaf.loaded && leaf.loaded.maxage;
-    if (maxage) {
+    const load_cache2 = (_b = leaf == null ? void 0 : leaf.loaded) == null ? void 0 : _b.cache;
+    if (load_cache2) {
       const key = url.pathname + url.search;
       let ready2 = false;
       const clear = () => {
@@ -1256,7 +1275,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
         unsubscribe();
         clearTimeout(timeout);
       };
-      const timeout = setTimeout(clear, maxage * 1e3);
+      const timeout = setTimeout(clear, load_cache2.maxage * 1e3);
       const unsubscribe = stores.session.subscribe(() => {
         if (ready2)
           clear();
@@ -1279,6 +1298,10 @@ function create_client({ target, session, base: base2, trailing_slash }) {
       loaded: null,
       stuff
     };
+    function add_dependency(dep) {
+      const { href } = new URL(dep, url);
+      node.uses.dependencies.add(href);
+    }
     if (props) {
       node.uses.dependencies.add(url.href);
     }
@@ -1312,15 +1335,12 @@ function create_client({ target, session, base: base2, trailing_slash }) {
         },
         fetch(resource, info) {
           const requested = typeof resource === "string" ? resource : resource.url;
-          const { href } = new URL(requested, url);
-          node.uses.dependencies.add(href);
+          add_dependency(requested);
           return started ? fetch(resource, info) : initial_fetch(resource, info);
-        }
+        },
+        status: status != null ? status : null,
+        error: error != null ? error : null
       };
-      if (error) {
-        load_input.status = status;
-        load_input.error = error;
-      }
       const loaded = await module.load.call(null, load_input);
       if (!loaded) {
         throw new Error("load function must return a value");
@@ -1328,13 +1348,16 @@ function create_client({ target, session, base: base2, trailing_slash }) {
       node.loaded = normalize(loaded);
       if (node.loaded.stuff)
         node.stuff = node.loaded.stuff;
+      if (node.loaded.dependencies) {
+        node.loaded.dependencies.forEach(add_dependency);
+      }
     } else if (props) {
       node.loaded = normalize({ props });
     }
     return node;
   }
   async function load_route({ id, url, params, route }, no_cache) {
-    var _a2, _b2, _c;
+    var _a2, _b, _c;
     if (load_cache.id === id && load_cache.promise) {
       return load_cache.promise;
     }
@@ -1350,10 +1373,10 @@ function create_client({ target, session, base: base2, trailing_slash }) {
       session: session_id !== current.session_id
     };
     let branch = [];
-    let stuff = {};
+    let stuff = root_stuff;
     let stuff_changed = false;
     let status = 200;
-    let error;
+    let error = null;
     a.forEach((loader) => loader());
     load:
       for (let i = 0; i < a.length; i += 1) {
@@ -1363,7 +1386,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
             continue;
           const module = await a[i]();
           const previous = current.branch[i];
-          const changed_since_last_render = !previous || module !== previous.module || changed.url && previous.uses.url || changed.params.some((param) => previous.uses.params.has(param)) || changed.session && previous.uses.session || Array.from(previous.uses.dependencies).some((dep) => invalidated.has(dep)) || stuff_changed && previous.uses.stuff;
+          const changed_since_last_render = !previous || module !== previous.module || changed.url && previous.uses.url || changed.params.some((param) => previous.uses.params.has(param)) || changed.session && previous.uses.session || Array.from(previous.uses.dependencies).some((dep) => invalidated.some((fn) => fn(dep))) || stuff_changed && previous.uses.stuff;
           if (changed_since_last_render) {
             let props = {};
             const is_shadow_page = has_shadow && i === a.length - 1;
@@ -1403,9 +1426,6 @@ function create_client({ target, session, base: base2, trailing_slash }) {
                 node.uses.url = true;
               }
               if (node.loaded) {
-                if (node.loaded.fallthrough) {
-                  throw new Error("fallthrough is no longer supported. Use matchers instead: https://kit.svelte.dev/docs/routing#advanced-routing-matching");
-                }
                 if (node.loaded.error) {
                   status = node.loaded.status;
                   error = node.loaded.error;
@@ -1451,7 +1471,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
                 if ((_a2 = error_loaded == null ? void 0 : error_loaded.loaded) == null ? void 0 : _a2.error) {
                   continue;
                 }
-                if ((_b2 = error_loaded == null ? void 0 : error_loaded.loaded) == null ? void 0 : _b2.stuff) {
+                if ((_b = error_loaded == null ? void 0 : error_loaded.loaded) == null ? void 0 : _b.stuff) {
                   stuff = __spreadValues(__spreadValues({}, stuff), error_loaded.loaded.stuff);
                 }
                 branch = branch.slice(0, j + 1).concat(error_loaded);
@@ -1485,7 +1505,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     });
   }
   async function load_root_error_page({ status, error, url, routeId }) {
-    var _a2, _b2;
+    var _a2, _b;
     const params = {};
     const root_layout = await load_node({
       module: await default_layout,
@@ -1506,7 +1526,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     return await get_navigation_result_from_branch({
       url,
       params,
-      stuff: __spreadValues(__spreadValues({}, (_a2 = root_layout == null ? void 0 : root_layout.loaded) == null ? void 0 : _a2.stuff), (_b2 = root_error == null ? void 0 : root_error.loaded) == null ? void 0 : _b2.stuff),
+      stuff: __spreadValues(__spreadValues({}, (_a2 = root_layout == null ? void 0 : root_layout.loaded) == null ? void 0 : _a2.stuff), (_b = root_error == null ? void 0 : root_error.loaded) == null ? void 0 : _b.stuff),
       branch: [root_layout, root_error],
       status,
       error,
@@ -1547,23 +1567,18 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     const normalized = new URL(url.origin + pathname + url.search + url.hash);
     update_scroll_positions(current_history_index);
     accepted();
-    navigating++;
-    const current_navigating_token = navigating_token = {};
     if (started) {
       stores.navigating.set({
         from: current.url,
         to: normalized
       });
     }
-    await update(normalized, redirect_chain, false, {
+    const completed = await update(normalized, redirect_chain, false, {
       scroll: scroll2,
       keepfocus,
       details
     });
-    navigating--;
-    if (navigating_token !== current_navigating_token)
-      return;
-    if (!navigating) {
+    if (completed) {
       const navigation2 = { from, to: normalized };
       callbacks.after_navigate.forEach((fn) => fn(navigation2));
       stores.navigating.set(null);
@@ -1600,8 +1615,12 @@ function create_client({ target, session, base: base2, trailing_slash }) {
     },
     goto: (href, opts = {}) => goto(href, opts, []),
     invalidate: (resource) => {
-      const { href } = new URL(resource, location.href);
-      invalidated.add(href);
+      if (typeof resource === "function") {
+        invalidated.push(resource);
+      } else {
+        const { href } = new URL(resource, location.href);
+        invalidated.push((dep) => dep === href);
+      }
       if (!invalidating) {
         invalidating = Promise.resolve().then(async () => {
           await update(new URL(location.href), [], true);
@@ -1686,11 +1705,6 @@ function create_client({ target, session, base: base2, trailing_slash }) {
         }
         if (is_svg_a_element ? a.target.baseVal : a.target)
           return;
-        if (url.href === location.href) {
-          if (!location.hash)
-            event.preventDefault();
-          return;
-        }
         const [base3, hash2] = url.href.split("#");
         if (hash2 !== void 0 && base3 === location.href.split("#")[0]) {
           hash_navigating = true;
@@ -1706,7 +1720,7 @@ function create_client({ target, session, base: base2, trailing_slash }) {
           redirect_chain: [],
           details: {
             state: {},
-            replaceState: false
+            replaceState: url.href === location.href
           },
           accepted: () => event.preventDefault(),
           blocked: () => event.preventDefault()
@@ -1830,4 +1844,4 @@ async function start({ paths, target, session, route, spa, trailing_slash, hydra
   dispatchEvent(new CustomEvent("sveltekit:start"));
 }
 export { start };
-//# sourceMappingURL=start-3458cbca.js.map
+//# sourceMappingURL=start-846a0ee6.js.map
