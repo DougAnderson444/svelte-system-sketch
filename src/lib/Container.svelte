@@ -41,6 +41,16 @@
 			start: (pointer, event) => {
 				// console.log('Container click', node.name);
 
+				// ignore single pointers on input / editable elements
+				if (
+					pointerTracker.currentPointers.length === 0 &&
+					// @ts-ignore
+					(event.target instanceof HTMLInputElement || event.target.isContentEditable)
+				) {
+					console.log('single pointers on input / editable element');
+					return false;
+				}
+
 				// We only want to track 1 pointers at most (zooming is handled by pzoom for us)
 				// if there already exists 1 pointer, and now this would have been the 2nd pointer, stop here
 				if (pointerTracker.currentPointers.length === 1) return false;
