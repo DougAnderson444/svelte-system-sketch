@@ -163,9 +163,9 @@
 		<div class="title"><EditableText bind:value={node.name} /></div>
 		<!-- x: {node.x?.toFixed(1)}px; y: {node.y.toFixed(1)}px; <br />
 		width: {node.style.width?.toFixed(1)}px; height: {node.style.height.toFixed(1)}px; -->
-		Container font-size: {container
+		<!-- Container font-size: {container
 			? window.getComputedStyle(container)['font-size']
-			: 'Calculating size...'}
+			: 'Calculating size...'} -->
 		<svelte:component this={node.component} bind:props={node.props} />
 
 		{#if node?.children?.length > 0}
