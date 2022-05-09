@@ -61,7 +61,8 @@
 	}
 	.pallette {
 		background: #fafafac7;
-		position: absolute;
+		position: fixed;
+		/* position: absolute; */
 		bottom: 0em;
 		box-sizing: border-box;
 		width: 99%;

@@ -50,6 +50,7 @@
 		border: 1px solid forestgreen;
 		margin: 0em;
 		overflow: hidden;
+		min-height: 800px;
 	}
 	.zoomable {
 		border-top: 1px dashed fuchsia;
