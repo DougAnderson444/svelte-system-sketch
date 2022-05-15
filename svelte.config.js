@@ -18,6 +18,16 @@ const config = {
 			base: process.env.NODE_ENV === 'development' ? '' : '/svelte-system-sketch'
 		},
 		vite: () => ({
+			resolve: {
+				alias: {
+					'@douganderson444/svelte-system-sketch': path.resolve('src/lib')
+				}
+			},
+			server: {
+				fs: {
+					strict: false
+				}
+			},
 			build: {
 				rollupOptions: {
 					plugins: [],
