@@ -14,7 +14,7 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "next",
-		"@sveltejs/adapter-static": "^1.0.0-next.29",
+		"@sveltejs/adapter-static": "next",
 		"@sveltejs/kit": "next",
 		"prettier": "^2.5.1",
 		"prettier-plugin-svelte": "^2.5.0",
@@ -29,10 +29,11 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@douganderson444/panzoom-node": "^1.0.15",
+		"@douganderson444/panzoom-node": "^1.1.1",
+		"@douganderson444/pointer-tracker": "github:douganderson444/pointer-tracker",
+		"@douganderson444/svelte-component-gateway": "^0.0.9",
 		"d3-force": "^3.0.0",
 		"nanoid": "^3.3.1",
-		"pointer-tracker": "github:douganderson444/pointer-tracker",
 		"svelte-dnd-action": "^0.9.17",
 		"svelte-swipe": "^1.8.2"
 	}

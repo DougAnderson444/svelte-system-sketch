@@ -1,6 +1,6 @@
 <script>
 	import { createEventDispatcher, onMount } from 'svelte';
-	import PointerTracker from 'pointer-tracker';
+	import PointerTracker from '@douganderson444/pointer-tracker';
 
 	import ResizeHandle from './ResizeHandle.svelte';
 	import { scale, selected } from './stores.js';

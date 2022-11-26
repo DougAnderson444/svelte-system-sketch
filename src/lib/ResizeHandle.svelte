@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PointerTracker from 'pointer-tracker';
+	import PointerTracker from '@douganderson444/pointer-tracker';
 	import { onMount } from 'svelte';
 
 	import { scale } from './stores.js';

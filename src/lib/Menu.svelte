@@ -3,7 +3,7 @@
 	import { createNewNode } from './utils';
 	import { asDroppable } from 'svelte-drag-and-drop-actions';
 	import { safeid } from '$lib/utils';
-	import PointerTracker from 'pointer-tracker';
+	import PointerTracker from '@douganderson444/pointer-tracker';
 	import { onMount } from 'svelte';
 
 	export let children;
