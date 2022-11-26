@@ -6,7 +6,6 @@
 		"build": "svelte-kit build",
 		"package": "svelte-kit package",
 		"preview": "svelte-kit preview",
-		"prepare": "svelte-kit sync",
 		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --ignore-path .gitignore --check --plugin-search-dir=. .",
@@ -29,7 +28,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@douganderson444/panzoom-node": "^1.1.1",
+		"@douganderson444/panzoom-node": "^1.1.3",
 		"@douganderson444/pointer-tracker": "github:douganderson444/pointer-tracker",
 		"@douganderson444/svelte-component-gateway": "^0.0.9",
 		"d3-force": "^3.0.0",
