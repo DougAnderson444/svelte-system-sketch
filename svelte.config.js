@@ -15,7 +15,7 @@ const config = {
 		}),
 		paths: {
 			// change below to your repo name
-			base: process.env.NODE_ENV === 'development' ? '' : '/svelte-system-sketch'
+			base: '/svelte-system-sketch'
 		}
 	}
 };

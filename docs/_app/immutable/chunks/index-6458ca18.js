@@ -161,7 +161,7 @@ function append(target, node) {
 function append_hydration(target, node) {
   if (is_hydrating) {
     init_hydrate(target);
-    if (target.actual_end_child === void 0 || target.actual_end_child !== null && target.actual_end_child.parentElement !== target) {
+    if (target.actual_end_child === void 0 || target.actual_end_child !== null && target.actual_end_child.parentNode !== target) {
       target.actual_end_child = target.firstChild;
     }
     while (target.actual_end_child !== null && target.actual_end_child.claim_order === void 0) {
@@ -186,7 +186,9 @@ function insert_hydration(target, node, anchor) {
   }
 }
 function detach(node) {
-  node.parentNode.removeChild(node);
+  if (node.parentNode) {
+    node.parentNode.removeChild(node);
+  }
 }
 function destroy_each(iterations, detaching) {
   for (let i = 0; i < iterations.length; i += 1) {
@@ -288,16 +290,22 @@ function claim_element(nodes, name, attributes) {
   return claim_element_base(nodes, name, attributes, element);
 }
 function claim_text(nodes, data) {
-  return claim_node(nodes, (node) => node.nodeType === 3, (node) => {
-    const dataStr = "" + data;
-    if (node.data.startsWith(dataStr)) {
-      if (node.data.length !== dataStr.length) {
-        return node.splitText(dataStr.length);
+  return claim_node(
+    nodes,
+    (node) => node.nodeType === 3,
+    (node) => {
+      const dataStr = "" + data;
+      if (node.data.startsWith(dataStr)) {
+        if (node.data.length !== dataStr.length) {
+          return node.splitText(dataStr.length);
+        }
+      } else {
+        node.data = dataStr;
       }
-    } else {
-      node.data = dataStr;
-    }
-  }, () => text(data), true);
+    },
+    () => text(data),
+    true
+  );
 }
 function claim_space(nodes) {
   return claim_text(nodes, " ");
@@ -361,10 +369,13 @@ function add_resize_listener(node, fn) {
     detach(iframe);
   };
 }
-function custom_event(type, detail, bubbles = false) {
+function custom_event(type, detail, { bubbles = false, cancelable = false } = {}) {
   const e = document.createEvent("CustomEvent");
-  e.initCustomEvent(type, bubbles, false, detail);
+  e.initCustomEvent(type, bubbles, cancelable, detail);
   return e;
+}
+function construct_svelte_component(component, props) {
+  return new component(props);
 }
 let current_component;
 function set_current_component(component) {
@@ -383,18 +394,17 @@ function afterUpdate(fn) {
 }
 function createEventDispatcher() {
   const component = get_current_component();
-  return (type, detail) => {
+  return (type, detail, { cancelable = false } = {}) => {
     const callbacks = component.$$.callbacks[type];
     if (callbacks) {
-      const event = custom_event(type, detail);
+      const event = custom_event(type, detail, { cancelable });
       callbacks.slice().forEach((fn) => {
         fn.call(component, event);
       });
+      return !event.defaultPrevented;
     }
+    return true;
   };
-}
-function setContext(key, context) {
-  get_current_component().$$.context.set(key, context);
 }
 const dirty_components = [];
 const binding_callbacks = [];
@@ -495,44 +505,11 @@ function transition_out(block, local, detach2, callback) {
       }
     });
     block.o(local);
+  } else if (callback) {
+    callback();
   }
 }
 const globals = typeof window !== "undefined" ? window : typeof globalThis !== "undefined" ? globalThis : global;
-function get_spread_update(levels, updates) {
-  const update2 = {};
-  const to_null_out = {};
-  const accounted_for = { $$scope: 1 };
-  let i = levels.length;
-  while (i--) {
-    const o = levels[i];
-    const n = updates[i];
-    if (n) {
-      for (const key in o) {
-        if (!(key in n))
-          to_null_out[key] = 1;
-      }
-      for (const key in n) {
-        if (!accounted_for[key]) {
-          update2[key] = n[key];
-          accounted_for[key] = 1;
-        }
-      }
-      levels[i] = n;
-    } else {
-      for (const key in o) {
-        accounted_for[key] = 1;
-      }
-    }
-  }
-  for (const key in to_null_out) {
-    if (!(key in update2))
-      update2[key] = void 0;
-  }
-  return update2;
-}
-function get_spread_object(spread_props) {
-  return typeof spread_props === "object" && spread_props !== null ? spread_props : {};
-}
 function bind(component, name, callback) {
   const index = component.$$.props[name];
   if (index !== void 0) {
@@ -547,13 +524,13 @@ function claim_component(block, parent_nodes) {
   block && block.l(parent_nodes);
 }
 function mount_component(component, target, anchor, customElement) {
-  const { fragment, on_mount, on_destroy, after_update } = component.$$;
+  const { fragment, after_update } = component.$$;
   fragment && fragment.m(target, anchor);
   if (!customElement) {
     add_render_callback(() => {
-      const new_on_destroy = on_mount.map(run).filter(is_function);
-      if (on_destroy) {
-        on_destroy.push(...new_on_destroy);
+      const new_on_destroy = component.$$.on_mount.map(run).filter(is_function);
+      if (component.$$.on_destroy) {
+        component.$$.on_destroy.push(...new_on_destroy);
       } else {
         run_all(new_on_destroy);
       }
@@ -584,7 +561,7 @@ function init(component, options, instance, create_fragment, not_equal, props, a
   set_current_component(component);
   const $$ = component.$$ = {
     fragment: null,
-    ctx: null,
+    ctx: [],
     props,
     update: noop,
     not_equal,
@@ -639,6 +616,9 @@ class SvelteComponent {
     this.$destroy = noop;
   }
   $on(type, callback) {
+    if (!is_function(callback)) {
+      return noop;
+    }
     const callbacks = this.$$.callbacks[type] || (this.$$.callbacks[type] = []);
     callbacks.push(callback);
     return () => {
@@ -655,5 +635,56 @@ class SvelteComponent {
     }
   }
 }
-export { SvelteComponent, action_destroyer, add_flush_callback, add_render_callback, add_resize_listener, afterUpdate, append_hydration, assign, attr, bind, binding_callbacks, check_outros, children, claim_component, claim_element, claim_space, claim_text, component_subscribe, createEventDispatcher, create_component, create_slot, destroy_component, destroy_each, detach, element, empty, get_all_dirty_from_scope, get_slot_changes, get_spread_object, get_spread_update, globals, group_outros, init, insert_hydration, is_function, listen, mount_component, noop, null_to_empty, onMount, run_all, safe_not_equal, setContext, set_data, set_store_value, set_style, space, stop_propagation, text, tick, transition_in, transition_out, update_slot_base };
-//# sourceMappingURL=index-182dfd00.js.map
+export {
+  SvelteComponent,
+  action_destroyer,
+  add_flush_callback,
+  add_render_callback,
+  add_resize_listener,
+  afterUpdate,
+  append_hydration,
+  attr,
+  bind,
+  binding_callbacks,
+  check_outros,
+  children,
+  claim_component,
+  claim_element,
+  claim_space,
+  claim_text,
+  component_subscribe,
+  construct_svelte_component,
+  createEventDispatcher,
+  create_component,
+  create_slot,
+  destroy_component,
+  destroy_each,
+  detach,
+  element,
+  empty,
+  get_all_dirty_from_scope,
+  get_slot_changes,
+  globals,
+  group_outros,
+  init,
+  insert_hydration,
+  is_function,
+  listen,
+  mount_component,
+  noop,
+  null_to_empty,
+  onMount,
+  run_all,
+  safe_not_equal,
+  set_data,
+  set_store_value,
+  set_style,
+  space,
+  stop_propagation,
+  text,
+  tick,
+  transition_in,
+  transition_out,
+  update_slot_base
+};
+//# sourceMappingURL=index-6458ca18.js.map

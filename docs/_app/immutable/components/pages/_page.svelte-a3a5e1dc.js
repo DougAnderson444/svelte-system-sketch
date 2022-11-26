@@ -1,8 +1,14 @@
-import { SvelteComponent, init, safe_not_equal, element, text, space, claim_element, children, claim_text, claim_space, detach, attr, insert_hydration, append_hydration, action_destroyer, set_data, noop as noop$2, onMount, binding_callbacks, set_style, component_subscribe, null_to_empty, add_render_callback, listen, is_function, run_all, createEventDispatcher, tick, empty, destroy_each, create_component, claim_component, mount_component, add_flush_callback, transition_in, transition_out, destroy_component, add_resize_listener, stop_propagation, group_outros, check_outros, bind, set_store_value, globals } from "../chunks/index-182dfd00.js";
-import { writable } from "../chunks/index-dca0cab6.js";
-var Canvas_svelte_svelte_type_style_lang = "";
-var RangePips_svelte_svelte_type_style_lang = "";
-var RangeSlider_svelte_svelte_type_style_lang = "";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { SvelteComponent, init, safe_not_equal, element, text, space, claim_element, children, claim_text, claim_space, detach, attr, insert_hydration, append_hydration, action_destroyer, set_data, noop as noop$2, onMount, binding_callbacks, set_style, component_subscribe, null_to_empty, add_render_callback, listen, is_function, run_all, createEventDispatcher, tick, empty, destroy_each, add_resize_listener, stop_propagation, transition_in, group_outros, transition_out, check_outros, bind, create_component, claim_component, mount_component, add_flush_callback, destroy_component, set_store_value, construct_svelte_component, globals } from "../../chunks/index-6458ca18.js";
+import { writable } from "../../chunks/index-a8c97d2d.js";
+const Canvas_svelte_svelte_type_style_lang = "";
+const RangePips_svelte_svelte_type_style_lang = "";
+const RangeSlider_svelte_svelte_type_style_lang = "";
 let customAlphabet = (alphabet, defaultSize = 21) => {
   return (size2 = defaultSize) => {
     let id = "";
@@ -132,7 +138,10 @@ function ValidatorForClassifier(Classifier, NilIsAcceptable, Expectation) {
   };
   var ClassifierName = Classifier.name;
   if (ClassifierName != null && /^ValueIs/.test(ClassifierName)) {
-    var ValidatorName = ClassifierName.replace(/^ValueIs/, NilIsAcceptable ? "allow" : "expect");
+    var ValidatorName = ClassifierName.replace(
+      /^ValueIs/,
+      NilIsAcceptable ? "allow" : "expect"
+    );
     return FunctionWithName(Validator, ValidatorName);
   } else {
     return Validator;
@@ -1083,7 +1092,7 @@ class PointerTracker$1 {
     return true;
   }
 }
-var Menu_svelte_svelte_type_style_lang = "";
+const Menu_svelte_svelte_type_style_lang = "";
 function create_fragment$8(ctx) {
   let div1;
   let t0;
@@ -1117,8 +1126,8 @@ function create_fragment$8(ctx) {
       this.h();
     },
     h() {
-      attr(div0, "class", "yellow svelte-woukud");
-      attr(div1, "class", "pallette svelte-woukud");
+      attr(div0, "class", "yellow svelte-1nefajd");
+      attr(div1, "class", "pallette svelte-1nefajd");
     },
     m(target, anchor) {
       insert_hydration(target, div1, anchor);
@@ -1157,11 +1166,14 @@ function instance$8($$self, $$props, $$invalidate) {
   let { scale: scale2 = 1 } = $$props;
   let pallette;
   onMount(async () => {
-    new PointerTracker$1(pallette, {
-      start: (pointer, event) => {
-        return false;
+    new PointerTracker$1(
+      pallette,
+      {
+        start: (pointer, event) => {
+          return false;
+        }
       }
-    });
+    );
   });
   let newContainer = createNewNode();
   function div1_binding($$value) {
@@ -1184,9 +1196,9 @@ class Menu extends SvelteComponent {
     init(this, options, instance$8, create_fragment$8, safe_not_equal, { children: 3, scale: 0 });
   }
 }
-var Gripper_svelte_svelte_type_style_lang = "";
-var Nodes_svelte_svelte_type_style_lang = "";
-var Wrapper_svelte_svelte_type_style_lang = "";
+const Gripper_svelte_svelte_type_style_lang = "";
+const Nodes_svelte_svelte_type_style_lang = "";
+const Wrapper_svelte_svelte_type_style_lang = "";
 class Pointer {
   constructor(nativePointer) {
     this.id = -1;
@@ -1335,7 +1347,7 @@ class PointerTracker {
     return true;
   }
 }
-var styles = "";
+const styles = "";
 const minScaleAttr = "min-scale";
 function getDistance(a, b) {
   if (!b)
@@ -1359,17 +1371,22 @@ function getAbsoluteValue(value, max) {
   return parseFloat(value);
 }
 function createMatrix() {
-  return new DOMMatrix();
+  return new DOMMatrix([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
 }
 function createPoint() {
   return new DOMPoint();
 }
 const MIN_SCALE = 0.01;
 class PinchZoom {
-  constructor(node) {
-    this._transform = createMatrix();
+  constructor(node, { handle } = {}) {
+    __publicField(this, "_node");
+    __publicField(this, "_parentEl");
+    __publicField(this, "_transform", createMatrix());
+    __publicField(this, "_pointerTracker");
+    __publicField(this, "_handle", null);
     this._node = node;
     this._parentEl = this._node.parentElement || document.body;
+    this._handle = handle;
     new MutationObserver(() => this._stageElChange()).observe(this._node, { childList: true });
     this._pointerTracker = new PointerTracker(this._parentEl, {
       eventListenerOptions: { capture: true },
@@ -1379,14 +1396,15 @@ class PinchZoom {
         }
         if (this._pointerTracker.currentPointers.length === 2 || !this._parentEl)
           return false;
-        event.preventDefault();
         if (this._pointerTracker.currentPointers.length === 1) {
+          event.preventDefault();
           event.stopPropagation();
           return true;
         }
         if (this._pointerTracker.currentPointers.length === 0) {
           return true;
         }
+        return false;
       },
       move: (previousPointers, changedPointers, event) => {
         if (this._pointerTracker.currentPointers.length === 0)
@@ -1553,7 +1571,8 @@ class PinchZoom {
     });
   }
 }
-const pzoom = (node, params = {}) => {
+const pzoom = (node, params) => {
+  console.log({ params });
   let container = node.parentElement || document.body;
   container.style["touch-action"] = "none";
   container.style["user-select"] = "none";
@@ -1562,11 +1581,18 @@ const pzoom = (node, params = {}) => {
   node.style["touch-action"] = "none";
   node.style["user-select"] = "none";
   node.style["position"] = "absolute";
-  new PinchZoom(node);
+  new PinchZoom(node, { handle: params == null ? void 0 : params.handle });
+  return {
+    update(params2) {
+      new PinchZoom(node, { handle: params2 == null ? void 0 : params2.handle });
+    },
+    destroy() {
+    }
+  };
 };
 const scale = writable({ value: 1 });
 const selected = writable(null);
-var ResizeHandle_svelte_svelte_type_style_lang = "";
+const ResizeHandle_svelte_svelte_type_style_lang = "";
 function create_fragment$7(ctx) {
   let div1;
   let div0;
@@ -1646,25 +1672,28 @@ function instance$7($$self, $$props, $$invalidate) {
   const isPointerEvent2 = (event) => "pointerId" in event;
   let handleEl;
   onMount(() => {
-    const pointerTracker = new PointerTracker$1(handleEl, {
-      start: (pointer, event) => {
-        if (pointerTracker.currentPointers.length === 2)
-          return false;
-        event.stopPropagation();
-        event.preventDefault();
-        return true;
-      },
-      move: (previousPointers, changedPointers, event) => {
-        if (!isPointerEvent2(event))
-          return;
-        let dx = event.clientX - previousPointers[0].clientX;
-        let dy = event.clientY - previousPointers[0].clientY;
-        dragHandle(event.clientX, event.clientY, dx, dy);
-      },
-      end: (pointer, event, cancelled) => {
-        onDragEnd();
+    const pointerTracker = new PointerTracker$1(
+      handleEl,
+      {
+        start: (pointer, event) => {
+          if (pointerTracker.currentPointers.length === 2)
+            return false;
+          event.stopPropagation();
+          event.preventDefault();
+          return true;
+        },
+        move: (previousPointers, changedPointers, event) => {
+          if (!isPointerEvent2(event))
+            return;
+          let dx = event.clientX - previousPointers[0].clientX;
+          let dy = event.clientY - previousPointers[0].clientY;
+          dragHandle(event.clientX, event.clientY, dx, dy);
+        },
+        end: (pointer, event, cancelled) => {
+          onDragEnd();
+        }
       }
-    });
+    );
   });
   let cursor = direction == "nw" || direction == "se" ? "nwse-resize" : direction == "n" || direction == "s" ? "ns-resize" : direction == "ne" || direction == "sw" ? "nesw-resize" : "ew-resize";
   function handleX(direction2, x2, width2, handleWidth2) {
@@ -1844,7 +1873,7 @@ function clickOutside(node, { enabled: initialEnabled, handleUnselect }) {
     }
   };
 }
-var EditableText_svelte_svelte_type_style_lang = "";
+const EditableText_svelte_svelte_type_style_lang = "";
 function create_fragment$6(ctx) {
   let div;
   let div_class_value;
@@ -2017,7 +2046,7 @@ const colors = [
   "#ff14f84b",
   "#376bff4b"
 ];
-var ColorPicker_svelte_svelte_type_style_lang = "";
+const ColorPicker_svelte_svelte_type_style_lang = "";
 function get_each_context$1(ctx, list, i) {
   const child_ctx = ctx.slice();
   child_ctx[2] = list[i];
@@ -2186,7 +2215,7 @@ class ColorPicker extends SvelteComponent {
     init(this, options, instance$5, create_fragment$5, safe_not_equal, { backgroundColor: 0 });
   }
 }
-var ContextMenu_svelte_svelte_type_style_lang = "";
+const ContextMenu_svelte_svelte_type_style_lang = "";
 function create_if_block$4(ctx) {
   let colorpicker;
   let updating_backgroundColor;
@@ -2388,7 +2417,7 @@ class ContextMenu extends SvelteComponent {
     init(this, options, instance$4, create_fragment$4, safe_not_equal, { node: 0 });
   }
 }
-var Container_svelte_svelte_type_style_lang = "";
+const Container_svelte_svelte_type_style_lang = "";
 function get_each_context(ctx, list, i) {
   const child_ctx = ctx.slice();
   child_ctx[32] = list[i];
@@ -2408,16 +2437,13 @@ function create_if_block$3(ctx) {
   let editabletext;
   let updating_value;
   let t0;
-  let t1_value = (ctx[4] ? window.getComputedStyle(ctx[4])["font-size"] : "Calculating size...") + "";
-  let t1;
-  let t2;
   let switch_instance;
   let updating_props;
-  let t3;
-  let t4;
+  let t1;
+  let t2;
   let div1_resize_listener;
   let clickOutside_action;
-  let t5;
+  let t3;
   let if_block2_anchor;
   let current;
   let mounted;
@@ -2443,7 +2469,7 @@ function create_if_block$3(ctx) {
     return { props: switch_instance_props };
   }
   if (switch_value) {
-    switch_instance = new switch_value(switch_props(ctx));
+    switch_instance = construct_svelte_component(switch_value, switch_props(ctx));
     binding_callbacks.push(() => bind(switch_instance, "props", switch_instance_props_binding));
   }
   let if_block0 = ((_b = (_a = ctx[0]) == null ? void 0 : _a.children) == null ? void 0 : _b.length) > 0 && create_if_block_3(ctx);
@@ -2454,18 +2480,16 @@ function create_if_block$3(ctx) {
       div1 = element("div");
       div0 = element("div");
       create_component(editabletext.$$.fragment);
-      t0 = text("\r\n		\r\n		Container font-size: ");
-      t1 = text(t1_value);
-      t2 = space();
+      t0 = space();
       if (switch_instance)
         create_component(switch_instance.$$.fragment);
-      t3 = space();
+      t1 = space();
       if (if_block0)
         if_block0.c();
-      t4 = space();
+      t2 = space();
       if (if_block1)
         if_block1.c();
-      t5 = space();
+      t3 = space();
       if (if_block2)
         if_block2.c();
       if_block2_anchor = empty();
@@ -2478,19 +2502,17 @@ function create_if_block$3(ctx) {
       var div0_nodes = children(div0);
       claim_component(editabletext.$$.fragment, div0_nodes);
       div0_nodes.forEach(detach);
-      t0 = claim_text(div1_nodes, "\r\n		\r\n		Container font-size: ");
-      t1 = claim_text(div1_nodes, t1_value);
-      t2 = claim_space(div1_nodes);
+      t0 = claim_space(div1_nodes);
       if (switch_instance)
         claim_component(switch_instance.$$.fragment, div1_nodes);
-      t3 = claim_space(div1_nodes);
+      t1 = claim_space(div1_nodes);
       if (if_block0)
         if_block0.l(div1_nodes);
-      t4 = claim_space(div1_nodes);
+      t2 = claim_space(div1_nodes);
       if (if_block1)
         if_block1.l(div1_nodes);
       div1_nodes.forEach(detach);
-      t5 = claim_space(nodes);
+      t3 = claim_space(nodes);
       if (if_block2)
         if_block2.l(nodes);
       if_block2_anchor = empty();
@@ -2514,20 +2536,17 @@ function create_if_block$3(ctx) {
       append_hydration(div1, div0);
       mount_component(editabletext, div0, null);
       append_hydration(div1, t0);
-      append_hydration(div1, t1);
-      append_hydration(div1, t2);
-      if (switch_instance) {
+      if (switch_instance)
         mount_component(switch_instance, div1, null);
-      }
-      append_hydration(div1, t3);
+      append_hydration(div1, t1);
       if (if_block0)
         if_block0.m(div1, null);
-      append_hydration(div1, t4);
+      append_hydration(div1, t2);
       if (if_block1)
         if_block1.m(div1, null);
       ctx[16](div1);
       div1_resize_listener = add_resize_listener(div1, ctx[17].bind(div1));
-      insert_hydration(target, t5, anchor);
+      insert_hydration(target, t3, anchor);
       if (if_block2)
         if_block2.m(target, anchor);
       insert_hydration(target, if_block2_anchor, anchor);
@@ -2553,8 +2572,6 @@ function create_if_block$3(ctx) {
         add_flush_callback(() => updating_value = false);
       }
       editabletext.$set(editabletext_changes);
-      if ((!current || dirty[0] & 16) && t1_value !== (t1_value = (ctx2[4] ? window.getComputedStyle(ctx2[4])["font-size"] : "Calculating size...") + ""))
-        set_data(t1, t1_value);
       const switch_instance_changes = {};
       if (!updating_props && dirty[0] & 1) {
         updating_props = true;
@@ -2571,11 +2588,11 @@ function create_if_block$3(ctx) {
           check_outros();
         }
         if (switch_value) {
-          switch_instance = new switch_value(switch_props(ctx2));
+          switch_instance = construct_svelte_component(switch_value, switch_props(ctx2));
           binding_callbacks.push(() => bind(switch_instance, "props", switch_instance_props_binding));
           create_component(switch_instance.$$.fragment);
           transition_in(switch_instance.$$.fragment, 1);
-          mount_component(switch_instance, div1, t3);
+          mount_component(switch_instance, div1, t1);
         } else {
           switch_instance = null;
         }
@@ -2592,7 +2609,7 @@ function create_if_block$3(ctx) {
           if_block0 = create_if_block_3(ctx2);
           if_block0.c();
           transition_in(if_block0, 1);
-          if_block0.m(div1, t4);
+          if_block0.m(div1, t2);
         }
       } else if (if_block0) {
         group_outros();
@@ -2693,7 +2710,7 @@ function create_if_block$3(ctx) {
       ctx[16](null);
       div1_resize_listener();
       if (detaching)
-        detach(t5);
+        detach(t3);
       if (if_block2)
         if_block2.d(detaching);
       if (detaching)
@@ -3171,28 +3188,31 @@ function instance$3($$self, $$props, $$invalidate) {
   let directions = ["nw", "w", "sw", "ne", "e", "se", "n", "s"];
   let pointerTracker;
   onMount(async () => {
-    pointerTracker = new PointerTracker$1(container, {
-      start: (pointer, event) => {
-        if (pointerTracker.currentPointers.length === 0 && (event.target instanceof HTMLInputElement || event.target.isContentEditable)) {
-          console.log("single pointers on input / editable element");
-          return false;
+    pointerTracker = new PointerTracker$1(
+      container,
+      {
+        start: (pointer, event) => {
+          if (pointerTracker.currentPointers.length === 0 && (event.target instanceof HTMLInputElement || event.target.isContentEditable)) {
+            console.log("single pointers on input / editable element");
+            return false;
+          }
+          if (pointerTracker.currentPointers.length === 1)
+            return false;
+          event.stopPropagation();
+          event.preventDefault();
+          return true;
+        },
+        move: (previousPointers, changedPointers, event) => {
+          let dx = event.clientX - previousPointers[0].clientX;
+          let dy = event.clientY - previousPointers[0].clientY;
+          dragFrame(event.clientX, event.clientY, dx, dy);
+        },
+        end: (pointer, event, cancelled) => {
+          onDragEnd();
+          handleFocus();
         }
-        if (pointerTracker.currentPointers.length === 1)
-          return false;
-        event.stopPropagation();
-        event.preventDefault();
-        return true;
-      },
-      move: (previousPointers, changedPointers, event) => {
-        let dx = event.clientX - previousPointers[0].clientX;
-        let dy = event.clientY - previousPointers[0].clientY;
-        dragFrame(event.clientX, event.clientY, dx, dy);
-      },
-      end: (pointer, event, cancelled) => {
-        onDragEnd();
-        handleFocus();
       }
-    });
+    );
   });
   function dragFrame(_x, _y, dx, dy) {
     $$invalidate(0, node.x = node.x + dx / $scale.value, node);
@@ -3341,15 +3361,24 @@ function instance$3($$self, $$props, $$invalidate) {
 class Container extends SvelteComponent {
   constructor(options) {
     super();
-    init(this, options, instance$3, create_fragment$3, safe_not_equal, {
-      node: 0,
-      arenaHeight: 2,
-      arenaWidth: 3,
-      isDragging: 1
-    }, null, [-1, -1]);
+    init(
+      this,
+      options,
+      instance$3,
+      create_fragment$3,
+      safe_not_equal,
+      {
+        node: 0,
+        arenaHeight: 2,
+        arenaWidth: 3,
+        isDragging: 1
+      },
+      null,
+      [-1, -1]
+    );
   }
 }
-var Sketch_svelte_svelte_type_style_lang = "";
+const Sketch_svelte_svelte_type_style_lang = "";
 function create_if_block$2(ctx) {
   let div1;
   let menu;
@@ -3358,7 +3387,6 @@ function create_if_block$2(ctx) {
   let div0;
   let container;
   let updating_node;
-  let pzoom_action;
   let div1_resize_listener;
   let current;
   let mounted;
@@ -3406,8 +3434,8 @@ function create_if_block$2(ctx) {
       this.h();
     },
     h() {
-      attr(div0, "class", "zoomable flexbox svelte-1gksd2v");
-      attr(div1, "class", "canvas svelte-1gksd2v");
+      attr(div0, "class", "zoomable flexbox svelte-1jk1a4c");
+      attr(div1, "class", "canvas svelte-1jk1a4c");
       set_style(div1, "height", ctx[2] + "px");
       set_style(div1, "width", ctx[1] + "px");
       add_render_callback(() => ctx[11].call(div1));
@@ -3423,7 +3451,7 @@ function create_if_block$2(ctx) {
       current = true;
       if (!mounted) {
         dispose = [
-          action_destroyer(pzoom_action = pzoom.call(null, div0)),
+          action_destroyer(pzoom.call(null, div0)),
           listen(div0, "change", ctx[7])
         ];
         mounted = true;
@@ -3607,7 +3635,7 @@ class Sketch extends SvelteComponent {
     init(this, options, instance$2, create_fragment$2, safe_not_equal, { data: 0, width: 1, height: 2 });
   }
 }
-var App_svelte_svelte_type_style_lang = "";
+const App_svelte_svelte_type_style_lang = "";
 const { window: window_1 } = globals;
 function create_if_block$1(ctx) {
   let sketch;
@@ -3943,11 +3971,13 @@ function instance($$self, $$props, $$invalidate) {
   });
   return [mounted];
 }
-class Routes extends SvelteComponent {
+class Page extends SvelteComponent {
   constructor(options) {
     super();
     init(this, options, instance, create_fragment, safe_not_equal, {});
   }
 }
-export { Routes as default };
-//# sourceMappingURL=index.svelte-9d0192a9.js.map
+export {
+  Page as default
+};
+//# sourceMappingURL=_page.svelte-a3a5e1dc.js.map

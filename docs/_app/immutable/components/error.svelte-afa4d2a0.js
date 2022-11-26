@@ -1,7 +1,50 @@
-import { SvelteComponent, init, safe_not_equal, element, text, claim_element, children, claim_text, detach, insert_hydration, append_hydration, set_data, space, empty, claim_space, noop } from "./chunks/index-182dfd00.js";
+import { SvelteComponent, init, safe_not_equal, element, text, space, empty, claim_element, children, claim_text, detach, claim_space, insert_hydration, append_hydration, set_data, noop, component_subscribe } from "../chunks/index-6458ca18.js";
+import { stores } from "../chunks/singletons-80934649.js";
+const getStores = () => {
+  const stores$1 = stores;
+  const readonly_stores = {
+    page: {
+      subscribe: stores$1.page.subscribe
+    },
+    navigating: {
+      subscribe: stores$1.navigating.subscribe
+    },
+    updated: stores$1.updated
+  };
+  Object.defineProperties(readonly_stores, {
+    preloading: {
+      get() {
+        console.error("stores.preloading is deprecated; use stores.navigating instead");
+        return {
+          subscribe: stores$1.navigating.subscribe
+        };
+      },
+      enumerable: false
+    },
+    session: {
+      get() {
+        removed_session();
+        return {};
+      },
+      enumerable: false
+    }
+  });
+  return readonly_stores;
+};
+const page = {
+  subscribe(fn) {
+    const store = getStores().page;
+    return store.subscribe(fn);
+  }
+};
+function removed_session() {
+  throw new Error(
+    "stores.session is no longer available. See https://github.com/sveltejs/kit/discussions/5883"
+  );
+}
 function create_if_block_1(ctx) {
   let pre;
-  let t_value = ctx[1].frame + "";
+  let t_value = ctx[0].error.frame + "";
   let t;
   return {
     c() {
@@ -19,7 +62,7 @@ function create_if_block_1(ctx) {
       append_hydration(pre, t);
     },
     p(ctx2, dirty) {
-      if (dirty & 2 && t_value !== (t_value = ctx2[1].frame + ""))
+      if (dirty & 1 && t_value !== (t_value = ctx2[0].error.frame + ""))
         set_data(t, t_value);
     },
     d(detaching) {
@@ -30,7 +73,7 @@ function create_if_block_1(ctx) {
 }
 function create_if_block(ctx) {
   let pre;
-  let t_value = ctx[1].stack + "";
+  let t_value = ctx[0].error.stack + "";
   let t;
   return {
     c() {
@@ -48,7 +91,7 @@ function create_if_block(ctx) {
       append_hydration(pre, t);
     },
     p(ctx2, dirty) {
-      if (dirty & 2 && t_value !== (t_value = ctx2[1].stack + ""))
+      if (dirty & 1 && t_value !== (t_value = ctx2[0].error.stack + ""))
         set_data(t, t_value);
     },
     d(detaching) {
@@ -59,20 +102,21 @@ function create_if_block(ctx) {
 }
 function create_fragment(ctx) {
   let h1;
+  let t0_value = ctx[0].status + "";
   let t0;
   let t1;
   let pre;
-  let t2_value = ctx[1].message + "";
+  let t2_value = ctx[0].error.message + "";
   let t2;
   let t3;
   let t4;
   let if_block1_anchor;
-  let if_block0 = ctx[1].frame && create_if_block_1(ctx);
-  let if_block1 = ctx[1].stack && create_if_block(ctx);
+  let if_block0 = ctx[0].error.frame && create_if_block_1(ctx);
+  let if_block1 = ctx[0].error.stack && create_if_block(ctx);
   return {
     c() {
       h1 = element("h1");
-      t0 = text(ctx[0]);
+      t0 = text(t0_value);
       t1 = space();
       pre = element("pre");
       t2 = text(t2_value);
@@ -87,7 +131,7 @@ function create_fragment(ctx) {
     l(nodes) {
       h1 = claim_element(nodes, "H1", {});
       var h1_nodes = children(h1);
-      t0 = claim_text(h1_nodes, ctx[0]);
+      t0 = claim_text(h1_nodes, t0_value);
       h1_nodes.forEach(detach);
       t1 = claim_space(nodes);
       pre = claim_element(nodes, "PRE", {});
@@ -117,11 +161,11 @@ function create_fragment(ctx) {
       insert_hydration(target, if_block1_anchor, anchor);
     },
     p(ctx2, [dirty]) {
-      if (dirty & 1)
-        set_data(t0, ctx2[0]);
-      if (dirty & 2 && t2_value !== (t2_value = ctx2[1].message + ""))
+      if (dirty & 1 && t0_value !== (t0_value = ctx2[0].status + ""))
+        set_data(t0, t0_value);
+      if (dirty & 1 && t2_value !== (t2_value = ctx2[0].error.message + ""))
         set_data(t2, t2_value);
-      if (ctx2[1].frame) {
+      if (ctx2[0].error.frame) {
         if (if_block0) {
           if_block0.p(ctx2, dirty);
         } else {
@@ -133,7 +177,7 @@ function create_fragment(ctx) {
         if_block0.d(1);
         if_block0 = null;
       }
-      if (ctx2[1].stack) {
+      if (ctx2[0].error.stack) {
         if (if_block1) {
           if_block1.p(ctx2, dirty);
         } else {
@@ -168,25 +212,18 @@ function create_fragment(ctx) {
     }
   };
 }
-function load({ error, status }) {
-  return { props: { error, status } };
-}
 function instance($$self, $$props, $$invalidate) {
-  let { status } = $$props;
-  let { error } = $$props;
-  $$self.$$set = ($$props2) => {
-    if ("status" in $$props2)
-      $$invalidate(0, status = $$props2.status);
-    if ("error" in $$props2)
-      $$invalidate(1, error = $$props2.error);
-  };
-  return [status, error];
+  let $page;
+  component_subscribe($$self, page, ($$value) => $$invalidate(0, $page = $$value));
+  return [$page];
 }
-class Error extends SvelteComponent {
+class Error$1 extends SvelteComponent {
   constructor(options) {
     super();
-    init(this, options, instance, create_fragment, safe_not_equal, { status: 0, error: 1 });
+    init(this, options, instance, create_fragment, safe_not_equal, {});
   }
 }
-export { Error as default, load };
-//# sourceMappingURL=error.svelte-9375b7c6.js.map
+export {
+  Error$1 as default
+};
+//# sourceMappingURL=error.svelte-afa4d2a0.js.map
