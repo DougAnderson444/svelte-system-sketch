@@ -13,40 +13,10 @@ const config = {
 			pages: 'docs',
 			assets: 'docs'
 		}),
-		prerender: { default: true },
 		paths: {
 			// change below to your repo name
 			base: process.env.NODE_ENV === 'development' ? '' : '/svelte-system-sketch'
-		},
-		vite: () => ({
-			resolve: {
-				alias: {
-					'@douganderson444/svelte-system-sketch': path.resolve('src/lib')
-				}
-			},
-			server: {
-				fs: {
-					strict: false
-				}
-			},
-			build: {
-				rollupOptions: {
-					plugins: [],
-					output: {
-						minifyInternalExports: false,
-						compact: false
-					}
-				},
-				minify: false,
-				sourcemap: true,
-				optimization: {
-					minimize: false
-				}
-			},
-			optimization: {
-				minimize: false
-			}
-		})
+		}
 	}
 };
 
