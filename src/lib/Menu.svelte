@@ -29,20 +29,28 @@
 	}
 
 	let newContainer = createNewNode();
+
+	function onDropped(event) {
+		console.log('dropped', event);
+		newContainer = createNewNode();
+	}
 </script>
 
 <div class="pallette" bind:this={pallette}>
 	Scale {scale}
-	<div
-		class="yellow"
-		use:asDroppable={{
-			Extras: { newContainer },
-			Operations: 'copy',
-			DataToOffer: { 'item/plain': '' }
-		}}
-	>
-		+ Drag Me
-	</div>
+	{#key newContainer}
+		<div
+			class="yellow"
+			use:asDroppable={{
+				Extras: { newContainer },
+				Operations: 'copy',
+				DataToOffer: { 'item/plain': '' },
+				onDropped
+			}}
+		>
+			+ Drag Me
+		</div>
+	{/key}
 	<!-- <button on:click={handleAddGridItem}>Add Grid Item</button>
 	<button on:click={handleAddMapItem}>Add Map</button>
 	<button on:click={handleAddListItem}>Add List</button> -->

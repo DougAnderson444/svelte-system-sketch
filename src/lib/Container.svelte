@@ -8,6 +8,8 @@
 	import EditableText from './EditableText.svelte';
 	import ContextMenu from './ContextMenu.svelte';
 
+	import { asDroppable, asDropZone } from 'svelte-drag-and-drop-actions';
+
 	// export let data;
 	export let node;
 	export let arenaHeight;
@@ -159,6 +161,7 @@
 		use:clickOutside={{ enabled: isFocused, handleUnselect }}
 		on:focusout={handleUnselect}
 		on:dragstart={handleDragStart}
+		use:asDropZone={{ TypesToAccept: { 'item/plain': 'copy' }, onDrop }}
 	>
 		<div class="title"><EditableText bind:value={node.name} /></div>
 		<!-- x: {node.x?.toFixed(1)}px; y: {node.y.toFixed(1)}px; <br />
