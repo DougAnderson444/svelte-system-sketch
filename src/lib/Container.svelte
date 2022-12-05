@@ -21,7 +21,7 @@
 	// redraw if arena changes/updates
 	$: if (arenaWidth || arenaHeight) assertArenaBounds();
 
-	let container;
+	let nodeEl;
 	let clientWidth, clientHeight;
 
 	let grid = 20;
@@ -36,10 +36,12 @@
 	let isFocused;
 	let directions = ['nw', 'w', 'sw', 'ne', 'e', 'se', 'n', 's'];
 	let pointerTracker;
+	let shiftX;
+	let shiftY;
 
 	onMount(async () => {
 		// Watch for pointers
-		pointerTracker = new PointerTracker(container, {
+		pointerTracker = new PointerTracker(nodeEl, {
 			start: (pointer, event) => {
 				// console.log('Container click', node.name);
 
@@ -59,6 +61,11 @@
 
 				event.stopPropagation(); // otherwise it will move the other containers too
 				event.preventDefault();
+
+				// capture the inital pointer offset within the event target
+				shiftX = event.clientX - nodeEl.getBoundingClientRect().left || 0;
+				shiftY = event.clientY - nodeEl.getBoundingClientRect().top || 0;
+
 				return true;
 			},
 			move: (previousPointers, changedPointers, event) => {
@@ -70,7 +77,7 @@
 				dragFrame(event.clientX, event.clientY, dx, dy);
 			},
 			end: (pointer, event, cancelled) => {
-				onDragEnd();
+				onDragEnd(pointer);
 				handleFocus(event);
 			}
 		});
@@ -91,8 +98,41 @@
 		assertArenaBounds();
 	}
 
-	function onDragEnd() {
+	function onDragEnd(pointer) {
 		isDragging = false;
+
+		// temporarily reset to original position so you can get elementFromPoint underneath it
+		nodeEl.style.left = 0;
+		nodeEl.style.top = 0;
+
+		let drop = document.elementFromPoint(pointer.clientX, pointer.clientY);
+		let zone = drop.closest('[data-dropzone]');
+
+		if (
+			zone &&
+			zone !== nodeEl &&
+			!nodeEl.contains(zone) &&
+			zone?.id !== nodeEl.parentNode.closest('[data-dropzone]')?.id // also not self
+		) {
+			console.log('dropped on ', zone);
+			// add to new zone
+			zone.dispatchEvent(
+				new CustomEvent('end', {
+					detail: {
+						nodeData: {
+							...node,
+							x: pointer.clientX - shiftX - zone.getBoundingClientRect().left,
+							y: pointer.clientY - shiftY - zone.getBoundingClientRect().top
+						}
+					}
+				})
+			);
+
+			// remove form this node
+			removeNode();
+
+			return;
+		}
 
 		node.x = Math.round(node.x / grid) * grid;
 		node.y = Math.round(node.y / grid) * grid;
@@ -137,28 +177,44 @@
 		}
 	}
 
-	$: if ($selected != container) handleUnselect();
+	$: if ($selected != nodeEl) handleUnselect();
 
 	function handleUnselect() {
 		isFocused = false;
 	}
 	function handleFocus(e) {
-		container.focus();
-		$selected = container;
+		nodeEl.focus();
+		$selected = nodeEl;
 		isFocused = true;
+	}
+	function removeNode() {
+		// remove node is from parent's children array
+		node = null; // delete node // not allowed in strict mode
+	}
+
+	function handleEnd(e) {
+		const n = e.detail;
+		console.log(`Node ${n.nodeData.id} got dropped into ${node.id}`, n);
+		node = {
+			...node,
+			children: [...node.children, n.nodeData]
+		};
 	}
 </script>
 
 {#if node && document && clickOutside}
 	<div
-		class="container"
-		bind:this={container}
+		class="nodeEl"
+		id={node.id}
+		data-dropzone
+		bind:this={nodeEl}
 		bind:clientWidth
 		bind:clientHeight
 		style="position: absolute; left:{node.x}px; top:{node.y}px; width:{node?.style
 			?.width}px; height:{node?.style?.height}px; font-size: {fontSize};
 		background-color: {node?.style?.backgroundColor || '#fee9004b'}"
 		use:clickOutside={{ enabled: isFocused, handleUnselect }}
+		on:end={handleEnd}
 		on:focusout={handleUnselect}
 		on:dragstart={handleDragStart}
 		use:asDropZone={{ TypesToAccept: { 'item/plain': 'copy' }, onDrop }}
@@ -166,8 +222,8 @@
 		<div class="title"><EditableText bind:value={node.name} /></div>
 		<!-- x: {node.x?.toFixed(1)}px; y: {node.y.toFixed(1)}px; <br />
 		width: {node.style.width?.toFixed(1)}px; height: {node.style.height.toFixed(1)}px; -->
-		<!-- Container font-size: {container
-			? window.getComputedStyle(container)['font-size']
+		<!-- Container font-size: {nodeEl
+			? window.getComputedStyle(nodeEl)['font-size']
 			: 'Calculating size...'} -->
 		<svelte:component this={node.component} bind:props={node.props} />
 
@@ -182,13 +238,13 @@
 			{/each}
 		{/if}
 
-		{#if container && isFocused}
+		{#if nodeEl && isFocused}
 			<!-- OnSelect Context Menu  -->
 			<ContextMenu bind:node />
 		{/if}
 	</div>
 
-	{#if container && isFocused}
+	{#if nodeEl && isFocused}
 		<!-- Handles  -->
 		{#each directions as direction}
 			<ResizeHandle
@@ -221,7 +277,7 @@
 		/* font-family: 'Luckiest Guy', cursive; */
 		font-family: 'Permanent Marker', cursive;
 	}
-	.container {
+	.nodeEl {
 		box-shadow: 0.1em 0.1em 0.5em 0em rgba(183, 183, 183, 0.5);
 		border-radius: 0.2em;
 		position: absolute;
