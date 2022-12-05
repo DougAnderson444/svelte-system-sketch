@@ -199,6 +199,9 @@ function destroy_each(iterations, detaching) {
 function element(name) {
   return document.createElement(name);
 }
+function svg_element(name) {
+  return document.createElementNS("http://www.w3.org/2000/svg", name);
+}
 function text(data) {
   return document.createTextNode(data);
 }
@@ -288,6 +291,9 @@ function claim_element_base(nodes, name, attributes, create_element) {
 }
 function claim_element(nodes, name, attributes) {
   return claim_element_base(nodes, name, attributes, element);
+}
+function claim_svg_element(nodes, name, attributes) {
+  return claim_element_base(nodes, name, attributes, svg_element);
 }
 function claim_text(nodes, data) {
   return claim_node(
@@ -651,6 +657,7 @@ export {
   claim_component,
   claim_element,
   claim_space,
+  claim_svg_element,
   claim_text,
   component_subscribe,
   construct_svelte_component,
@@ -681,10 +688,11 @@ export {
   set_style,
   space,
   stop_propagation,
+  svg_element,
   text,
   tick,
   transition_in,
   transition_out,
   update_slot_base
 };
-//# sourceMappingURL=index-6458ca18.js.map
+//# sourceMappingURL=index-eb7e5505.js.map

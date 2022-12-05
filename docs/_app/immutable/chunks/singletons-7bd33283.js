@@ -1,4 +1,4 @@
-import { writable } from "./index-a8c97d2d.js";
+import { writable } from "./index-e8f50377.js";
 let base = "";
 let assets = "";
 function set_paths(paths) {
@@ -134,4 +134,4 @@ export {
   set_version,
   stores
 };
-//# sourceMappingURL=singletons-80934649.js.map
+//# sourceMappingURL=singletons-7bd33283.js.map
