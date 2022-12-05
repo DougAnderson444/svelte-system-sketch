@@ -8,6 +8,7 @@
 	import EditableText from './EditableText.svelte';
 	import ContextMenu from './ContextMenu.svelte';
 	import Thumbtack from './SVG/thumbtack.svelte';
+	import Grid from './SVG/grid.svelte';
 
 	// export let data;
 	export let node;
@@ -84,7 +85,9 @@
 			end: (pointer, event, cancelled) => {
 				onDragEnd(pointer);
 				handleFocus(event);
-			}
+			},
+			avoidPointerEvents: true,
+			eventListenerOptions: { capture: false }
 		});
 	});
 
@@ -98,8 +101,9 @@
 		return { x: node.x, y: node.y };
 	}
 	function dragFrame(_x, _y, dx, dy) {
-		node.x = node.x + dx / $scale.value;
-		node.y = node.y + dy / $scale.value;
+		// if dragged from the menu, use scale = 1
+		node.x = node.x + dx / (nodeEl?.closest('[data-menu]') ? 1 : $scale.value);
+		node.y = node.y + dy / (nodeEl?.closest('[data-menu]') ? 1 : $scale.value);
 		assertArenaBounds();
 	}
 
@@ -125,8 +129,8 @@
 					detail: {
 						nodeData: {
 							...node,
-							x: pointer.clientX - shiftX - zone.getBoundingClientRect().left,
-							y: pointer.clientY - shiftY - zone.getBoundingClientRect().top
+							x: (pointer.clientX - zone.getBoundingClientRect().left) / $scale.value - shiftX,
+							y: (pointer.clientY - zone.getBoundingClientRect().top) / $scale.value - shiftY
 						}
 					}
 				})
@@ -206,6 +210,7 @@
 			style="width: 15px; height:15px; position: absolute; top:-10px; right:0px; margin:.5em; color:grey; filter: drop-shadow(0 10px 0.75rem white);"
 		>
 			<Thumbtack />
+			<Grid />
 		</div>
 		<div class="title">
 			<!-- No Editable if on Menu; check if this element is contained within a child of a parent with data-menu attribute  -->
