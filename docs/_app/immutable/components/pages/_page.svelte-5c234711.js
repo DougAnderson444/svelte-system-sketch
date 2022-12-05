@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { SvelteComponent, init, safe_not_equal, element, text, space, claim_element, children, claim_text, claim_space, detach, attr, insert_hydration, append_hydration, action_destroyer, set_data, noop as noop$2, onMount, binding_callbacks, set_style, component_subscribe, null_to_empty, add_render_callback, listen, is_function, run_all, createEventDispatcher, tick, empty, destroy_each, add_resize_listener, stop_propagation, transition_in, group_outros, transition_out, check_outros, bind, create_component, claim_component, mount_component, add_flush_callback, destroy_component, set_store_value, construct_svelte_component, globals } from "../../chunks/index-6458ca18.js";
+import { SvelteComponent, init, safe_not_equal, element, text, space, claim_element, children, claim_text, claim_space, detach, attr, insert_hydration, append_hydration, set_data, noop as noop$2, onMount, action_destroyer, is_function, binding_callbacks, set_style, component_subscribe, null_to_empty, add_render_callback, listen, run_all, createEventDispatcher, tick, empty, destroy_each, add_resize_listener, stop_propagation, transition_in, group_outros, transition_out, check_outros, bind, create_component, claim_component, mount_component, add_flush_callback, destroy_component, set_store_value, construct_svelte_component, globals } from "../../chunks/index-6458ca18.js";
 import { writable } from "../../chunks/index-a8c97d2d.js";
 const Canvas_svelte_svelte_type_style_lang = "";
 const RangePips_svelte_svelte_type_style_lang = "";
@@ -54,8 +54,18 @@ function throwError(Message) {
     throw namedError;
   }
 }
+function ValueIsNumber(Value) {
+  return typeof Value === "number" || Value instanceof Number;
+}
 function ValueIsFiniteNumber(Value) {
   return (typeof Value === "number" || Value instanceof Number) && isFinite(Value.valueOf());
+}
+function ValueIsInteger(Value) {
+  if (typeof Value !== "number" && !(Value instanceof Number)) {
+    return false;
+  }
+  Value = Value.valueOf();
+  return isFinite(Value) && Math.round(Value) === Value;
 }
 function ValueIsOrdinal(Value) {
   if (typeof Value !== "number" && !(Value instanceof Number)) {
@@ -174,6 +184,36 @@ function FunctionWithName(originalFunction, desiredName) {
   return renamed(originalFunction);
 }
 var allowFiniteNumber = /* @__PURE__ */ ValidatorForClassifier(ValueIsFiniteNumber, acceptNil, "finite numeric value"), allowedFiniteNumber = allowFiniteNumber;
+var expectInteger = /* @__PURE__ */ ValidatorForClassifier(ValueIsInteger, rejectNil, "integral numeric value");
+function allowIntegerInRange(Description, Argument, minValue, maxValue) {
+  return Argument == null ? Argument : expectedIntegerInRange(Description, Argument, minValue, maxValue);
+}
+var allowedIntegerInRange = allowIntegerInRange;
+function expectIntegerInRange(Description, Argument, minValue, maxValue) {
+  expectInteger(Description, Argument);
+  if (isNaN(Argument)) {
+    throwError("InvalidArgument: the given " + escaped(Description) + " is not-a-number");
+  }
+  if (minValue != null && isFinite(minValue)) {
+    if (maxValue != null && isFinite(maxValue)) {
+      if (Argument < minValue || Argument > maxValue) {
+        throw new RangeError("the given " + escaped(Description) + " (" + Argument + ") is outside " + ("the allowed range (" + minValue + "..." + maxValue + ")"));
+      }
+    } else {
+      if (Argument < minValue) {
+        throw new RangeError("the given " + escaped(Description) + " is below the allowed " + ("minimum (" + Argument + " < " + minValue + ")"));
+      }
+    }
+  } else {
+    if (maxValue != null && isFinite(maxValue)) {
+      if (Argument > maxValue) {
+        throw new RangeError("the given " + escaped(Description) + " exceeds the allowed " + ("maximum (" + Argument + " > " + maxValue + ")"));
+      }
+    }
+  }
+  return Argument.valueOf();
+}
+var expectedIntegerInRange = expectIntegerInRange;
 var allowOrdinal = /* @__PURE__ */ ValidatorForClassifier(ValueIsOrdinal, acceptNil, "ordinal number"), allowedOrdinal = allowOrdinal;
 var allowString = /* @__PURE__ */ ValidatorForClassifier(ValueIsString, acceptNil, "literal string"), allowedString = allowString;
 var allowNonEmptyString = /* @__PURE__ */ ValidatorForClassifier(ValueIsNonEmptyString, acceptNil, "non-empty literal string"), allowedNonEmptyString = allowNonEmptyString;
@@ -796,8 +836,313 @@ function asDroppable(Element2, Options) {
     }
   };
 }
+function parsedDropZoneOptions(Options) {
+  Options = allowedPlainObject("drop zone options", Options) || {};
+  var Extras, TypesToAccept, HoldDelay;
+  var Pannable;
+  var PanSensorWidth, PanSensorHeight, PanSpeed;
+  var onDroppableEnter, onDroppableMove, onDroppableLeave;
+  var onDroppableHold, onDroppableRelease, onDrop;
+  Extras = Options.Extras;
+  allowPlainObject("data types to be accepted", Options.TypesToAccept);
+  TypesToAccept = /* @__PURE__ */ Object.create(null);
+  if (Options.TypesToAccept != null && "none" in Options.TypesToAccept)
+    throwError('InvalidArgument: "none" is not a valid data type');
+  for (var Type in Options.TypesToAccept) {
+    if (Options.TypesToAccept.hasOwnProperty(Type)) {
+      TypesToAccept[Type] = parsedOperations("list of accepted operations for type " + quoted(Type), Options.TypesToAccept[Type]);
+    }
+  }
+  HoldDelay = allowedIntegerInRange("min. time to hold", Options.HoldDelay, 0);
+  switch (true) {
+    case Options.Pannable == null:
+      Pannable = void 0;
+      break;
+    case Options.Pannable === "this":
+    case ValueIsNonEmptyString(Options.Pannable):
+    case Options.Pannable instanceof HTMLElement:
+    case Options.Pannable instanceof SVGElement:
+      Pannable = Options.Pannable;
+      break;
+    default:
+      throwError('InvalidArgument: invalid "Pannable" specification given');
+  }
+  PanSensorWidth = allowedOrdinal("panning sensor width", Options.PanSensorWidth);
+  if (PanSensorWidth == null) {
+    PanSensorWidth = 20;
+  }
+  PanSensorHeight = allowedOrdinal("panning sensor height", Options.PanSensorHeight);
+  if (PanSensorHeight == null) {
+    PanSensorHeight = 20;
+  }
+  PanSpeed = allowedOrdinal("panning speed", Options.PanSpeed);
+  if (PanSpeed == null) {
+    PanSpeed = 10;
+  }
+  onDroppableEnter = allowedFunction('"onDroppableEnter" handler', Options.onDroppableEnter);
+  onDroppableMove = allowedFunction('"onDroppableMove" handler', Options.onDroppableMove);
+  onDroppableLeave = allowedFunction('"onDroppableLeave" handler', Options.onDroppableLeave);
+  onDroppableHold = allowedFunction('"onDroppableHold" handler', Options.onDroppableHold);
+  onDroppableRelease = allowedFunction('"onDroppableRelease" handler', Options.onDroppableRelease);
+  onDrop = allowedFunction('"onDrop" handler', Options.onDrop);
+  return {
+    Extras,
+    TypesToAccept,
+    HoldDelay,
+    Pannable,
+    PanSensorWidth,
+    PanSensorHeight,
+    PanSpeed,
+    onDroppableEnter,
+    onDroppableMove,
+    onDroppableLeave,
+    onDroppableHold,
+    onDroppableRelease,
+    onDrop
+  };
+}
+function asDropZone(Element2, Options) {
+  var currentDropZoneOptions;
+  currentDropZoneOptions = parsedDropZoneOptions(Options);
+  function enteredByDroppable(originalEvent) {
+    var Options2 = currentDropZoneOptions;
+    performPanningFor("dropzone", Element2, Options2, originalEvent.pageX, originalEvent.pageY);
+    var DropZonePosition = asPosition(svelteCoordinateConversion.fromDocumentTo("local", { left: originalEvent.pageX, top: originalEvent.pageY }, Element2));
+    if (ValueIsNumber(Options2.HoldDelay) && Options2.HoldDelay > 0 && Context.HoldWasTriggeredForElement !== Element2) {
+      startHoldTimer(DropZonePosition);
+    }
+    if (originalEvent.dataTransfer == null || originalEvent.dataTransfer.effectAllowed === "none") {
+      return;
+    }
+    var wantedOperation = originalEvent.dataTransfer.dropEffect;
+    if (wantedOperation === "none") {
+      switch (originalEvent.dataTransfer.effectAllowed) {
+        case "copy":
+        case "move":
+        case "link":
+          wantedOperation = originalEvent.dataTransfer.effectAllowed;
+          break;
+        default:
+          wantedOperation = void 0;
+      }
+    }
+    var TypesToAccept = Options2.TypesToAccept;
+    var offeredTypeList = originalEvent.dataTransfer.types.filter(
+      function(Type) {
+        return Type in TypesToAccept && TypesToAccept[Type] !== "";
+      }
+    );
+    if (offeredTypeList.length === 0) {
+      return;
+    }
+    var accepted = ResultOfHandler("onDroppableEnter", Options2, DropZonePosition.x, DropZonePosition.y, wantedOperation, offeredTypeList, Context.currentDroppableExtras, Options2.Extras);
+    if (accepted === false) {
+      return;
+    } else {
+      Context.currentDropZoneExtras = Options2.Extras;
+      Context.currentDropZoneElement = Element2;
+      Context.currentDropZonePosition = DropZonePosition;
+      Element2.classList.add("hovered");
+      originalEvent.preventDefault();
+      originalEvent.stopPropagation();
+    }
+  }
+  function hoveredByDroppable(originalEvent) {
+    var Options2 = currentDropZoneOptions;
+    performPanningFor("dropzone", Element2, Options2, originalEvent.pageX, originalEvent.pageY);
+    var DropZonePosition = asPosition(svelteCoordinateConversion.fromDocumentTo("local", { left: originalEvent.pageX, top: originalEvent.pageY }, Element2));
+    if (ValueIsNumber(Options2.HoldDelay) && Options2.HoldDelay > 0 && Context.HoldWasTriggeredForElement !== Element2) {
+      if (Context.HoldPosition == null) {
+        startHoldTimer(DropZonePosition);
+      } else {
+        continueHoldTimer(DropZonePosition);
+      }
+    }
+    if (originalEvent.dataTransfer == null || originalEvent.dataTransfer.effectAllowed === "none" || Context.currentDropZoneElement != null && Context.currentDropZoneElement !== Element2) {
+      Element2.classList.remove("hovered");
+      return;
+    }
+    var wantedOperation = originalEvent.dataTransfer.dropEffect;
+    if (wantedOperation === "none") {
+      switch (originalEvent.dataTransfer.effectAllowed) {
+        case "copy":
+        case "move":
+        case "link":
+          wantedOperation = originalEvent.dataTransfer.effectAllowed;
+          break;
+        default:
+          wantedOperation = void 0;
+      }
+    }
+    var TypesToAccept = Options2.TypesToAccept;
+    var offeredTypeList = originalEvent.dataTransfer.types.filter(
+      function(Type) {
+        return Type in TypesToAccept && TypesToAccept[Type] !== "";
+      }
+    );
+    if (offeredTypeList.length === 0) {
+      if (Context.currentDropZoneElement === Element2) {
+        Context.currentDropZoneExtras = void 0;
+        Context.currentDropZoneElement = void 0;
+        Context.currentDropZonePosition = void 0;
+      }
+      Element2.classList.remove("hovered");
+      return;
+    }
+    Context.currentDropZonePosition = DropZonePosition;
+    var accepted = ResultOfHandler("onDroppableMove", Options2, Context.currentDropZonePosition.x, Context.currentDropZonePosition.y, wantedOperation, offeredTypeList, Context.currentDroppableExtras, Options2.Extras);
+    if (accepted === false) {
+      Context.currentDropZoneExtras = void 0;
+      Context.currentDropZoneElement = void 0;
+      Context.currentDropZonePosition = void 0;
+      Element2.classList.remove("hovered");
+    } else {
+      Context.currentDropZoneExtras = Options2.Extras;
+      Context.currentDropZoneElement = Element2;
+      Element2.classList.add("hovered");
+      originalEvent.preventDefault();
+      return false;
+    }
+  }
+  function leftByDroppable(originalEvent) {
+    Element2.classList.remove("hovered");
+    Context.DropZonePanning = false;
+    stopHoldTimer();
+    var Options2 = currentDropZoneOptions;
+    if (Context.currentDropZoneElement === Element2) {
+      if (Context.currentTypeTransferred == null) {
+        Context.currentDropZoneExtras = void 0;
+        Context.currentDropZoneElement = void 0;
+        Context.DroppableWasDropped = false;
+        Context.currentDropZonePosition = void 0;
+        Context.currentTypeTransferred = void 0;
+        Context.currentDataTransferred = void 0;
+        invokeHandler("onDroppableLeave", Options2, Context.currentDroppableExtras, Options2.Extras);
+      }
+      originalEvent.preventDefault();
+      originalEvent.stopPropagation();
+    }
+  }
+  function droppedByDroppable(originalEvent) {
+    Element2.classList.remove("hovered");
+    Context.DropZonePanning = false;
+    stopHoldTimer();
+    if (originalEvent.dataTransfer == null || originalEvent.dataTransfer.effectAllowed === "none" || Context.currentDropZoneElement !== Element2) {
+      return;
+    }
+    originalEvent.stopPropagation();
+    var Options2 = currentDropZoneOptions;
+    var wantedOperation = originalEvent.dataTransfer.dropEffect;
+    if (wantedOperation === "none") {
+      switch (originalEvent.dataTransfer.effectAllowed) {
+        case "copy":
+        case "move":
+        case "link":
+          wantedOperation = originalEvent.dataTransfer.effectAllowed;
+          break;
+        default:
+          wantedOperation = void 0;
+      }
+    }
+    var TypesToAccept = Options2.TypesToAccept;
+    var offeredTypeList = originalEvent.dataTransfer.types.filter(function(Type) {
+      return Type in TypesToAccept && (wantedOperation == null || TypesToAccept[Type].indexOf(wantedOperation) >= 0);
+    });
+    if (offeredTypeList.length === 0) {
+      Context.currentDropZoneExtras = void 0;
+      Context.currentDropZonePosition = void 0;
+      Context.DroppableWasDropped = false;
+      Context.currentDropOperation = void 0;
+      Context.currentTypeTransferred = void 0;
+      Context.currentDataTransferred = void 0;
+      invokeHandler("onDroppableLeave", Options2, Context.currentDroppableExtras, Options2.Extras);
+      return;
+    }
+    Context.currentDropZonePosition = asPosition(svelteCoordinateConversion.fromDocumentTo("local", { left: originalEvent.pageX, top: originalEvent.pageY }, Element2));
+    var offeredData = {};
+    offeredTypeList.forEach(
+      function(Type) {
+        return offeredData[Type] = originalEvent.dataTransfer.getData(Type);
+      }
+    );
+    var acceptedType = ResultOfHandler("onDrop", Options2, Context.currentDropZonePosition.x, Context.currentDropZonePosition.y, wantedOperation, offeredData, Context.currentDroppableExtras, Options2.Extras);
+    switch (true) {
+      case acceptedType == null:
+        Context.DroppableWasDropped = true;
+        Context.currentDropOperation = wantedOperation;
+        Context.currentTypeTransferred = void 0;
+        Context.currentDataTransferred = void 0;
+        break;
+      case ValueIsOneOf(acceptedType, offeredTypeList):
+        Context.DroppableWasDropped = true;
+        Context.currentDropOperation = wantedOperation;
+        Context.currentTypeTransferred = acceptedType;
+        Context.currentDataTransferred = offeredData[acceptedType];
+        break;
+      default:
+        Context.DroppableWasDropped = false;
+        Context.currentDropZoneExtras = void 0;
+        Context.currentDropZonePosition = void 0;
+        Context.currentDropOperation = void 0;
+        Context.currentTypeTransferred = void 0;
+        Context.currentDataTransferred = void 0;
+    }
+    Context.currentDropZoneElement = void 0;
+  }
+  function startHoldTimer(DropZonePosition) {
+    Context.HoldPosition = DropZonePosition;
+    if (Context.HoldTimer != null) {
+      clearTimeout(Context.HoldTimer);
+    }
+    Context.HoldTimer = setTimeout(triggerHold, Options.HoldDelay);
+  }
+  function continueHoldTimer(DropZonePosition) {
+    var Offset = Math.pow(Context.HoldPosition.x - DropZonePosition.x, 2) + Math.pow(Context.HoldPosition.y - DropZonePosition.y, 2);
+    if (Offset > 25) {
+      Context.HoldPosition = DropZonePosition;
+      clearTimeout(Context.HoldTimer);
+      Context.HoldTimer = setTimeout(triggerHold, Options.HoldDelay);
+    }
+  }
+  function stopHoldTimer() {
+    delete Context.HoldPosition;
+    if (Context.HoldTimer != null) {
+      clearTimeout(Context.HoldTimer);
+      delete Context.HoldTimer;
+    }
+    delete Context.HoldWasTriggeredForElement;
+  }
+  function triggerHold() {
+    var DropZonePosition = Context.currentDropZonePosition || Context.HoldPosition;
+    delete Context.HoldPosition;
+    delete Context.HoldTimer;
+    Context.HoldWasTriggeredForElement = Element2;
+    invokeHandler("onDroppableHold", Options, DropZonePosition.x, DropZonePosition.y, Context.currentDroppableExtras, Options.Extras);
+  }
+  function updateDropZoneOptions(Options2) {
+    Options2 = parsedDropZoneOptions(Options2);
+    if (currentDropZoneOptions.Extras == null && Options2.Extras != null) {
+      currentDropZoneOptions.Extras = Options2.Extras;
+    }
+    currentDropZoneOptions.TypesToAccept = Options2.TypesToAccept;
+    currentDropZoneOptions.HoldDelay = Options2.HoldDelay;
+    currentDropZoneOptions.Pannable = Options2.Pannable;
+    currentDropZoneOptions.PanSensorWidth = Options2.PanSensorWidth;
+    currentDropZoneOptions.PanSensorHeight = Options2.PanSensorHeight;
+    currentDropZoneOptions.PanSpeed = Options2.PanSpeed;
+  }
+  Element2.setAttribute("draggable", "true");
+  Element2.addEventListener("dragenter", enteredByDroppable);
+  Element2.addEventListener("dragover", hoveredByDroppable);
+  Element2.addEventListener("dragleave", leftByDroppable);
+  Element2.addEventListener("drop", droppedByDroppable);
+  return { update: updateDropZoneOptions };
+}
 function ValueIsPosition(Candidate) {
   return ValueIsPlainObject(Candidate) && ValueIsFiniteNumber(Candidate.x) && ValueIsFiniteNumber(Candidate.y);
+}
+function asPosition(Value) {
+  return { x: Value.left, y: Value.top };
 }
 function PositionReferenceFor(Element2, Options) {
   var PositionReference;
@@ -944,6 +1289,7 @@ function invokeHandler(Name, Options) {
     }
   }
 }
+var ResultOfHandler = invokeHandler;
 class Pointer$1 {
   constructor(nativePointer) {
     this.id = -1;
@@ -1093,71 +1439,114 @@ class PointerTracker$1 {
   }
 }
 const Menu_svelte_svelte_type_style_lang = "";
-function create_fragment$8(ctx) {
-  let div1;
-  let t0;
-  let t1;
-  let t2;
-  let div0;
-  let t3;
+function create_key_block(ctx) {
+  let div;
+  let t;
+  let asDroppable_action;
   let mounted;
   let dispose;
   return {
     c() {
-      div1 = element("div");
-      t0 = text("Scale ");
-      t1 = text(ctx[0]);
-      t2 = space();
-      div0 = element("div");
-      t3 = text("+ Drag Me");
+      div = element("div");
+      t = text("+ Drag Me");
       this.h();
     },
     l(nodes) {
-      div1 = claim_element(nodes, "DIV", { class: true });
-      var div1_nodes = children(div1);
-      t0 = claim_text(div1_nodes, "Scale ");
-      t1 = claim_text(div1_nodes, ctx[0]);
-      t2 = claim_space(div1_nodes);
-      div0 = claim_element(div1_nodes, "DIV", { class: true });
-      var div0_nodes = children(div0);
-      t3 = claim_text(div0_nodes, "+ Drag Me");
-      div0_nodes.forEach(detach);
-      div1_nodes.forEach(detach);
+      div = claim_element(nodes, "DIV", { class: true });
+      var div_nodes = children(div);
+      t = claim_text(div_nodes, "+ Drag Me");
+      div_nodes.forEach(detach);
       this.h();
     },
     h() {
-      attr(div0, "class", "yellow svelte-1nefajd");
-      attr(div1, "class", "pallette svelte-1nefajd");
+      attr(div, "class", "yellow svelte-1nefajd");
     },
     m(target, anchor) {
-      insert_hydration(target, div1, anchor);
-      append_hydration(div1, t0);
-      append_hydration(div1, t1);
-      append_hydration(div1, t2);
-      append_hydration(div1, div0);
-      append_hydration(div0, t3);
-      ctx[4](div1);
+      insert_hydration(target, div, anchor);
+      append_hydration(div, t);
       if (!mounted) {
-        dispose = action_destroyer(asDroppable.call(null, div0, {
+        dispose = action_destroyer(asDroppable_action = asDroppable.call(null, div, {
           Extras: { newContainer: ctx[2] },
           Operations: "copy",
-          DataToOffer: { "item/plain": "" }
+          DataToOffer: { "item/plain": "" },
+          onDropped: ctx[3]
         }));
         mounted = true;
       }
     },
+    p(ctx2, dirty) {
+      if (asDroppable_action && is_function(asDroppable_action.update) && dirty & 4)
+        asDroppable_action.update.call(null, {
+          Extras: { newContainer: ctx2[2] },
+          Operations: "copy",
+          DataToOffer: { "item/plain": "" },
+          onDropped: ctx2[3]
+        });
+    },
+    d(detaching) {
+      if (detaching)
+        detach(div);
+      mounted = false;
+      dispose();
+    }
+  };
+}
+function create_fragment$8(ctx) {
+  let div;
+  let t0;
+  let t1;
+  let t2;
+  let previous_key = ctx[2];
+  let key_block = create_key_block(ctx);
+  return {
+    c() {
+      div = element("div");
+      t0 = text("Scale ");
+      t1 = text(ctx[0]);
+      t2 = space();
+      key_block.c();
+      this.h();
+    },
+    l(nodes) {
+      div = claim_element(nodes, "DIV", { class: true });
+      var div_nodes = children(div);
+      t0 = claim_text(div_nodes, "Scale ");
+      t1 = claim_text(div_nodes, ctx[0]);
+      t2 = claim_space(div_nodes);
+      key_block.l(div_nodes);
+      div_nodes.forEach(detach);
+      this.h();
+    },
+    h() {
+      attr(div, "class", "pallette svelte-1nefajd");
+    },
+    m(target, anchor) {
+      insert_hydration(target, div, anchor);
+      append_hydration(div, t0);
+      append_hydration(div, t1);
+      append_hydration(div, t2);
+      key_block.m(div, null);
+      ctx[5](div);
+    },
     p(ctx2, [dirty]) {
       if (dirty & 1)
         set_data(t1, ctx2[0]);
+      if (dirty & 4 && safe_not_equal(previous_key, previous_key = ctx2[2])) {
+        key_block.d(1);
+        key_block = create_key_block(ctx2);
+        key_block.c();
+        key_block.m(div, null);
+      } else {
+        key_block.p(ctx2, dirty);
+      }
     },
     i: noop$2,
     o: noop$2,
     d(detaching) {
       if (detaching)
-        detach(div1);
-      ctx[4](null);
-      mounted = false;
-      dispose();
+        detach(div);
+      key_block.d(detaching);
+      ctx[5](null);
     }
   };
 }
@@ -1176,7 +1565,11 @@ function instance$8($$self, $$props, $$invalidate) {
     );
   });
   let newContainer = createNewNode();
-  function div1_binding($$value) {
+  function onDropped(event) {
+    console.log("dropped", event);
+    $$invalidate(2, newContainer = createNewNode());
+  }
+  function div_binding($$value) {
     binding_callbacks[$$value ? "unshift" : "push"](() => {
       pallette = $$value;
       $$invalidate(1, pallette);
@@ -1184,16 +1577,16 @@ function instance$8($$self, $$props, $$invalidate) {
   }
   $$self.$$set = ($$props2) => {
     if ("children" in $$props2)
-      $$invalidate(3, children2 = $$props2.children);
+      $$invalidate(4, children2 = $$props2.children);
     if ("scale" in $$props2)
       $$invalidate(0, scale2 = $$props2.scale);
   };
-  return [scale2, pallette, newContainer, children2, div1_binding];
+  return [scale2, pallette, newContainer, onDropped, children2, div_binding];
 }
 class Menu extends SvelteComponent {
   constructor(options) {
     super();
-    init(this, options, instance$8, create_fragment$8, safe_not_equal, { children: 3, scale: 0 });
+    init(this, options, instance$8, create_fragment$8, safe_not_equal, { children: 4, scale: 0 });
   }
 }
 const Gripper_svelte_svelte_type_style_lang = "";
@@ -2449,7 +2842,7 @@ function create_if_block$3(ctx) {
   let mounted;
   let dispose;
   function editabletext_value_binding(value) {
-    ctx[11](value);
+    ctx[12](value);
   }
   let editabletext_props = {};
   if (ctx[0].name !== void 0) {
@@ -2458,7 +2851,7 @@ function create_if_block$3(ctx) {
   editabletext = new EditableText({ props: editabletext_props });
   binding_callbacks.push(() => bind(editabletext, "value", editabletext_value_binding));
   function switch_instance_props_binding(value) {
-    ctx[12](value);
+    ctx[13](value);
   }
   var switch_value = ctx[0].component;
   function switch_props(ctx2) {
@@ -2529,7 +2922,7 @@ function create_if_block$3(ctx) {
       set_style(div1, "height", ((_d = (_c = ctx[0]) == null ? void 0 : _c.style) == null ? void 0 : _d.height) + "px");
       set_style(div1, "font-size", fontSize);
       set_style(div1, "background-color", ((_f = (_e = ctx[0]) == null ? void 0 : _e.style) == null ? void 0 : _f.backgroundColor) || "#fee9004b");
-      add_render_callback(() => ctx[17].call(div1));
+      add_render_callback(() => ctx[18].call(div1));
     },
     m(target, anchor) {
       insert_hydration(target, div1, anchor);
@@ -2544,8 +2937,8 @@ function create_if_block$3(ctx) {
       append_hydration(div1, t2);
       if (if_block1)
         if_block1.m(div1, null);
-      ctx[16](div1);
-      div1_resize_listener = add_resize_listener(div1, ctx[17].bind(div1));
+      ctx[17](div1);
+      div1_resize_listener = add_resize_listener(div1, ctx[18].bind(div1));
       insert_hydration(target, t3, anchor);
       if (if_block2)
         if_block2.m(target, anchor);
@@ -2555,10 +2948,14 @@ function create_if_block$3(ctx) {
         dispose = [
           action_destroyer(clickOutside_action = clickOutside.call(null, div1, {
             enabled: ctx[7],
-            handleUnselect: ctx[9]
+            handleUnselect: ctx[10]
           })),
-          listen(div1, "focusout", ctx[9]),
-          listen(div1, "dragstart", handleDragStart)
+          listen(div1, "focusout", ctx[10]),
+          listen(div1, "dragstart", handleDragStart),
+          action_destroyer(asDropZone.call(null, div1, {
+            TypesToAccept: { "item/plain": "copy" },
+            onDrop: ctx[9]
+          }))
         ];
         mounted = true;
       }
@@ -2655,7 +3052,7 @@ function create_if_block$3(ctx) {
       if (clickOutside_action && is_function(clickOutside_action.update) && dirty[0] & 128)
         clickOutside_action.update.call(null, {
           enabled: ctx2[7],
-          handleUnselect: ctx2[9]
+          handleUnselect: ctx2[10]
         });
       if (ctx2[4] && ctx2[7]) {
         if (if_block2) {
@@ -2707,7 +3104,7 @@ function create_if_block$3(ctx) {
         if_block0.d();
       if (if_block1)
         if_block1.d();
-      ctx[16](null);
+      ctx[17](null);
       div1_resize_listener();
       if (detaching)
         detach(t3);
@@ -2802,10 +3199,10 @@ function create_each_block_1(ctx) {
   let updating_isDragging;
   let current;
   function container_1_node_binding(value) {
-    ctx[13](value, ctx[35], ctx[36], ctx[37]);
+    ctx[14](value, ctx[35], ctx[36], ctx[37]);
   }
   function container_1_isDragging_binding(value) {
-    ctx[14](value);
+    ctx[15](value);
   }
   let container_1_props = {
     arenaWidth: ctx[5],
@@ -2870,7 +3267,7 @@ function create_if_block_2(ctx) {
   let updating_node;
   let current;
   function contextmenu_node_binding(value) {
-    ctx[15](value);
+    ctx[16](value);
   }
   let contextmenu_props = {};
   if (ctx[0] !== void 0) {
@@ -2998,19 +3395,19 @@ function create_each_block(ctx) {
   let updating_isDragging;
   let current;
   function resizehandle_x_binding(value) {
-    ctx[18](value);
-  }
-  function resizehandle_y_binding(value) {
     ctx[19](value);
   }
-  function resizehandle_width_binding(value) {
+  function resizehandle_y_binding(value) {
     ctx[20](value);
   }
-  function resizehandle_height_binding(value) {
+  function resizehandle_width_binding(value) {
     ctx[21](value);
   }
-  function resizehandle_isDragging_binding(value) {
+  function resizehandle_height_binding(value) {
     ctx[22](value);
+  }
+  function resizehandle_isDragging_binding(value) {
+    ctx[23](value);
   }
   let resizehandle_props = {
     maxFrameWidth,
@@ -3175,8 +3572,8 @@ function handleDragStart(e) {
 function instance$3($$self, $$props, $$invalidate) {
   let $selected;
   let $scale;
-  component_subscribe($$self, selected, ($$value) => $$invalidate(10, $selected = $$value));
-  component_subscribe($$self, scale, ($$value) => $$invalidate(24, $scale = $$value));
+  component_subscribe($$self, selected, ($$value) => $$invalidate(11, $selected = $$value));
+  component_subscribe($$self, scale, ($$value) => $$invalidate(25, $scale = $$value));
   let { node } = $$props;
   let { arenaHeight } = $$props;
   let { arenaWidth } = $$props;
@@ -3225,6 +3622,33 @@ function instance$3($$self, $$props, $$invalidate) {
     $$invalidate(0, node.y = Math.round(node.y / grid) * grid, node);
     $$invalidate(0, node.style.width = Math.round(node.style.width / grid) * grid, node);
     $$invalidate(0, node.style.height = Math.round(node.style.height / grid) * grid, node);
+  }
+  function onDrop(x, y, Operation, DataOffered, DroppableExtras, DropZoneExtras) {
+    console.log(`DropZone.onDrop:
+		 x,y:            ${x}, ${y}
+		 Operation:      ', ${Operation}
+		 DataOffered:    ', ${JSON.stringify(DataOffered)}
+		 DroppableExtras:', ${JSON.stringify(DroppableExtras, null, 2)}
+		 DropZoneExtras: ', ${DropZoneExtras}`);
+    let TypeAccepted = void 0;
+    for (let Type in DataOffered) {
+      if (DataOffered.hasOwnProperty(Type)) {
+        TypeAccepted = Type;
+      }
+    }
+    $$invalidate(
+      0,
+      node.children = [
+        ...node.children,
+        {
+          ...DroppableExtras.newContainer,
+          x: x / $scale.value,
+          y: y / $scale.value
+        }
+      ],
+      node
+    );
+    return TypeAccepted;
   }
   function assertArenaBounds() {
     if (node.x < 0) {
@@ -3327,7 +3751,7 @@ function instance$3($$self, $$props, $$invalidate) {
       if (arenaWidth || arenaHeight)
         assertArenaBounds();
     }
-    if ($$self.$$.dirty[0] & 1040) {
+    if ($$self.$$.dirty[0] & 2064) {
       if ($selected != container)
         handleUnselect();
     }
@@ -3342,6 +3766,7 @@ function instance$3($$self, $$props, $$invalidate) {
     clientHeight,
     isFocused,
     directions,
+    onDrop,
     handleUnselect,
     $selected,
     editabletext_value_binding,
@@ -3980,4 +4405,4 @@ class Page extends SvelteComponent {
 export {
   Page as default
 };
-//# sourceMappingURL=_page.svelte-a3a5e1dc.js.map
+//# sourceMappingURL=_page.svelte-5c234711.js.map
