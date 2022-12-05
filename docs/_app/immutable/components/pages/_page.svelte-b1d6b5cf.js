@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { SvelteComponent, init, safe_not_equal, element, claim_element, children, detach, attr, set_style, insert_hydration, append_hydration, noop as noop$2, component_subscribe, onMount, binding_callbacks, null_to_empty, add_render_callback, listen, action_destroyer, is_function, run_all, createEventDispatcher, tick, empty, destroy_each, text, claim_text, space, claim_space, add_resize_listener, stop_propagation, transition_in, group_outros, transition_out, check_outros, bind, create_component, claim_component, mount_component, add_flush_callback, destroy_component, svg_element, claim_svg_element, set_store_value, construct_svelte_component, set_data, globals } from "../../chunks/index-eb7e5505.js";
+import { SvelteComponent, init, safe_not_equal, element, claim_element, children, detach, attr, set_style, insert_hydration, append_hydration, noop as noop$2, component_subscribe, onMount, binding_callbacks, null_to_empty, add_render_callback, listen, action_destroyer, is_function, run_all, createEventDispatcher, tick, empty, destroy_each, text, claim_text, space, claim_space, add_resize_listener, stop_propagation, transition_in, group_outros, transition_out, check_outros, bind, create_component, claim_component, mount_component, add_flush_callback, destroy_component, svg_element, claim_svg_element, construct_svelte_component, set_store_value, set_data, globals } from "../../chunks/index-eb7e5505.js";
 import { writable } from "../../chunks/index-e8f50377.js";
 const Canvas_svelte_svelte_type_style_lang = "";
 const RangePips_svelte_svelte_type_style_lang = "";
@@ -1167,7 +1167,7 @@ function create_if_block$4(ctx) {
   current_block_type_index = select_block_type(ctx, [-1, -1]);
   if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
   function switch_instance_props_binding(value) {
-    ctx[13](value);
+    ctx[14](value);
   }
   var switch_value = ctx[0].component;
   function switch_props(ctx2) {
@@ -1217,7 +1217,11 @@ function create_if_block$4(ctx) {
         style: true
       });
       var div2_nodes = children(div2);
-      div0 = claim_element(div2_nodes, "DIV", { "data-gripper": true, style: true });
+      div0 = claim_element(div2_nodes, "DIV", {
+        "data-gripper": true,
+        "data-no-pan": true,
+        style: true
+      });
       var div0_nodes = children(div0);
       claim_component(thumbtack.$$.fragment, div0_nodes);
       t0 = claim_space(div0_nodes);
@@ -1247,14 +1251,16 @@ function create_if_block$4(ctx) {
     h() {
       var _a2, _b2, _c, _d, _e, _f;
       attr(div0, "data-gripper", "");
-      set_style(div0, "width", "15px");
-      set_style(div0, "height", "15px");
+      attr(div0, "data-no-pan", "");
+      set_style(div0, "width", "1em");
+      set_style(div0, "height", "auto");
       set_style(div0, "position", "absolute");
-      set_style(div0, "top", "-10px");
+      set_style(div0, "top", "-.1em");
       set_style(div0, "right", "0px");
-      set_style(div0, "margin", ".5em");
+      set_style(div0, "margin", ".1em");
+      set_style(div0, "padding", ".1em");
       set_style(div0, "color", "grey");
-      set_style(div0, "filter", "drop-shadow(0 10px 0.75rem white)");
+      set_style(div0, "filter", "drop-shadow(0 10px 0.75em white)");
       attr(div1, "class", "title svelte-1bn6nfz");
       attr(div2, "class", "nodeEl svelte-1bn6nfz");
       attr(div2, "id", div2_id_value = ctx[0].id);
@@ -1266,7 +1272,7 @@ function create_if_block$4(ctx) {
       set_style(div2, "height", ((_d = (_c = ctx[0]) == null ? void 0 : _c.style) == null ? void 0 : _d.height) + "px");
       set_style(div2, "font-size", fontSize);
       set_style(div2, "background-color", ((_f = (_e = ctx[0]) == null ? void 0 : _e.style) == null ? void 0 : _f.backgroundColor) || "#fee9004b");
-      add_render_callback(() => ctx[18].call(div2));
+      add_render_callback(() => ctx[19].call(div2));
     },
     m(target, anchor) {
       insert_hydration(target, div2, anchor);
@@ -1286,8 +1292,8 @@ function create_if_block$4(ctx) {
       append_hydration(div2, t4);
       if (if_block2)
         if_block2.m(div2, null);
-      ctx[17](div2);
-      div2_resize_listener = add_resize_listener(div2, ctx[18].bind(div2));
+      ctx[18](div2);
+      div2_resize_listener = add_resize_listener(div2, ctx[19].bind(div2));
       insert_hydration(target, t5, anchor);
       if (if_block3)
         if_block3.m(target, anchor);
@@ -1299,9 +1305,11 @@ function create_if_block$4(ctx) {
             enabled: ctx[7],
             handleUnselect: ctx[9]
           })),
-          listen(div2, "end", ctx[10]),
+          listen(div2, "end", ctx[11]),
           listen(div2, "focusout", ctx[9]),
-          listen(div2, "dragstart", handleDragStart)
+          listen(div2, "dragstart", handleDragStart),
+          listen(div2, "click", stop_propagation(ctx[10])),
+          listen(div2, "keypress", stop_propagation(ctx[10]))
         ];
         mounted = true;
       }
@@ -1472,7 +1480,7 @@ function create_if_block$4(ctx) {
         if_block1.d();
       if (if_block2)
         if_block2.d();
-      ctx[17](null);
+      ctx[18](null);
       div2_resize_listener();
       if (detaching)
         detach(t5);
@@ -1490,7 +1498,7 @@ function create_else_block(ctx) {
   let updating_value;
   let current;
   function editabletext_value_binding(value) {
-    ctx[12](value);
+    ctx[13](value);
   }
   let editabletext_props = {};
   if (ctx[0].name !== void 0) {
@@ -1640,10 +1648,10 @@ function create_each_block_1(ctx) {
   let updating_isDragging;
   let current;
   function container_node_binding(value) {
-    ctx[14](value, ctx[38], ctx[39], ctx[40]);
+    ctx[15](value, ctx[38], ctx[39], ctx[40]);
   }
   function container_isDragging_binding(value) {
-    ctx[15](value);
+    ctx[16](value);
   }
   let container_props = {
     arenaWidth: ctx[5],
@@ -1708,7 +1716,7 @@ function create_if_block_2(ctx) {
   let updating_node;
   let current;
   function contextmenu_node_binding(value) {
-    ctx[16](value);
+    ctx[17](value);
   }
   let contextmenu_props = {};
   if (ctx[0] !== void 0) {
@@ -1836,19 +1844,19 @@ function create_each_block(ctx) {
   let updating_isDragging;
   let current;
   function resizehandle_x_binding(value) {
-    ctx[19](value);
-  }
-  function resizehandle_y_binding(value) {
     ctx[20](value);
   }
-  function resizehandle_width_binding(value) {
+  function resizehandle_y_binding(value) {
     ctx[21](value);
   }
-  function resizehandle_height_binding(value) {
+  function resizehandle_width_binding(value) {
     ctx[22](value);
   }
-  function resizehandle_isDragging_binding(value) {
+  function resizehandle_height_binding(value) {
     ctx[23](value);
+  }
+  function resizehandle_isDragging_binding(value) {
+    ctx[24](value);
   }
   let resizehandle_props = {
     maxFrameWidth,
@@ -2013,8 +2021,8 @@ function handleDragStart(e) {
 function instance$4($$self, $$props, $$invalidate) {
   let $selected;
   let $scale;
-  component_subscribe($$self, selected, ($$value) => $$invalidate(11, $selected = $$value));
-  component_subscribe($$self, scale, ($$value) => $$invalidate(27, $scale = $$value));
+  component_subscribe($$self, selected, ($$value) => $$invalidate(12, $selected = $$value));
+  component_subscribe($$self, scale, ($$value) => $$invalidate(28, $scale = $$value));
   let { node } = $$props;
   let { arenaHeight } = $$props;
   let { arenaWidth } = $$props;
@@ -2036,26 +2044,25 @@ function instance$4($$self, $$props, $$invalidate) {
             console.log("single pointers on input / editable element");
             return false;
           }
+          if (pointerTracker.currentPointers.length === 1)
+            return false;
+          shiftX = pointer.clientX - nodeEl.getBoundingClientRect().left || 0;
+          shiftY = pointer.clientY - nodeEl.getBoundingClientRect().top || 0;
+          return true;
+        },
+        move: (previousPointers, changedPointers, event) => {
           if (!event.target.closest("[data-gripper]")) {
             console.log("ignore any target not the child of a [data-gripper]");
             return false;
           }
-          if (pointerTracker.currentPointers.length === 1)
-            return false;
           event.stopPropagation();
           event.preventDefault();
-          shiftX = event.clientX - nodeEl.getBoundingClientRect().left || 0;
-          shiftY = event.clientY - nodeEl.getBoundingClientRect().top || 0;
-          return true;
-        },
-        move: (previousPointers, changedPointers, event) => {
-          let dx = event.clientX - previousPointers[0].clientX;
-          let dy = event.clientY - previousPointers[0].clientY;
-          dragFrame(event.clientX, event.clientY, dx, dy);
+          let dx = changedPointers[0].clientX - previousPointers[0].clientX;
+          let dy = changedPointers[0].clientY - previousPointers[0].clientY;
+          dragFrame(changedPointers[0].clientX, changedPointers[0].clientY, dx, dy);
         },
         end: (pointer, event, cancelled) => {
           onDragEnd(pointer);
-          handleFocus();
         },
         avoidPointerEvents: true,
         eventListenerOptions: { capture: false }
@@ -2075,6 +2082,7 @@ function instance$4($$self, $$props, $$invalidate) {
     let drop = document.elementFromPoint(pointer.clientX, pointer.clientY);
     let zone = drop.closest("[data-dropzone]");
     if (zone && zone !== nodeEl && !nodeEl.contains(zone) && (zone == null ? void 0 : zone.id) !== ((_a = nodeEl.parentNode.closest("[data-dropzone]")) == null ? void 0 : _a.id)) {
+      console.log("add to new zone", pointer.clientX, zone.getBoundingClientRect().left, $scale.value, shiftX);
       zone.dispatchEvent(new CustomEvent(
         "end",
         {
@@ -2113,6 +2121,7 @@ function instance$4($$self, $$props, $$invalidate) {
     $$invalidate(7, isFocused = false);
   }
   function handleFocus(e) {
+    console.log("focus", e);
     nodeEl.focus();
     set_store_value(selected, $selected = nodeEl, $selected);
     $$invalidate(7, isFocused = true);
@@ -2207,7 +2216,7 @@ function instance$4($$self, $$props, $$invalidate) {
       if (arenaWidth || arenaHeight)
         assertArenaBounds();
     }
-    if ($$self.$$.dirty[0] & 2064) {
+    if ($$self.$$.dirty[0] & 4112) {
       if ($selected != nodeEl)
         handleUnselect();
     }
@@ -2223,6 +2232,7 @@ function instance$4($$self, $$props, $$invalidate) {
     isFocused,
     directions,
     handleUnselect,
+    handleFocus,
     handleEnd,
     $selected,
     editabletext_value_binding,
@@ -2691,7 +2701,7 @@ function createPoint() {
 }
 const MIN_SCALE = 0.01;
 class PinchZoom {
-  constructor(node, { handle } = {}) {
+  constructor(node, { panAnywhere, handle } = {}) {
     __publicField(this, "_node");
     __publicField(this, "_parentEl");
     __publicField(this, "_transform", createMatrix());
@@ -2702,12 +2712,16 @@ class PinchZoom {
     this._handle = handle;
     new MutationObserver(() => this._stageElChange()).observe(this._node, { childList: true });
     this._pointerTracker = new PointerTracker(this._parentEl, {
-      eventListenerOptions: { capture: true },
+      eventListenerOptions: {
+        capture: false
+      },
       start: (pointer, event) => {
         if (this._pointerTracker.currentPointers.length === 0 && (event.target instanceof HTMLInputElement || event.target.isContentEditable)) {
           return false;
         }
         if (this._pointerTracker.currentPointers.length === 2 || !this._parentEl)
+          return false;
+        if (event.target.closest("[data-no-pan]"))
           return false;
         if (this._pointerTracker.currentPointers.length === 1) {
           event.preventDefault();
@@ -2720,9 +2734,10 @@ class PinchZoom {
         return false;
       },
       move: (previousPointers, changedPointers, event) => {
+        console.log("move", panAnywhere);
         if (this._pointerTracker.currentPointers.length === 0)
           return;
-        if (this._pointerTracker.currentPointers.length === 1 && !(event.target == this._parentEl || event.target == node))
+        if (!panAnywhere && this._pointerTracker.currentPointers.length === 1 && !(event.target == this._parentEl || event.target == node))
           return;
         event.stopPropagation();
         this._onPointerMove(previousPointers, this._pointerTracker.currentPointers);
@@ -2894,10 +2909,13 @@ const pzoom = (node, params) => {
   node.style["touch-action"] = "none";
   node.style["user-select"] = "none";
   node.style["position"] = "absolute";
-  new PinchZoom(node, { handle: params == null ? void 0 : params.handle });
+  new PinchZoom(node, { handle: params == null ? void 0 : params.handle, panAnywhere: params == null ? void 0 : params.panAnywhere });
   return {
     update(params2) {
-      new PinchZoom(node, { handle: params2 == null ? void 0 : params2.handle });
+      new PinchZoom(node, {
+        handle: params2 == null ? void 0 : params2.handle,
+        panAnywhere: params2 == null ? void 0 : params2.panAnywhere
+      });
     },
     destroy() {
     }
@@ -2954,7 +2972,7 @@ function create_if_block$2(ctx) {
       var div1_nodes = children(div1);
       claim_component(menu.$$.fragment, div1_nodes);
       t = claim_space(div1_nodes);
-      div0 = claim_element(div1_nodes, "DIV", { class: true, style: true });
+      div0 = claim_element(div1_nodes, "DIV", { class: true });
       var div0_nodes = children(div0);
       claim_component(container.$$.fragment, div0_nodes);
       div0_nodes.forEach(detach);
@@ -2963,7 +2981,6 @@ function create_if_block$2(ctx) {
     },
     h() {
       attr(div0, "class", "zoomable flexbox svelte-ikxvuu");
-      set_style(div0, "transform", "translate(45px, 95px)");
       attr(div1, "class", "canvas svelte-ikxvuu");
       set_style(div1, "height", ctx[2] + "px");
       set_style(div1, "width", ctx[1] + "px");
@@ -2980,7 +2997,7 @@ function create_if_block$2(ctx) {
       current = true;
       if (!mounted) {
         dispose = [
-          action_destroyer(pzoom.call(null, div0)),
+          action_destroyer(pzoom.call(null, div0, { panAnywhere: true })),
           listen(div0, "change", ctx[7])
         ];
         mounted = true;
@@ -3513,4 +3530,4 @@ class Page extends SvelteComponent {
 export {
   Page as default
 };
-//# sourceMappingURL=_page.svelte-9a02504b.js.map
+//# sourceMappingURL=_page.svelte-b1d6b5cf.js.map
