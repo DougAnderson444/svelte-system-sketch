@@ -1,17 +1,21 @@
 <script>
 	import RangeSlider from 'svelte-range-slider-pips';
 	import { createNewNode } from './utils';
-	import { asDroppable } from 'svelte-drag-and-drop-actions';
 	import { safeid } from '$lib/utils';
 	import PointerTracker from '@douganderson444/pointer-tracker';
 	import { onMount } from 'svelte';
+	import Container from './Container.svelte';
 
 	export let children;
 	export let scale = 1;
+	export let arenaHeight;
+	export let arenaWidth;
 
 	let pallette;
+	let newContainer;
 
 	onMount(async () => {
+		createNode();
 		// Watch for pointers
 		const pointerTracker = new PointerTracker(pallette, {
 			start: (pointer, event) => {
@@ -28,52 +32,47 @@
 		children = children;
 	}
 
-	let newContainer = createNewNode();
+	function createNode() {
+		newContainer = createNewNode({
+			name: '+ Drag Me',
+			style: {
+				backgroundColor: '#fee9004b',
+				width: 200,
+				height: 60
+			}
+		});
+	}
 
 	function onDropped(event) {
-		console.log('dropped', event);
-		newContainer = createNewNode();
+		createNode();
 	}
 </script>
 
-<div class="pallette" bind:this={pallette}>
+<div class="pallette" bind:this={pallette} data-menu>
 	Scale {scale}
-	{#key newContainer}
-		<div
-			class="yellow"
-			use:asDroppable={{
-				Extras: { newContainer },
-				Operations: 'copy',
-				DataToOffer: { 'item/plain': '' },
-				onDropped
-			}}
-		>
-			+ Drag Me
-		</div>
-	{/key}
+	{#if arenaWidth && arenaHeight}
+		{#key newContainer}
+			<Container node={newContainer} on:drop={onDropped} {arenaWidth} {arenaHeight} />
+		{/key}
+	{/if}
 	<!-- <button on:click={handleAddGridItem}>Add Grid Item</button>
 	<button on:click={handleAddMapItem}>Add Map</button>
 	<button on:click={handleAddListItem}>Add List</button> -->
 </div>
 
 <style>
-	.yellow {
-		background-color: #fee9004b;
-		width: 10em;
-		height: auto;
+	.pallette {
+		width: 100%;
+		height: 5em;
 		line-height: 2em;
 		cursor: default;
 		text-align: center;
-		margin: 0.5em;
 		padding: 0 0.5em;
-	}
-	.pallette {
-		background: #fafafac7;
-		position: fixed;
-		/* position: absolute; */
-		bottom: 0em;
+		background: #d9d9d9c7;
+		/* position: fixed; */
+		position: absolute;
+		top: 0em;
 		box-sizing: border-box;
-		width: 99%;
 		z-index: 999;
 	}
 

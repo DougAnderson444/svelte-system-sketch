@@ -7,8 +7,7 @@
 	import { clickOutside } from './directives';
 	import EditableText from './EditableText.svelte';
 	import ContextMenu from './ContextMenu.svelte';
-
-	import { asDroppable, asDropZone } from 'svelte-drag-and-drop-actions';
+	import Thumbtack from './SVG/thumbtack.svelte';
 
 	// export let data;
 	export let node;
@@ -52,6 +51,12 @@
 					(event.target instanceof HTMLInputElement || event.target.isContentEditable)
 				) {
 					console.log('single pointers on input / editable element');
+					return false;
+				}
+
+				// ignore any target not the child of a [data-gripper]
+				if (!event.target.closest('[data-gripper]')) {
+					console.log('ignore any target not the child of a [data-gripper]');
 					return false;
 				}
 
@@ -114,7 +119,6 @@
 			!nodeEl.contains(zone) &&
 			zone?.id !== nodeEl.parentNode.closest('[data-dropzone]')?.id // also not self
 		) {
-			console.log('dropped on ', zone);
 			// add to new zone
 			zone.dispatchEvent(
 				new CustomEvent('end', {
@@ -138,27 +142,6 @@
 		node.y = Math.round(node.y / grid) * grid;
 		node.style.width = Math.round(node.style.width / grid) * grid;
 		node.style.height = Math.round(node.style.height / grid) * grid;
-	}
-
-	function onDrop(x, y, Operation, DataOffered, DroppableExtras, DropZoneExtras) {
-		console.log(`DropZone.onDrop:
-		 x,y:            ${x}, ${y}
-		 Operation:      ', ${Operation}
-		 DataOffered:    ', ${JSON.stringify(DataOffered)}
-		 DroppableExtras:', ${JSON.stringify(DroppableExtras, null, 2)}
-		 DropZoneExtras: ', ${DropZoneExtras}`);
-
-		let TypeAccepted = undefined;
-		for (let Type in DataOffered) {
-			if (DataOffered.hasOwnProperty(Type)) {
-				TypeAccepted = Type;
-			}
-		}
-		node.children = [
-			...node.children,
-			{ ...DroppableExtras.newContainer, x: x / $scale.value, y: y / $scale.value }
-		];
-		return TypeAccepted;
 	}
 
 	function assertArenaBounds() {
@@ -190,11 +173,11 @@
 	function removeNode() {
 		// remove node is from parent's children array
 		node = null; // delete node // not allowed in strict mode
+		dispatch('drop'); // trigger refresh in parent
 	}
 
 	function handleEnd(e) {
 		const n = e.detail;
-		console.log(`Node ${n.nodeData.id} got dropped into ${node.id}`, n);
 		node = {
 			...node,
 			children: [...node.children, n.nodeData]
@@ -217,16 +200,28 @@
 		on:end={handleEnd}
 		on:focusout={handleUnselect}
 		on:dragstart={handleDragStart}
-		use:asDropZone={{ TypesToAccept: { 'item/plain': 'copy' }, onDrop }}
 	>
-		<div class="title"><EditableText bind:value={node.name} /></div>
+		<div
+			data-gripper
+			style="width: 15px; height:15px; position: absolute; top:-10px; right:0px; margin:.5em; color:grey; filter: drop-shadow(0 10px 0.75rem white);"
+		>
+			<Thumbtack />
+		</div>
+		<div class="title">
+			<!-- No Editable if on Menu; check if this element is contained within a child of a parent with data-menu attribute  -->
+			{#if nodeEl?.closest('[data-menu]')}
+				{node.name}
+			{:else}
+				<EditableText bind:value={node.name} />
+			{/if}
+		</div>
+
 		<!-- x: {node.x?.toFixed(1)}px; y: {node.y.toFixed(1)}px; <br />
 		width: {node.style.width?.toFixed(1)}px; height: {node.style.height.toFixed(1)}px; -->
 		<!-- Container font-size: {nodeEl
 			? window.getComputedStyle(nodeEl)['font-size']
 			: 'Calculating size...'} -->
 		<svelte:component this={node.component} bind:props={node.props} />
-
 		{#if node?.children?.length > 0}
 			{#each node.children as child}
 				<svelte:self

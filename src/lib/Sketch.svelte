@@ -35,9 +35,19 @@
 		bind:clientWidth
 		bind:clientHeight
 	>
-		<Menu bind:scale={$scale.value} />
+		<Menu
+			bind:scale={$scale.value}
+			arenaWidth={clientWidth * 100}
+			arenaHeight={clientHeight * 100}
+		/>
 
-		<div class="zoomable flexbox" use:pzoom on:change={handleChange} bind:this={zoomable}>
+		<div
+			class="zoomable flexbox"
+			use:pzoom
+			on:change={handleChange}
+			bind:this={zoomable}
+			style="transform: translate(45px, 95px)"
+		>
 			<Container bind:node={data} arenaWidth={clientWidth * 100} arenaHeight={clientHeight * 100} />
 			<!-- <Links links={data.links} /> -->
 		</div>
@@ -51,6 +61,7 @@
 		margin: 0em;
 		overflow: hidden;
 		min-height: 800px;
+		position: relative;
 	}
 	.zoomable {
 		border-top: 1px dashed fuchsia;

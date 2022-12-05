@@ -8,6 +8,7 @@ export function safeid(n: number = 16): string {
 export default safeid;
 
 export function createNewNode(params: type) {
+	// create a new node object with params if available, if not make defaults
 	const newNode = {
 		name: 'Name',
 		id: safeid(),
@@ -22,7 +23,8 @@ export function createNewNode(params: type) {
 		},
 		// component: DragHandles,
 		props: [],
-		children: []
+		children: [],
+		...params
 	};
 
 	return newNode;
