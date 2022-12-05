@@ -2813,14 +2813,14 @@ class ContextMenu extends SvelteComponent {
 const Container_svelte_svelte_type_style_lang = "";
 function get_each_context(ctx, list, i) {
   const child_ctx = ctx.slice();
-  child_ctx[32] = list[i];
+  child_ctx[36] = list[i];
   return child_ctx;
 }
 function get_each_context_1(ctx, list, i) {
   const child_ctx = ctx.slice();
-  child_ctx[35] = list[i];
-  child_ctx[36] = list;
-  child_ctx[37] = i;
+  child_ctx[39] = list[i];
+  child_ctx[40] = list;
+  child_ctx[41] = i;
   return child_ctx;
 }
 function create_if_block$3(ctx) {
@@ -2834,6 +2834,7 @@ function create_if_block$3(ctx) {
   let updating_props;
   let t1;
   let t2;
+  let div1_id_value;
   let div1_resize_listener;
   let clickOutside_action;
   let t3;
@@ -2842,7 +2843,7 @@ function create_if_block$3(ctx) {
   let mounted;
   let dispose;
   function editabletext_value_binding(value) {
-    ctx[12](value);
+    ctx[13](value);
   }
   let editabletext_props = {};
   if (ctx[0].name !== void 0) {
@@ -2851,7 +2852,7 @@ function create_if_block$3(ctx) {
   editabletext = new EditableText({ props: editabletext_props });
   binding_callbacks.push(() => bind(editabletext, "value", editabletext_value_binding));
   function switch_instance_props_binding(value) {
-    ctx[13](value);
+    ctx[14](value);
   }
   var switch_value = ctx[0].component;
   function switch_props(ctx2) {
@@ -2889,7 +2890,12 @@ function create_if_block$3(ctx) {
       this.h();
     },
     l(nodes) {
-      div1 = claim_element(nodes, "DIV", { class: true, style: true });
+      div1 = claim_element(nodes, "DIV", {
+        class: true,
+        id: true,
+        "data-dropzone": true,
+        style: true
+      });
       var div1_nodes = children(div1);
       div0 = claim_element(div1_nodes, "DIV", { class: true });
       var div0_nodes = children(div0);
@@ -2913,8 +2919,10 @@ function create_if_block$3(ctx) {
     },
     h() {
       var _a2, _b2, _c, _d, _e, _f;
-      attr(div0, "class", "title svelte-1zt0np");
-      attr(div1, "class", "container svelte-1zt0np");
+      attr(div0, "class", "title svelte-1bn6nfz");
+      attr(div1, "class", "nodeEl svelte-1bn6nfz");
+      attr(div1, "id", div1_id_value = ctx[0].id);
+      attr(div1, "data-dropzone", "");
       set_style(div1, "position", "absolute");
       set_style(div1, "left", ctx[0].x + "px");
       set_style(div1, "top", ctx[0].y + "px");
@@ -2922,7 +2930,7 @@ function create_if_block$3(ctx) {
       set_style(div1, "height", ((_d = (_c = ctx[0]) == null ? void 0 : _c.style) == null ? void 0 : _d.height) + "px");
       set_style(div1, "font-size", fontSize);
       set_style(div1, "background-color", ((_f = (_e = ctx[0]) == null ? void 0 : _e.style) == null ? void 0 : _f.backgroundColor) || "#fee9004b");
-      add_render_callback(() => ctx[18].call(div1));
+      add_render_callback(() => ctx[19].call(div1));
     },
     m(target, anchor) {
       insert_hydration(target, div1, anchor);
@@ -2937,8 +2945,8 @@ function create_if_block$3(ctx) {
       append_hydration(div1, t2);
       if (if_block1)
         if_block1.m(div1, null);
-      ctx[17](div1);
-      div1_resize_listener = add_resize_listener(div1, ctx[18].bind(div1));
+      ctx[18](div1);
+      div1_resize_listener = add_resize_listener(div1, ctx[19].bind(div1));
       insert_hydration(target, t3, anchor);
       if (if_block2)
         if_block2.m(target, anchor);
@@ -2950,6 +2958,7 @@ function create_if_block$3(ctx) {
             enabled: ctx[7],
             handleUnselect: ctx[10]
           })),
+          listen(div1, "end", ctx[11]),
           listen(div1, "focusout", ctx[10]),
           listen(div1, "dragstart", handleDragStart),
           action_destroyer(asDropZone.call(null, div1, {
@@ -3034,6 +3043,9 @@ function create_if_block$3(ctx) {
         });
         check_outros();
       }
+      if (!current || dirty[0] & 1 && div1_id_value !== (div1_id_value = ctx2[0].id)) {
+        attr(div1, "id", div1_id_value);
+      }
       if (!current || dirty[0] & 1) {
         set_style(div1, "left", ctx2[0].x + "px");
       }
@@ -3104,7 +3116,7 @@ function create_if_block$3(ctx) {
         if_block0.d();
       if (if_block1)
         if_block1.d();
-      ctx[17](null);
+      ctx[18](null);
       div1_resize_listener();
       if (detaching)
         detach(t3);
@@ -3194,71 +3206,71 @@ function create_if_block_3(ctx) {
   };
 }
 function create_each_block_1(ctx) {
-  let container_1;
+  let container;
   let updating_node;
   let updating_isDragging;
   let current;
-  function container_1_node_binding(value) {
-    ctx[14](value, ctx[35], ctx[36], ctx[37]);
+  function container_node_binding(value) {
+    ctx[15](value, ctx[39], ctx[40], ctx[41]);
   }
-  function container_1_isDragging_binding(value) {
-    ctx[15](value);
+  function container_isDragging_binding(value) {
+    ctx[16](value);
   }
-  let container_1_props = {
+  let container_props = {
     arenaWidth: ctx[5],
     arenaHeight: ctx[6]
   };
-  if (ctx[35] !== void 0) {
-    container_1_props.node = ctx[35];
+  if (ctx[39] !== void 0) {
+    container_props.node = ctx[39];
   }
   if (ctx[1] !== void 0) {
-    container_1_props.isDragging = ctx[1];
+    container_props.isDragging = ctx[1];
   }
-  container_1 = new Container({ props: container_1_props });
-  binding_callbacks.push(() => bind(container_1, "node", container_1_node_binding));
-  binding_callbacks.push(() => bind(container_1, "isDragging", container_1_isDragging_binding));
+  container = new Container({ props: container_props });
+  binding_callbacks.push(() => bind(container, "node", container_node_binding));
+  binding_callbacks.push(() => bind(container, "isDragging", container_isDragging_binding));
   return {
     c() {
-      create_component(container_1.$$.fragment);
+      create_component(container.$$.fragment);
     },
     l(nodes) {
-      claim_component(container_1.$$.fragment, nodes);
+      claim_component(container.$$.fragment, nodes);
     },
     m(target, anchor) {
-      mount_component(container_1, target, anchor);
+      mount_component(container, target, anchor);
       current = true;
     },
     p(new_ctx, dirty) {
       ctx = new_ctx;
-      const container_1_changes = {};
+      const container_changes = {};
       if (dirty[0] & 32)
-        container_1_changes.arenaWidth = ctx[5];
+        container_changes.arenaWidth = ctx[5];
       if (dirty[0] & 64)
-        container_1_changes.arenaHeight = ctx[6];
+        container_changes.arenaHeight = ctx[6];
       if (!updating_node && dirty[0] & 1) {
         updating_node = true;
-        container_1_changes.node = ctx[35];
+        container_changes.node = ctx[39];
         add_flush_callback(() => updating_node = false);
       }
       if (!updating_isDragging && dirty[0] & 2) {
         updating_isDragging = true;
-        container_1_changes.isDragging = ctx[1];
+        container_changes.isDragging = ctx[1];
         add_flush_callback(() => updating_isDragging = false);
       }
-      container_1.$set(container_1_changes);
+      container.$set(container_changes);
     },
     i(local) {
       if (current)
         return;
-      transition_in(container_1.$$.fragment, local);
+      transition_in(container.$$.fragment, local);
       current = true;
     },
     o(local) {
-      transition_out(container_1.$$.fragment, local);
+      transition_out(container.$$.fragment, local);
       current = false;
     },
     d(detaching) {
-      destroy_component(container_1, detaching);
+      destroy_component(container, detaching);
     }
   };
 }
@@ -3267,7 +3279,7 @@ function create_if_block_2(ctx) {
   let updating_node;
   let current;
   function contextmenu_node_binding(value) {
-    ctx[16](value);
+    ctx[17](value);
   }
   let contextmenu_props = {};
   if (ctx[0] !== void 0) {
@@ -3395,19 +3407,19 @@ function create_each_block(ctx) {
   let updating_isDragging;
   let current;
   function resizehandle_x_binding(value) {
-    ctx[19](value);
-  }
-  function resizehandle_y_binding(value) {
     ctx[20](value);
   }
-  function resizehandle_width_binding(value) {
+  function resizehandle_y_binding(value) {
     ctx[21](value);
   }
-  function resizehandle_height_binding(value) {
+  function resizehandle_width_binding(value) {
     ctx[22](value);
   }
-  function resizehandle_isDragging_binding(value) {
+  function resizehandle_height_binding(value) {
     ctx[23](value);
+  }
+  function resizehandle_isDragging_binding(value) {
+    ctx[24](value);
   }
   let resizehandle_props = {
     maxFrameWidth,
@@ -3416,7 +3428,7 @@ function create_each_block(ctx) {
     arenaHeight: ctx[2],
     maxFrameHeight,
     minFrameHeight,
-    direction: ctx[32],
+    direction: ctx[36],
     grid
   };
   if (ctx[0].x !== void 0) {
@@ -3572,21 +3584,23 @@ function handleDragStart(e) {
 function instance$3($$self, $$props, $$invalidate) {
   let $selected;
   let $scale;
-  component_subscribe($$self, selected, ($$value) => $$invalidate(11, $selected = $$value));
-  component_subscribe($$self, scale, ($$value) => $$invalidate(25, $scale = $$value));
+  component_subscribe($$self, selected, ($$value) => $$invalidate(12, $selected = $$value));
+  component_subscribe($$self, scale, ($$value) => $$invalidate(28, $scale = $$value));
   let { node } = $$props;
   let { arenaHeight } = $$props;
   let { arenaWidth } = $$props;
   let { isDragging = false } = $$props;
   createEventDispatcher();
-  let container;
+  let nodeEl;
   let clientWidth, clientHeight;
   let isFocused;
   let directions = ["nw", "w", "sw", "ne", "e", "se", "n", "s"];
   let pointerTracker;
+  let shiftX;
+  let shiftY;
   onMount(async () => {
     pointerTracker = new PointerTracker$1(
-      container,
+      nodeEl,
       {
         start: (pointer, event) => {
           if (pointerTracker.currentPointers.length === 0 && (event.target instanceof HTMLInputElement || event.target.isContentEditable)) {
@@ -3597,6 +3611,8 @@ function instance$3($$self, $$props, $$invalidate) {
             return false;
           event.stopPropagation();
           event.preventDefault();
+          shiftX = event.clientX - nodeEl.getBoundingClientRect().left || 0;
+          shiftY = event.clientY - nodeEl.getBoundingClientRect().top || 0;
           return true;
         },
         move: (previousPointers, changedPointers, event) => {
@@ -3605,7 +3621,7 @@ function instance$3($$self, $$props, $$invalidate) {
           dragFrame(event.clientX, event.clientY, dx, dy);
         },
         end: (pointer, event, cancelled) => {
-          onDragEnd();
+          onDragEnd(pointer);
           handleFocus();
         }
       }
@@ -3616,8 +3632,30 @@ function instance$3($$self, $$props, $$invalidate) {
     $$invalidate(0, node.y = node.y + dy / $scale.value, node);
     assertArenaBounds();
   }
-  function onDragEnd() {
+  function onDragEnd(pointer) {
+    var _a;
     $$invalidate(1, isDragging = false);
+    $$invalidate(4, nodeEl.style.left = 0, nodeEl);
+    $$invalidate(4, nodeEl.style.top = 0, nodeEl);
+    let drop = document.elementFromPoint(pointer.clientX, pointer.clientY);
+    let zone = drop.closest("[data-dropzone]");
+    if (zone && zone !== nodeEl && !nodeEl.contains(zone) && (zone == null ? void 0 : zone.id) !== ((_a = nodeEl.parentNode.closest("[data-dropzone]")) == null ? void 0 : _a.id)) {
+      console.log("dropped on ", zone);
+      zone.dispatchEvent(new CustomEvent(
+        "end",
+        {
+          detail: {
+            nodeData: {
+              ...node,
+              x: pointer.clientX - shiftX - zone.getBoundingClientRect().left,
+              y: pointer.clientY - shiftY - zone.getBoundingClientRect().top
+            }
+          }
+        }
+      ));
+      removeNode();
+      return;
+    }
     $$invalidate(0, node.x = Math.round(node.x / grid) * grid, node);
     $$invalidate(0, node.y = Math.round(node.y / grid) * grid, node);
     $$invalidate(0, node.style.width = Math.round(node.style.width / grid) * grid, node);
@@ -3668,9 +3706,20 @@ function instance$3($$self, $$props, $$invalidate) {
     $$invalidate(7, isFocused = false);
   }
   function handleFocus(e) {
-    container.focus();
-    set_store_value(selected, $selected = container, $selected);
+    nodeEl.focus();
+    set_store_value(selected, $selected = nodeEl, $selected);
     $$invalidate(7, isFocused = true);
+  }
+  function removeNode() {
+    $$invalidate(0, node = null);
+  }
+  function handleEnd(e) {
+    const n = e.detail;
+    console.log(`Node ${n.nodeData.id} got dropped into ${node.id}`, n);
+    $$invalidate(0, node = {
+      ...node,
+      children: [...node.children, n.nodeData]
+    });
   }
   function editabletext_value_binding(value) {
     if ($$self.$$.not_equal(node.name, value)) {
@@ -3684,11 +3733,11 @@ function instance$3($$self, $$props, $$invalidate) {
       $$invalidate(0, node);
     }
   }
-  function container_1_node_binding(value, child, each_value_1, child_index) {
+  function container_node_binding(value, child, each_value_1, child_index) {
     each_value_1[child_index] = value;
     $$invalidate(0, node);
   }
-  function container_1_isDragging_binding(value) {
+  function container_isDragging_binding(value) {
     isDragging = value;
     $$invalidate(1, isDragging);
   }
@@ -3698,8 +3747,8 @@ function instance$3($$self, $$props, $$invalidate) {
   }
   function div1_binding($$value) {
     binding_callbacks[$$value ? "unshift" : "push"](() => {
-      container = $$value;
-      $$invalidate(4, container);
+      nodeEl = $$value;
+      $$invalidate(4, nodeEl);
     });
   }
   function div1_elementresize_handler() {
@@ -3751,8 +3800,8 @@ function instance$3($$self, $$props, $$invalidate) {
       if (arenaWidth || arenaHeight)
         assertArenaBounds();
     }
-    if ($$self.$$.dirty[0] & 2064) {
-      if ($selected != container)
+    if ($$self.$$.dirty[0] & 4112) {
+      if ($selected != nodeEl)
         handleUnselect();
     }
   };
@@ -3761,18 +3810,19 @@ function instance$3($$self, $$props, $$invalidate) {
     isDragging,
     arenaHeight,
     arenaWidth,
-    container,
+    nodeEl,
     clientWidth,
     clientHeight,
     isFocused,
     directions,
     onDrop,
     handleUnselect,
+    handleEnd,
     $selected,
     editabletext_value_binding,
     switch_instance_props_binding,
-    container_1_node_binding,
-    container_1_isDragging_binding,
+    container_node_binding,
+    container_isDragging_binding,
     contextmenu_node_binding,
     div1_binding,
     div1_elementresize_handler,
@@ -4405,4 +4455,4 @@ class Page extends SvelteComponent {
 export {
   Page as default
 };
-//# sourceMappingURL=_page.svelte-5c234711.js.map
+//# sourceMappingURL=_page.svelte-eca95286.js.map
