@@ -34,10 +34,10 @@
 
 	function createNode() {
 		newContainer = createNewNode({
-			name: '+ Drag Me',
+			name: 'Drag Me',
 			style: {
 				backgroundColor: '#fee9004b',
-				width: 200,
+				width: 100,
 				height: 60
 			}
 		});
