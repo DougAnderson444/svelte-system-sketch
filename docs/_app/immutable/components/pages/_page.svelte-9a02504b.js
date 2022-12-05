@@ -192,7 +192,7 @@ class PointerTracker$1 {
 const scale = writable({ value: 1 });
 const selected = writable(null);
 const ResizeHandle_svelte_svelte_type_style_lang = "";
-function create_fragment$9(ctx) {
+function create_fragment$a(ctx) {
   let div1;
   let div0;
   let div0_class_value;
@@ -434,7 +434,7 @@ function instance$8($$self, $$props, $$invalidate) {
 class ResizeHandle extends SvelteComponent {
   constructor(options) {
     super();
-    init(this, options, instance$8, create_fragment$9, safe_not_equal, {
+    init(this, options, instance$8, create_fragment$a, safe_not_equal, {
       x: 5,
       y: 6,
       width: 7,
@@ -473,7 +473,7 @@ function clickOutside(node, { enabled: initialEnabled, handleUnselect }) {
   };
 }
 const EditableText_svelte_svelte_type_style_lang = "";
-function create_fragment$8(ctx) {
+function create_fragment$9(ctx) {
   let div;
   let div_class_value;
   let clickOutside_action;
@@ -627,7 +627,7 @@ function instance$7($$self, $$props, $$invalidate) {
 class EditableText extends SvelteComponent {
   constructor(options) {
     super();
-    init(this, options, instance$7, create_fragment$8, safe_not_equal, {
+    init(this, options, instance$7, create_fragment$9, safe_not_equal, {
       value: 8,
       type: 9,
       placeholder: 10,
@@ -749,7 +749,7 @@ function create_each_block$1(ctx) {
     }
   };
 }
-function create_fragment$7(ctx) {
+function create_fragment$8(ctx) {
   let main;
   let if_block = ctx[0] && colors && create_if_block$6(ctx);
   return {
@@ -811,7 +811,7 @@ function instance$6($$self, $$props, $$invalidate) {
 class ColorPicker extends SvelteComponent {
   constructor(options) {
     super();
-    init(this, options, instance$6, create_fragment$7, safe_not_equal, { backgroundColor: 0 });
+    init(this, options, instance$6, create_fragment$8, safe_not_equal, { backgroundColor: 0 });
   }
 }
 const ContextMenu_svelte_svelte_type_style_lang = "";
@@ -863,7 +863,7 @@ function create_if_block$5(ctx) {
     }
   };
 }
-function create_fragment$6(ctx) {
+function create_fragment$7(ctx) {
   var _a, _b;
   let div;
   let t0;
@@ -1013,10 +1013,10 @@ function instance$5($$self, $$props, $$invalidate) {
 class ContextMenu extends SvelteComponent {
   constructor(options) {
     super();
-    init(this, options, instance$5, create_fragment$6, safe_not_equal, { node: 0 });
+    init(this, options, instance$5, create_fragment$7, safe_not_equal, { node: 0 });
   }
 }
-function create_fragment$5(ctx) {
+function create_fragment$6(ctx) {
   let svg;
   let path;
   return {
@@ -1061,6 +1061,54 @@ function create_fragment$5(ctx) {
 class Thumbtack extends SvelteComponent {
   constructor(options) {
     super();
+    init(this, options, null, create_fragment$6, safe_not_equal, {});
+  }
+}
+function create_fragment$5(ctx) {
+  let svg;
+  let path;
+  return {
+    c() {
+      svg = svg_element("svg");
+      path = svg_element("path");
+      this.h();
+    },
+    l(nodes) {
+      svg = claim_svg_element(nodes, "svg", {
+        xmlns: true,
+        viewBox: true,
+        stroke: true,
+        fill: true
+      });
+      var svg_nodes = children(svg);
+      path = claim_svg_element(svg_nodes, "path", { d: true });
+      children(path).forEach(detach);
+      svg_nodes.forEach(detach);
+      this.h();
+    },
+    h() {
+      attr(path, "d", "M384 96v128H256V96h128zm0 192v128H256V288h128zm-192-64H64V96h128v128zM64 288h128v128H64V288zm0-256C29 32 0 61 0 96v320c0 35 29 64 64 64h320c35 0 64-29 64-64V96c0-35-29-64-64-64H64z");
+      attr(svg, "xmlns", "http://www.w3.org/2000/svg");
+      attr(svg, "viewBox", "0 0 448 512");
+      attr(svg, "stroke", "currentColor");
+      attr(svg, "fill", "currentColor");
+    },
+    m(target, anchor) {
+      insert_hydration(target, svg, anchor);
+      append_hydration(svg, path);
+    },
+    p: noop$2,
+    i: noop$2,
+    o: noop$2,
+    d(detaching) {
+      if (detaching)
+        detach(svg);
+    }
+  };
+}
+class Grid extends SvelteComponent {
+  constructor(options) {
+    super();
     init(this, options, null, create_fragment$5, safe_not_equal, {});
   }
 }
@@ -1083,24 +1131,27 @@ function create_if_block$4(ctx) {
   let div0;
   let thumbtack;
   let t0;
+  let grid_1;
+  let t1;
   let div1;
   let show_if;
   let current_block_type_index;
   let if_block0;
-  let t1;
+  let t2;
   let switch_instance;
   let updating_props;
-  let t2;
   let t3;
+  let t4;
   let div2_id_value;
   let div2_resize_listener;
   let clickOutside_action;
-  let t4;
+  let t5;
   let if_block3_anchor;
   let current;
   let mounted;
   let dispose;
   thumbtack = new Thumbtack({});
+  grid_1 = new Grid({});
   const if_block_creators = [create_if_block_4, create_else_block];
   const if_blocks = [];
   function select_block_type(ctx2, dirty) {
@@ -1139,18 +1190,20 @@ function create_if_block$4(ctx) {
       div0 = element("div");
       create_component(thumbtack.$$.fragment);
       t0 = space();
+      create_component(grid_1.$$.fragment);
+      t1 = space();
       div1 = element("div");
       if_block0.c();
-      t1 = space();
+      t2 = space();
       if (switch_instance)
         create_component(switch_instance.$$.fragment);
-      t2 = space();
+      t3 = space();
       if (if_block1)
         if_block1.c();
-      t3 = space();
+      t4 = space();
       if (if_block2)
         if_block2.c();
-      t4 = space();
+      t5 = space();
       if (if_block3)
         if_block3.c();
       if_block3_anchor = empty();
@@ -1167,23 +1220,25 @@ function create_if_block$4(ctx) {
       div0 = claim_element(div2_nodes, "DIV", { "data-gripper": true, style: true });
       var div0_nodes = children(div0);
       claim_component(thumbtack.$$.fragment, div0_nodes);
+      t0 = claim_space(div0_nodes);
+      claim_component(grid_1.$$.fragment, div0_nodes);
       div0_nodes.forEach(detach);
-      t0 = claim_space(div2_nodes);
+      t1 = claim_space(div2_nodes);
       div1 = claim_element(div2_nodes, "DIV", { class: true });
       var div1_nodes = children(div1);
       if_block0.l(div1_nodes);
       div1_nodes.forEach(detach);
-      t1 = claim_space(div2_nodes);
+      t2 = claim_space(div2_nodes);
       if (switch_instance)
         claim_component(switch_instance.$$.fragment, div2_nodes);
-      t2 = claim_space(div2_nodes);
+      t3 = claim_space(div2_nodes);
       if (if_block1)
         if_block1.l(div2_nodes);
-      t3 = claim_space(div2_nodes);
+      t4 = claim_space(div2_nodes);
       if (if_block2)
         if_block2.l(div2_nodes);
       div2_nodes.forEach(detach);
-      t4 = claim_space(nodes);
+      t5 = claim_space(nodes);
       if (if_block3)
         if_block3.l(nodes);
       if_block3_anchor = empty();
@@ -1217,21 +1272,23 @@ function create_if_block$4(ctx) {
       insert_hydration(target, div2, anchor);
       append_hydration(div2, div0);
       mount_component(thumbtack, div0, null);
-      append_hydration(div2, t0);
+      append_hydration(div0, t0);
+      mount_component(grid_1, div0, null);
+      append_hydration(div2, t1);
       append_hydration(div2, div1);
       if_blocks[current_block_type_index].m(div1, null);
-      append_hydration(div2, t1);
+      append_hydration(div2, t2);
       if (switch_instance)
         mount_component(switch_instance, div2, null);
-      append_hydration(div2, t2);
+      append_hydration(div2, t3);
       if (if_block1)
         if_block1.m(div2, null);
-      append_hydration(div2, t3);
+      append_hydration(div2, t4);
       if (if_block2)
         if_block2.m(div2, null);
       ctx[17](div2);
       div2_resize_listener = add_resize_listener(div2, ctx[18].bind(div2));
-      insert_hydration(target, t4, anchor);
+      insert_hydration(target, t5, anchor);
       if (if_block3)
         if_block3.m(target, anchor);
       insert_hydration(target, if_block3_anchor, anchor);
@@ -1291,7 +1348,7 @@ function create_if_block$4(ctx) {
           binding_callbacks.push(() => bind(switch_instance, "props", switch_instance_props_binding));
           create_component(switch_instance.$$.fragment);
           transition_in(switch_instance.$$.fragment, 1);
-          mount_component(switch_instance, div2, t2);
+          mount_component(switch_instance, div2, t3);
         } else {
           switch_instance = null;
         }
@@ -1308,7 +1365,7 @@ function create_if_block$4(ctx) {
           if_block1 = create_if_block_3(ctx2);
           if_block1.c();
           transition_in(if_block1, 1);
-          if_block1.m(div2, t3);
+          if_block1.m(div2, t4);
         }
       } else if (if_block1) {
         group_outros();
@@ -1383,6 +1440,7 @@ function create_if_block$4(ctx) {
       if (current)
         return;
       transition_in(thumbtack.$$.fragment, local);
+      transition_in(grid_1.$$.fragment, local);
       transition_in(if_block0);
       if (switch_instance)
         transition_in(switch_instance.$$.fragment, local);
@@ -1393,6 +1451,7 @@ function create_if_block$4(ctx) {
     },
     o(local) {
       transition_out(thumbtack.$$.fragment, local);
+      transition_out(grid_1.$$.fragment, local);
       transition_out(if_block0);
       if (switch_instance)
         transition_out(switch_instance.$$.fragment, local);
@@ -1405,6 +1464,7 @@ function create_if_block$4(ctx) {
       if (detaching)
         detach(div2);
       destroy_component(thumbtack);
+      destroy_component(grid_1);
       if_blocks[current_block_type_index].d();
       if (switch_instance)
         destroy_component(switch_instance);
@@ -1415,7 +1475,7 @@ function create_if_block$4(ctx) {
       ctx[17](null);
       div2_resize_listener();
       if (detaching)
-        detach(t4);
+        detach(t5);
       if (if_block3)
         if_block3.d(detaching);
       if (detaching)
@@ -1996,13 +2056,15 @@ function instance$4($$self, $$props, $$invalidate) {
         end: (pointer, event, cancelled) => {
           onDragEnd(pointer);
           handleFocus();
-        }
+        },
+        avoidPointerEvents: true,
+        eventListenerOptions: { capture: false }
       }
     );
   });
   function dragFrame(_x, _y, dx, dy) {
-    $$invalidate(0, node.x = node.x + dx / $scale.value, node);
-    $$invalidate(0, node.y = node.y + dy / $scale.value, node);
+    $$invalidate(0, node.x = node.x + dx / ((nodeEl == null ? void 0 : nodeEl.closest("[data-menu]")) ? 1 : $scale.value), node);
+    $$invalidate(0, node.y = node.y + dy / ((nodeEl == null ? void 0 : nodeEl.closest("[data-menu]")) ? 1 : $scale.value), node);
     assertArenaBounds();
   }
   function onDragEnd(pointer) {
@@ -2019,8 +2081,8 @@ function instance$4($$self, $$props, $$invalidate) {
           detail: {
             nodeData: {
               ...node,
-              x: pointer.clientX - shiftX - zone.getBoundingClientRect().left,
-              y: pointer.clientY - shiftY - zone.getBoundingClientRect().top
+              x: (pointer.clientX - zone.getBoundingClientRect().left) / $scale.value - shiftX,
+              y: (pointer.clientY - zone.getBoundingClientRect().top) / $scale.value - shiftY
             }
           }
         }
@@ -2398,10 +2460,10 @@ function instance$3($$self, $$props, $$invalidate) {
   });
   function createNode() {
     $$invalidate(4, newContainer = createNewNode({
-      name: "+ Drag Me",
+      name: "Drag Me",
       style: {
         backgroundColor: "#fee9004b",
-        width: 200,
+        width: 100,
         height: 60
       }
     }));
@@ -3451,4 +3513,4 @@ class Page extends SvelteComponent {
 export {
   Page as default
 };
-//# sourceMappingURL=_page.svelte-3424e974.js.map
+//# sourceMappingURL=_page.svelte-9a02504b.js.map

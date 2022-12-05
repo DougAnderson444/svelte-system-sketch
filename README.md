@@ -6,7 +6,9 @@ WIP. Drag and drop projects notes and whatnot and save them to Web3.
 - [x] Drag to pan
 - [x] Pinch-to-Zoom
 - [x] Nested sizes (gets smaller as you nest)
-- [ ] Add new notes
+- [x] Drah and drop new notes
+- [x] Resize
+- [x] Drag using pushpin
 - [ ] Auto Layout option
 - [ ] Add markdown text
 - [ ] Add web components
