@@ -41,24 +41,7 @@
 				},
 				// component: DragHandles,
 				props: [],
-				children: [
-					{
-						name: 'Child A',
-						id: safeid(),
-						x: 20,
-						y: 80,
-						style: {
-							backgroundColor: colors[randomColor()],
-							width: 120,
-							height: 120,
-							left: 20,
-							top: 20
-						},
-						// component: DragHandles,
-						props: [],
-						children: []
-					}
-				]
+				children: []
 			},
 			{
 				name: 'Child 2',
@@ -93,107 +76,8 @@
 				props: [],
 				children: []
 			}
-
-			// {
-			// 	name: 'List 2',
-			// 	component: Resizable,
-			// 	x: 0,
-			// 	y: 0,
-			// 	props: [
-			// 		{
-			// 			id: safeid(),
-			// 			text: 'Item A'
-			// 		},
-			// 		{
-			// 			id: safeid(),
-			// 			text: 'Item B'
-			// 		},
-			// 		{
-			// 			id: safeid(),
-			// 			text: 'Item C'
-			// 		}
-			// 	]
-			// },
-			// {
-			// 	name: 'List 3',
-			// 	component: Draggable,
-			// 	props: [
-			// 		{
-			// 			id: safeid(),
-			// 			text: 'Item A'
-			// 		},
-			// 		{
-			// 			id: safeid(),
-			// 			text: 'Item B'
-			// 		},
-			// 		{
-			// 			id: safeid(),
-			// 			text: 'Item C'
-			// 		}
-			// 	]
-			// },
-			// {
-			// 	name: 'StickyNote',
-			// 	component: StickyNote,
-			// 	x: 0,
-			// 	y: 0,
-			// 	props: [
-			// 		{
-			// 			id: safeid(),
-			// 			text: 'Item A'
-			// 		},
-			// 		{
-			// 			id: safeid(),
-			// 			text: 'Item B'
-			// 		},
-			// 		{
-			// 			id: safeid(),
-			// 			text: 'Item C'
-			// 		}
-			// 	]
-			// }
 		]
 	};
-
-	// let data = {
-	// 	id: safeid(),
-	// 	name: 'Dashboard',
-	// 	component: Dash,
-	// 	props: { name: 'world' },
-	// 	color: rectColor(),
-	// 	children: [
-	// 		{
-	// 			id: safeid(),
-	// 			name: 'List 1',
-	// 			color: rectColor(),
-	// 			x: 1,
-	// 			y: 1,
-	// 			component: DragHandles,
-	// 			props: {
-	// 				items: [
-	// 					{ id: safeid(), name: 'A', color: rectColor(), children: [] },
-	// 					{ id: safeid(), name: 'B', color: rectColor(), children: [] }
-	// 				]
-	// 			},
-	// 			children: []
-	// 		},
-	// 		{
-	// 			id: safeid(),
-	// 			name: 'List 2',
-	// 			color: rectColor(),
-	// 			x: 200,
-	// 			y: 0,
-	// 			component: DragHandles,
-	// 			props: {
-	// 				items: [
-	// 					{ id: safeid(), name: 'C', color: rectColor(), children: [] },
-	// 					{ id: safeid(), name: 'D', color: rectColor(), children: [] }
-	// 				]
-	// 			}
-	// 		}
-	// 	],
-	// 	links: []
-	// };
 
 	let vh;
 
