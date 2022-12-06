@@ -7,7 +7,6 @@
 	export let value = '';
 	export let labelClasses = '';
 
-	let offsetWidth;
 	let editing = false;
 	let inputEl;
 	let label = value; // init
