@@ -9,6 +9,7 @@
 	import ContextMenu from './ContextMenu.svelte';
 	import Thumbtack from './SVG/thumbtack.svelte';
 	import Grid from './SVG/grid.svelte';
+	import { fillWidth } from '@douganderson444/fill-width';
 
 	// export let data;
 	export let node;
@@ -22,7 +23,7 @@
 	$: if (arenaWidth || arenaHeight) assertArenaBounds();
 
 	let nodeEl;
-	let clientWidth, clientHeight;
+	let offsetWidth, offsetHeight;
 
 	let grid = 20;
 	let minFrameWidth = 40;
@@ -41,61 +42,55 @@
 
 	onMount(async () => {
 		// Watch for pointers
-		pointerTracker = new PointerTracker(nodeEl, {
-			start: (pointer, event) => {
-				console.log('container start', pointer, event);
-				// ignore single pointers on input / editable elements
-				if (
-					pointerTracker.currentPointers.length === 0 &&
+		if (nodeEl)
+			pointerTracker = new PointerTracker(nodeEl, {
+				start: (pointer, event) => {
+					// ignore single pointers on input / editable elements
+					if (
+						pointerTracker.currentPointers.length === 0 &&
+						// @ts-ignore
+						(event.target instanceof HTMLInputElement || event.target.isContentEditable)
+					) {
+						// console.log('single pointers on input / editable element', event.target);
+						return false;
+					}
+
+					// We only want to track 1 pointers at most (zooming is handled by pzoom for us)
+					// if there already exists 1 pointer, and now this would have been the 2nd pointer, stop here
+					if (pointerTracker.currentPointers.length === 1) return false;
+
+					// ignore any target not the child of a [data-gripper]
+					if (!event.target?.closest('[data-gripper]')) return false;
+
+					event.stopPropagation(); // otherwise it will move the other containers too
+					event.preventDefault();
+
+					// capture the inital pointer offset within the event target
+					shiftX = pointer.clientX - nodeEl.getBoundingClientRect().left || 0;
+					shiftY = pointer.clientY - nodeEl.getBoundingClientRect().top || 0;
+
+					return true;
+				},
+				move: (previousPointers, changedPointers, event) => {
+					event.stopPropagation(); // otherwise it will move the other containers too
+					event.preventDefault();
 					// @ts-ignore
-					(event.target instanceof HTMLInputElement || event.target.isContentEditable)
-				) {
-					// console.log('single pointers on input / editable element', event.target);
-					return false;
+					let dx = changedPointers[0].clientX - previousPointers[0].clientX;
+					// @ts-ignore
+					let dy = changedPointers[0].clientY - previousPointers[0].clientY;
+					// @ts-ignore
+					dragFrame(changedPointers[0].clientX, changedPointers[0].clientY, dx, dy);
+				},
+				end: (pointer, event, cancelled) => {
+					onDragEnd(pointer);
+					handleFocus(event);
+				},
+				avoidPointerEvents: true,
+				eventListenerOptions: {
+					capture: false,
+					passive: true
 				}
-
-				// We only want to track 1 pointers at most (zooming is handled by pzoom for us)
-				// if there already exists 1 pointer, and now this would have been the 2nd pointer, stop here
-				if (pointerTracker.currentPointers.length === 1) return false;
-
-				// ignore any target not the child of a [data-gripper]
-				console.log('GRIPPER container start', event.target?.closest('[data-gripper]'));
-				if (!event.target?.closest('[data-gripper]')) {
-					return false;
-				} else {
-					console.log('GRIPPER container start', pointer, event);
-				}
-
-				event.stopPropagation(); // otherwise it will move the other containers too
-				event.preventDefault();
-
-				// capture the inital pointer offset within the event target
-				shiftX = pointer.clientX - nodeEl.getBoundingClientRect().left || 0;
-				shiftY = pointer.clientY - nodeEl.getBoundingClientRect().top || 0;
-				console.log('container continued', pointer, event);
-
-				return true;
-			},
-			move: (previousPointers, changedPointers, event) => {
-				console.log('container move', { nodeEl }, previousPointers, changedPointers, event);
-				event.stopPropagation(); // otherwise it will move the other containers too
-				event.preventDefault();
-				// @ts-ignore
-				let dx = changedPointers[0].clientX - previousPointers[0].clientX;
-				// @ts-ignore
-				let dy = changedPointers[0].clientY - previousPointers[0].clientY;
-				// @ts-ignore
-				dragFrame(changedPointers[0].clientX, changedPointers[0].clientY, dx, dy);
-			},
-			end: (pointer, event, cancelled) => {
-				onDragEnd(pointer);
-				handleFocus(event);
-			},
-			avoidPointerEvents: true,
-			eventListenerOptions: {
-				capture: false
-			}
-		});
+			});
 	});
 
 	function dragFrame(_x, _y, dx, dy) {
@@ -157,6 +152,7 @@
 	}
 
 	function assertArenaBounds() {
+		if (!node || !node?.x || !node?.y || !node?.style?.width || !node?.style?.height) return;
 		if (node.x < 0) {
 			node.x = 0;
 		}
@@ -178,7 +174,6 @@
 		isFocused = false;
 	}
 	function handleFocus(e) {
-		console.log('focus', e);
 		nodeEl.focus();
 		$selected = nodeEl;
 		isFocused = true;
@@ -204,8 +199,8 @@
 		id={node.id}
 		data-dropzone
 		bind:this={nodeEl}
-		bind:clientWidth
-		bind:clientHeight
+		bind:offsetWidth
+		bind:offsetHeight
 		style="position: absolute; left:{node.x}px; top:{node.y}px; width:{node?.style
 			?.width}px; height:{node?.style?.height}px; font-size: {fontSize};
 		background-color: {node?.style?.backgroundColor || '#fee9004b'}"
@@ -218,33 +213,31 @@
 		<div
 			data-gripper
 			data-no-pan
-			style="width: 2em; height:auto; position: absolute; top:-.1em; right:0px; margin:1em; padding:.1em; color:grey; filter: drop-shadow(0 10px 0.75em white);"
+			style="width: 1em; height:auto; position: absolute; top:-1.5em; right:-1.5em; margin:2em; padding:.1em; color:grey; filter: drop-shadow(0 10px 0.75em white);"
 		>
 			<Thumbtack />
-			<Grid />
-		</div>
-		<div class="title">
-			<!-- No Editable if on Menu; check if this element is contained within a child of a parent with data-menu attribute  -->
-			{#if nodeEl?.closest('[data-menu]')}
-				{node.name}
-			{:else}
-				<EditableText bind:value={node.name} />
+			{#if !nodeEl?.closest('[data-menu]')}
+				<Grid />
 			{/if}
-			<!-- {node.x?.toFixed(0)} x {node.y.toFixed(0)}<br />Scale: {$scale.value.toFixed(1)} -->
 		</div>
+		<!-- No Editable if on Menu; check if this element is contained within a child of a parent with data-menu attribute  -->
+		{#if nodeEl?.closest('[data-menu]')}
+			<div class="title">
+				{node.name}
+			</div>
+		{:else}
+			<div class="title" use:fillWidth={{ width: offsetWidth }}>
+				<EditableText bind:value={node.name} />
+			</div>
+		{/if}
 
-		<!-- x: {node.x?.toFixed(1)}px; y: {node.y.toFixed(1)}px; <br />
-		width: {node.style.width?.toFixed(1)}px; height: {node.style.height.toFixed(1)}px; -->
-		<!-- Container font-size: {nodeEl
-			? window.getComputedStyle(nodeEl)['font-size']
-			: 'Calculating size...'} -->
 		<svelte:component this={node.component} bind:props={node.props} />
 		{#if node?.children?.length > 0}
 			{#each node.children as child}
 				<svelte:self
 					bind:node={child}
-					arenaWidth={clientWidth}
-					arenaHeight={clientHeight}
+					arenaWidth={offsetWidth}
+					arenaHeight={offsetHeight}
 					bind:isDragging
 				/>
 			{/each}
@@ -285,7 +278,7 @@
 	.title {
 		width: 80%;
 		height: auto;
-		font-size: 1em;
+		/* font-size: 1em; */
 		/* font-family: 'Luckiest Guy', cursive; */
 		font-family: 'Permanent Marker', cursive;
 	}
