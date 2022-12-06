@@ -5,8 +5,6 @@
 
 	// Props
 	export let value = '';
-	export let type = 'text';
-	export let placeholder = '';
 	export let labelClasses = '';
 
 	let offsetWidth;

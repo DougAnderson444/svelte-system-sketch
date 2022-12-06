@@ -43,21 +43,14 @@
 		// Watch for pointers
 		pointerTracker = new PointerTracker(nodeEl, {
 			start: (pointer, event) => {
-				// console.log('Container click', node.name);
-
+				console.log('container start', pointer, event);
 				// ignore single pointers on input / editable elements
 				if (
 					pointerTracker.currentPointers.length === 0 &&
 					// @ts-ignore
 					(event.target instanceof HTMLInputElement || event.target.isContentEditable)
 				) {
-					console.log('single pointers on input / editable element');
-					return false;
-				}
-
-				// ignore any target not the child of a [data-gripper]
-				if (!event.target.closest('[data-gripper]')) {
-					console.log('ignore any target not the child of a [data-gripper]');
+					// console.log('single pointers on input / editable element', event.target);
 					return false;
 				}
 
@@ -65,41 +58,46 @@
 				// if there already exists 1 pointer, and now this would have been the 2nd pointer, stop here
 				if (pointerTracker.currentPointers.length === 1) return false;
 
+				// ignore any target not the child of a [data-gripper]
+				console.log('GRIPPER container start', event.target?.closest('[data-gripper]'));
+				if (!event.target?.closest('[data-gripper]')) {
+					return false;
+				} else {
+					console.log('GRIPPER container start', pointer, event);
+				}
+
 				event.stopPropagation(); // otherwise it will move the other containers too
 				event.preventDefault();
 
 				// capture the inital pointer offset within the event target
-				shiftX = event.clientX - nodeEl.getBoundingClientRect().left || 0;
-				shiftY = event.clientY - nodeEl.getBoundingClientRect().top || 0;
+				shiftX = pointer.clientX - nodeEl.getBoundingClientRect().left || 0;
+				shiftY = pointer.clientY - nodeEl.getBoundingClientRect().top || 0;
+				console.log('container continued', pointer, event);
 
 				return true;
 			},
 			move: (previousPointers, changedPointers, event) => {
+				console.log('container move', { nodeEl }, previousPointers, changedPointers, event);
+				event.stopPropagation(); // otherwise it will move the other containers too
+				event.preventDefault();
 				// @ts-ignore
-				let dx = event.clientX - previousPointers[0].clientX;
+				let dx = changedPointers[0].clientX - previousPointers[0].clientX;
 				// @ts-ignore
-				let dy = event.clientY - previousPointers[0].clientY;
+				let dy = changedPointers[0].clientY - previousPointers[0].clientY;
 				// @ts-ignore
-				dragFrame(event.clientX, event.clientY, dx, dy);
+				dragFrame(changedPointers[0].clientX, changedPointers[0].clientY, dx, dy);
 			},
 			end: (pointer, event, cancelled) => {
 				onDragEnd(pointer);
 				handleFocus(event);
 			},
 			avoidPointerEvents: true,
-			eventListenerOptions: { capture: false }
+			eventListenerOptions: {
+				capture: false
+			}
 		});
 	});
 
-	/**** event handling ***/
-	function handleDragStart(e) {
-		console.log('Drag started');
-		e.preventDefault();
-	}
-
-	function onDragStart() {
-		return { x: node.x, y: node.y };
-	}
 	function dragFrame(_x, _y, dx, dy) {
 		// if dragged from the menu, use scale = 1
 		node.x = node.x + dx / (nodeEl?.closest('[data-menu]') ? 1 : $scale.value);
@@ -124,6 +122,16 @@
 			zone?.id !== nodeEl.parentNode.closest('[data-dropzone]')?.id // also not self
 		) {
 			// add to new zone
+			console.log(
+				'add to new zone',
+				pointer.clientX,
+				zone.getBoundingClientRect().left,
+				$scale.value,
+				shiftX
+			);
+			// add to new zone 164 138.5 1 84.609375
+			// add to new zone 167 138.5 1 0
+
 			zone.dispatchEvent(
 				new CustomEvent('end', {
 					detail: {
@@ -170,6 +178,7 @@
 		isFocused = false;
 	}
 	function handleFocus(e) {
+		console.log('focus', e);
 		nodeEl.focus();
 		$selected = nodeEl;
 		isFocused = true;
@@ -203,11 +212,13 @@
 		use:clickOutside={{ enabled: isFocused, handleUnselect }}
 		on:end={handleEnd}
 		on:focusout={handleUnselect}
-		on:dragstart={handleDragStart}
+		on:click|stopPropagation={handleFocus}
+		on:keypress|stopPropagation={handleFocus}
 	>
 		<div
 			data-gripper
-			style="width: 15px; height:15px; position: absolute; top:-10px; right:0px; margin:.5em; color:grey; filter: drop-shadow(0 10px 0.75rem white);"
+			data-no-pan
+			style="width: 2em; height:auto; position: absolute; top:-.1em; right:0px; margin:1em; padding:.1em; color:grey; filter: drop-shadow(0 10px 0.75em white);"
 		>
 			<Thumbtack />
 			<Grid />
@@ -219,6 +230,7 @@
 			{:else}
 				<EditableText bind:value={node.name} />
 			{/if}
+			<!-- {node.x?.toFixed(0)} x {node.y.toFixed(0)}<br />Scale: {$scale.value.toFixed(1)} -->
 		</div>
 
 		<!-- x: {node.x?.toFixed(1)}px; y: {node.y.toFixed(1)}px; <br />

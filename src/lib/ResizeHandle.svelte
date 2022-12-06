@@ -25,7 +25,7 @@
 	const isPointerEvent = (event: any): event is PointerEvent => 'pointerId' in event;
 
 	let handleEl;
-	let size = '4em';
+	let size = '5em';
 
 	$: handleWidth = handleEl ? handleEl.getClientRects()[0].height : 8;
 	$: handleHeight = handleEl ? handleEl.getClientRects()[0].width : 8;
@@ -39,6 +39,7 @@
 		// Watch for pointers
 		const pointerTracker = new PointerTracker(handleEl, {
 			start: (pointer, event) => {
+				console.log('resize handle start', pointer, event);
 				// We only want to track 2 pointers at most
 
 				if (pointerTracker.currentPointers.length === 2) return false;
@@ -159,6 +160,7 @@
 </script>
 
 <div
+	data-no-pan
 	bind:this={handleEl}
 	class="resize-handle {direction}"
 	style="--size: {size}; left:{left}px; top:{top}px; cursor: {cursor};"

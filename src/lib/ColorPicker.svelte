@@ -6,14 +6,14 @@
 <main>
 	{#if backgroundColor && colors}
 		{#each colors as color, c}
-			<div
+			<button
 				class="colorOption"
 				on:click={(e) => (backgroundColor = color)}
 				style="background-color: {color};"
 			>
 				<!-- I get thisstrange error when using <div/> instead of <div> </div> -->
 				&nbsp; &NonBreakingSpace;
-			</div>
+			</button>
 		{/each}
 	{/if}
 </main>

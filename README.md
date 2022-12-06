@@ -1,6 +1,6 @@
 # Svelte Systems Sketch
 
-WIP. Drag and drop projects notes and whatnot and save them to Web3.
+Drag and drop post it notes.
 
 - [x] Scroll wheel
 - [x] Drag to pan

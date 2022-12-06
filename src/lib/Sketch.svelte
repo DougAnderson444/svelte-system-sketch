@@ -1,11 +1,5 @@
 <script>
-	import Canvas from './Canvas.svelte';
 	import Menu from './Menu.svelte';
-	import Nodes from './Nodes.svelte';
-	import Links from './Links.svelte';
-	import Object from './Object.svelte';
-	import Wrapper from './Wrapper.svelte';
-
 	import { pzoom } from '@douganderson444/panzoom-node';
 	import Container from './Container.svelte';
 	import { scale } from './stores.js';
@@ -43,10 +37,9 @@
 
 		<div
 			class="zoomable flexbox"
-			use:pzoom
+			use:pzoom={{ panAnywhere: true }}
 			on:change={handleChange}
 			bind:this={zoomable}
-			style="transform: translate(45px, 95px)"
 		>
 			<Container bind:node={data} arenaWidth={clientWidth * 100} arenaHeight={clientHeight * 100} />
 			<!-- <Links links={data.links} /> -->

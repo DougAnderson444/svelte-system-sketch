@@ -26,7 +26,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@douganderson444/panzoom-node": "^1.1.4",
+		"@douganderson444/panzoom-node": "^1.1.7",
 		"@douganderson444/pointer-tracker": "github:douganderson444/pointer-tracker",
 		"@douganderson444/svelte-component-gateway": "^0.0.9",
 		"d3-force": "^3.0.0",

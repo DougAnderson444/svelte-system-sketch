@@ -31,8 +31,8 @@
 		<!-- <ColorPicker bind:backgroundColor /> -->
 		<ColorPicker bind:backgroundColor={node.style.backgroundColor} />
 	{/if}
-	<span on:click|stopPropagation={handleConnect} class="connect">↪</span>
-	<span on:click|stopPropagation={handleDelete}>🗑️</span>
+	<button on:click|stopPropagation={handleConnect} class="connect">↪</button>
+	<button on:click|stopPropagation={handleDelete}>🗑️</button>
 </div>
 
 <style>
@@ -54,8 +54,5 @@
 	.context-menu:hover,
 	.context-menu:before {
 		cursor: pointer;
-	}
-	span:before {
-		/* content: '🗑️'; */
 	}
 </style>
