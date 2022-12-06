@@ -39,7 +39,6 @@
 		// Watch for pointers
 		const pointerTracker = new PointerTracker(handleEl, {
 			start: (pointer, event) => {
-				console.log('resize handle start', pointer, event);
 				// We only want to track 2 pointers at most
 
 				if (pointerTracker.currentPointers.length === 2) return false;
