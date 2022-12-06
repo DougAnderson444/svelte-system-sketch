@@ -1,6 +1,6 @@
 {
 	"name": "svelte-system-sketch",
-	"version": "0.0.16",
+	"version": "0.0.17",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -26,6 +26,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@douganderson444/fill-width": "^0.0.2",
 		"@douganderson444/panzoom-node": "^1.1.7",
 		"@douganderson444/pointer-tracker": "github:douganderson444/pointer-tracker",
 		"@douganderson444/svelte-component-gateway": "^0.0.9",
