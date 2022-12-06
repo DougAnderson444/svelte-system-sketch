@@ -4,9 +4,8 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { SvelteComponent, init, safe_not_equal, element, claim_element, children, detach, attr, set_style, insert_hydration, append_hydration, noop as noop$2, component_subscribe, onMount, binding_callbacks, null_to_empty, add_render_callback, listen, action_destroyer, is_function, run_all, createEventDispatcher, tick, empty, destroy_each, text, claim_text, space, claim_space, add_resize_listener, stop_propagation, transition_in, group_outros, transition_out, check_outros, bind, create_component, claim_component, mount_component, add_flush_callback, destroy_component, svg_element, claim_svg_element, construct_svelte_component, set_store_value, set_data, globals } from "../../chunks/index-eb7e5505.js";
+import { SvelteComponent, init, safe_not_equal, element, claim_element, children, detach, attr, set_style, insert_hydration, append_hydration, noop as noop$2, component_subscribe, onMount, binding_callbacks, null_to_empty, add_render_callback, listen, action_destroyer, is_function, run_all, createEventDispatcher, tick, empty, destroy_each, text, claim_text, space, claim_space, add_resize_listener, stop_propagation, transition_in, group_outros, transition_out, check_outros, bind, create_component, claim_component, mount_component, add_flush_callback, destroy_component, svg_element, claim_svg_element, set_store_value, construct_svelte_component, set_data, globals } from "../../chunks/index-eb7e5505.js";
 import { writable } from "../../chunks/index-e8f50377.js";
-const Canvas_svelte_svelte_type_style_lang = "";
 const RangePips_svelte_svelte_type_style_lang = "";
 const RangeSlider_svelte_svelte_type_style_lang = "";
 let customAlphabet = (alphabet, defaultSize = 21) => {
@@ -204,7 +203,11 @@ function create_fragment$a(ctx) {
       this.h();
     },
     l(nodes) {
-      div1 = claim_element(nodes, "DIV", { class: true, style: true });
+      div1 = claim_element(nodes, "DIV", {
+        "data-no-pan": true,
+        class: true,
+        style: true
+      });
       var div1_nodes = children(div1);
       div0 = claim_element(div1_nodes, "DIV", { class: true });
       children(div0).forEach(detach);
@@ -213,6 +216,7 @@ function create_fragment$a(ctx) {
     },
     h() {
       attr(div0, "class", div0_class_value = "resize-handle-decoration " + ctx[0] + " svelte-ejs9cn");
+      attr(div1, "data-no-pan", "");
       attr(div1, "class", div1_class_value = "resize-handle " + ctx[0] + " svelte-ejs9cn");
       set_style(div1, "--size", size);
       set_style(div1, "left", ctx[3] + "px");
@@ -247,7 +251,7 @@ function create_fragment$a(ctx) {
     }
   };
 }
-let size = "4em";
+let size = "5em";
 function instance$8($$self, $$props, $$invalidate) {
   let handleWidth;
   let handleHeight;
@@ -275,6 +279,7 @@ function instance$8($$self, $$props, $$invalidate) {
       handleEl,
       {
         start: (pointer, event) => {
+          console.log("resize handle start", pointer, event);
           if (pointerTracker.currentPointers.length === 2)
             return false;
           event.stopPropagation();
@@ -493,11 +498,11 @@ function create_fragment$9(ctx) {
       attr(div, "contenteditable", "");
       attr(div, "class", div_class_value = null_to_empty(ctx[0]) + " svelte-1708iua");
       if (ctx[3] === void 0)
-        add_render_callback(() => ctx[12].call(div));
+        add_render_callback(() => ctx[10].call(div));
     },
     m(target, anchor) {
       insert_hydration(target, div, anchor);
-      ctx[11](div);
+      ctx[9](div);
       if (ctx[3] !== void 0) {
         div.innerHTML = ctx[3];
       }
@@ -505,7 +510,7 @@ function create_fragment$9(ctx) {
         dispose = [
           listen(div, "keydown", ctx[5]),
           listen(div, "blur", ctx[6]),
-          listen(div, "input", ctx[12]),
+          listen(div, "input", ctx[10]),
           listen(div, "click", ctx[4]),
           action_destroyer(clickOutside_action = clickOutside.call(null, div, {
             enabled: ctx[1],
@@ -533,7 +538,7 @@ function create_fragment$9(ctx) {
     d(detaching) {
       if (detaching)
         detach(div);
-      ctx[11](null);
+      ctx[9](null);
       mounted = false;
       run_all(dispose);
     }
@@ -541,8 +546,6 @@ function create_fragment$9(ctx) {
 }
 function instance$7($$self, $$props, $$invalidate) {
   let { value = "" } = $$props;
-  let { type = "text" } = $$props;
-  let { placeholder = "" } = $$props;
   let { labelClasses = "" } = $$props;
   let editing = false;
   let inputEl;
@@ -601,10 +604,6 @@ function instance$7($$self, $$props, $$invalidate) {
   $$self.$$set = ($$props2) => {
     if ("value" in $$props2)
       $$invalidate(8, value = $$props2.value);
-    if ("type" in $$props2)
-      $$invalidate(9, type = $$props2.type);
-    if ("placeholder" in $$props2)
-      $$invalidate(10, placeholder = $$props2.placeholder);
     if ("labelClasses" in $$props2)
       $$invalidate(0, labelClasses = $$props2.labelClasses);
   };
@@ -618,8 +617,6 @@ function instance$7($$self, $$props, $$invalidate) {
     handleBlur,
     handleUnselect,
     value,
-    type,
-    placeholder,
     div_binding,
     div_input_handler
   ];
@@ -627,12 +624,7 @@ function instance$7($$self, $$props, $$invalidate) {
 class EditableText extends SvelteComponent {
   constructor(options) {
     super();
-    init(this, options, instance$7, create_fragment$9, safe_not_equal, {
-      value: 8,
-      type: 9,
-      placeholder: 10,
-      labelClasses: 0
-    });
+    init(this, options, instance$7, create_fragment$9, safe_not_equal, { value: 8, labelClasses: 0 });
   }
 }
 const colors = [
@@ -706,7 +698,7 @@ function create_if_block$6(ctx) {
   };
 }
 function create_each_block$1(ctx) {
-  let div;
+  let button;
   let t;
   let mounted;
   let dispose;
@@ -715,26 +707,26 @@ function create_each_block$1(ctx) {
   }
   return {
     c() {
-      div = element("div");
+      button = element("button");
       t = text("\xA0 \xA0\r\n			");
       this.h();
     },
     l(nodes) {
-      div = claim_element(nodes, "DIV", { class: true, style: true });
-      var div_nodes = children(div);
-      t = claim_text(div_nodes, "\xA0 \xA0\r\n			");
-      div_nodes.forEach(detach);
+      button = claim_element(nodes, "BUTTON", { class: true, style: true });
+      var button_nodes = children(button);
+      t = claim_text(button_nodes, "\xA0 \xA0\r\n			");
+      button_nodes.forEach(detach);
       this.h();
     },
     h() {
-      attr(div, "class", "colorOption svelte-7w3296");
-      set_style(div, "background-color", ctx[2]);
+      attr(button, "class", "colorOption svelte-7w3296");
+      set_style(button, "background-color", ctx[2]);
     },
     m(target, anchor) {
-      insert_hydration(target, div, anchor);
-      append_hydration(div, t);
+      insert_hydration(target, button, anchor);
+      append_hydration(button, t);
       if (!mounted) {
-        dispose = listen(div, "click", click_handler);
+        dispose = listen(button, "click", click_handler);
         mounted = true;
       }
     },
@@ -743,7 +735,7 @@ function create_each_block$1(ctx) {
     },
     d(detaching) {
       if (detaching)
-        detach(div);
+        detach(button);
       mounted = false;
       dispose();
     }
@@ -867,10 +859,10 @@ function create_fragment$7(ctx) {
   var _a, _b;
   let div;
   let t0;
-  let span0;
+  let button0;
   let t1;
   let t2;
-  let span1;
+  let button1;
   let t3;
   let div_resize_listener;
   let current;
@@ -883,10 +875,10 @@ function create_fragment$7(ctx) {
       if (if_block)
         if_block.c();
       t0 = space();
-      span0 = element("span");
+      button0 = element("button");
       t1 = text("\u21AA");
       t2 = space();
-      span1 = element("span");
+      button1 = element("button");
       t3 = text("\u{1F5D1}\uFE0F");
       this.h();
     },
@@ -896,21 +888,20 @@ function create_fragment$7(ctx) {
       if (if_block)
         if_block.l(div_nodes);
       t0 = claim_space(div_nodes);
-      span0 = claim_element(div_nodes, "SPAN", { class: true });
-      var span0_nodes = children(span0);
-      t1 = claim_text(span0_nodes, "\u21AA");
-      span0_nodes.forEach(detach);
+      button0 = claim_element(div_nodes, "BUTTON", { class: true });
+      var button0_nodes = children(button0);
+      t1 = claim_text(button0_nodes, "\u21AA");
+      button0_nodes.forEach(detach);
       t2 = claim_space(div_nodes);
-      span1 = claim_element(div_nodes, "SPAN", { class: true });
-      var span1_nodes = children(span1);
-      t3 = claim_text(span1_nodes, "\u{1F5D1}\uFE0F");
-      span1_nodes.forEach(detach);
+      button1 = claim_element(div_nodes, "BUTTON", {});
+      var button1_nodes = children(button1);
+      t3 = claim_text(button1_nodes, "\u{1F5D1}\uFE0F");
+      button1_nodes.forEach(detach);
       div_nodes.forEach(detach);
       this.h();
     },
     h() {
-      attr(span0, "class", "connect svelte-1fxjj2n");
-      attr(span1, "class", "svelte-1fxjj2n");
+      attr(button0, "class", "connect svelte-1fxjj2n");
       attr(div, "class", "context-menu svelte-1fxjj2n");
       set_style(div, "right", "-" + ctx[1] * 3.25 + "px");
       set_style(div, "top", "0");
@@ -921,17 +912,17 @@ function create_fragment$7(ctx) {
       if (if_block)
         if_block.m(div, null);
       append_hydration(div, t0);
-      append_hydration(div, span0);
-      append_hydration(span0, t1);
+      append_hydration(div, button0);
+      append_hydration(button0, t1);
       append_hydration(div, t2);
-      append_hydration(div, span1);
-      append_hydration(span1, t3);
+      append_hydration(div, button1);
+      append_hydration(button1, t3);
       div_resize_listener = add_resize_listener(div, ctx[3].bind(div));
       current = true;
       if (!mounted) {
         dispose = [
-          listen(span0, "click", stop_propagation(handleConnect)),
-          listen(span1, "click", stop_propagation(handleDelete))
+          listen(button0, "click", stop_propagation(handleConnect)),
+          listen(button1, "click", stop_propagation(handleDelete))
         ];
         mounted = true;
       }
@@ -1115,14 +1106,14 @@ class Grid extends SvelteComponent {
 const Container_svelte_svelte_type_style_lang = "";
 function get_each_context(ctx, list, i) {
   const child_ctx = ctx.slice();
-  child_ctx[35] = list[i];
+  child_ctx[34] = list[i];
   return child_ctx;
 }
 function get_each_context_1(ctx, list, i) {
   const child_ctx = ctx.slice();
-  child_ctx[38] = list[i];
-  child_ctx[39] = list;
-  child_ctx[40] = i;
+  child_ctx[37] = list[i];
+  child_ctx[38] = list;
+  child_ctx[39] = i;
   return child_ctx;
 }
 function create_if_block$4(ctx) {
@@ -1252,12 +1243,12 @@ function create_if_block$4(ctx) {
       var _a2, _b2, _c, _d, _e, _f;
       attr(div0, "data-gripper", "");
       attr(div0, "data-no-pan", "");
-      set_style(div0, "width", "1em");
+      set_style(div0, "width", "2em");
       set_style(div0, "height", "auto");
       set_style(div0, "position", "absolute");
       set_style(div0, "top", "-.1em");
       set_style(div0, "right", "0px");
-      set_style(div0, "margin", ".1em");
+      set_style(div0, "margin", "1em");
       set_style(div0, "padding", ".1em");
       set_style(div0, "color", "grey");
       set_style(div0, "filter", "drop-shadow(0 10px 0.75em white)");
@@ -1307,7 +1298,6 @@ function create_if_block$4(ctx) {
           })),
           listen(div2, "end", ctx[11]),
           listen(div2, "focusout", ctx[9]),
-          listen(div2, "dragstart", handleDragStart),
           listen(div2, "click", stop_propagation(ctx[10])),
           listen(div2, "keypress", stop_propagation(ctx[10]))
         ];
@@ -1648,7 +1638,7 @@ function create_each_block_1(ctx) {
   let updating_isDragging;
   let current;
   function container_node_binding(value) {
-    ctx[15](value, ctx[38], ctx[39], ctx[40]);
+    ctx[15](value, ctx[37], ctx[38], ctx[39]);
   }
   function container_isDragging_binding(value) {
     ctx[16](value);
@@ -1657,8 +1647,8 @@ function create_each_block_1(ctx) {
     arenaWidth: ctx[5],
     arenaHeight: ctx[6]
   };
-  if (ctx[38] !== void 0) {
-    container_props.node = ctx[38];
+  if (ctx[37] !== void 0) {
+    container_props.node = ctx[37];
   }
   if (ctx[1] !== void 0) {
     container_props.isDragging = ctx[1];
@@ -1686,7 +1676,7 @@ function create_each_block_1(ctx) {
         container_changes.arenaHeight = ctx[6];
       if (!updating_node && dirty[0] & 1) {
         updating_node = true;
-        container_changes.node = ctx[38];
+        container_changes.node = ctx[37];
         add_flush_callback(() => updating_node = false);
       }
       if (!updating_isDragging && dirty[0] & 2) {
@@ -1865,7 +1855,7 @@ function create_each_block(ctx) {
     arenaHeight: ctx[2],
     maxFrameHeight,
     minFrameHeight,
-    direction: ctx[35],
+    direction: ctx[34],
     grid
   };
   if (ctx[0].x !== void 0) {
@@ -2014,10 +2004,6 @@ let maxFrameWidth = 2500;
 let minFrameHeight = 20;
 let maxFrameHeight = 2500;
 let fontSize = "0.8em";
-function handleDragStart(e) {
-  console.log("Drag started");
-  e.preventDefault();
-}
 function instance$4($$self, $$props, $$invalidate) {
   let $selected;
   let $scale;
@@ -2040,21 +2026,28 @@ function instance$4($$self, $$props, $$invalidate) {
       nodeEl,
       {
         start: (pointer, event) => {
+          var _a, _b;
+          console.log("container start", pointer, event);
           if (pointerTracker.currentPointers.length === 0 && (event.target instanceof HTMLInputElement || event.target.isContentEditable)) {
-            console.log("single pointers on input / editable element");
             return false;
           }
           if (pointerTracker.currentPointers.length === 1)
             return false;
+          console.log("GRIPPER container start", (_a = event.target) == null ? void 0 : _a.closest("[data-gripper]"));
+          if (!((_b = event.target) == null ? void 0 : _b.closest("[data-gripper]"))) {
+            return false;
+          } else {
+            console.log("GRIPPER container start", pointer, event);
+          }
+          event.stopPropagation();
+          event.preventDefault();
           shiftX = pointer.clientX - nodeEl.getBoundingClientRect().left || 0;
           shiftY = pointer.clientY - nodeEl.getBoundingClientRect().top || 0;
+          console.log("container continued", pointer, event);
           return true;
         },
         move: (previousPointers, changedPointers, event) => {
-          if (!event.target.closest("[data-gripper]")) {
-            console.log("ignore any target not the child of a [data-gripper]");
-            return false;
-          }
+          console.log("container move", { nodeEl }, previousPointers, changedPointers, event);
           event.stopPropagation();
           event.preventDefault();
           let dx = changedPointers[0].clientX - previousPointers[0].clientX;
@@ -2063,6 +2056,7 @@ function instance$4($$self, $$props, $$invalidate) {
         },
         end: (pointer, event, cancelled) => {
           onDragEnd(pointer);
+          handleFocus(event);
         },
         avoidPointerEvents: true,
         eventListenerOptions: { capture: false }
@@ -2519,9 +2513,6 @@ class Menu extends SvelteComponent {
     });
   }
 }
-const Gripper_svelte_svelte_type_style_lang = "";
-const Nodes_svelte_svelte_type_style_lang = "";
-const Wrapper_svelte_svelte_type_style_lang = "";
 class Pointer {
   constructor(nativePointer) {
     this.id = -1;
@@ -2729,16 +2720,18 @@ class PinchZoom {
           return true;
         }
         if (this._pointerTracker.currentPointers.length === 0) {
+          event.preventDefault();
+          event.stopPropagation();
           return true;
         }
         return false;
       },
       move: (previousPointers, changedPointers, event) => {
-        console.log("move", panAnywhere);
         if (this._pointerTracker.currentPointers.length === 0)
           return;
         if (!panAnywhere && this._pointerTracker.currentPointers.length === 1 && !(event.target == this._parentEl || event.target == node))
           return;
+        event.preventDefault();
         event.stopPropagation();
         this._onPointerMove(previousPointers, this._pointerTracker.currentPointers);
       },
@@ -3530,4 +3523,4 @@ class Page extends SvelteComponent {
 export {
   Page as default
 };
-//# sourceMappingURL=_page.svelte-b1d6b5cf.js.map
+//# sourceMappingURL=_page.svelte-0440f0d9.js.map
